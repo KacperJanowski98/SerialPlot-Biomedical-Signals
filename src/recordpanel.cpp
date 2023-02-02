@@ -86,7 +86,7 @@ RecordPanel::RecordPanel(Stream* stream, QWidget *parent) :
 
     QCompleter *completer = new QCompleter(this);
     // TODO: QDirModel is deprecated, use QFileSystemModel (but it doesn't work)
-    completer->setModel(new QDirModel(completer));
+    completer->setModel(new QFileSystemModel(completer));
     completer->setCaseSensitivity(Qt::CaseInsensitive);
     ui->leFileName->setCompleter(completer);
 
@@ -190,7 +190,7 @@ QString RecordPanel::formatTimeStamp(QString t) const
     strftime(r, maxSize, t.toLatin1().data(), timeinfo);
 
     auto rs = QString(r);
-    delete r;
+    delete[] r;
     return rs;
 }
 

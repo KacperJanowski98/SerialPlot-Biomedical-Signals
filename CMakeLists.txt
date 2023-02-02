@@ -33,8 +33,15 @@ set(CMAKE_AUTOMOC ON)
 # add local path for cmake modules
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
 
-# Find the QtWidgets library
-find_package(Qt5Widgets)
+# Find the libraries
+# find_package(Qt5Widgets)
+find_package(Qt5
+  REQUIRED COMPONENTS 
+      Widgets
+      SerialPort
+      Network
+      Svg
+)
 
 # If set, cmake will download Qwt over SVN, build and use it as a static library.
 set(BUILD_QWT true CACHE BOOL "Download and build Qwt automatically.")
@@ -145,8 +152,13 @@ add_executable(${PROGRAM_NAME} WIN32
 # Use the Widgets module from Qt 5.
 target_link_libraries(${PROGRAM_NAME}
   ${QWT_LIBRARY}
-  )
-qt5_use_modules(${PROGRAM_NAME} Widgets SerialPort Network Svg)
+  Qt5::Widgets
+  Qt5::SerialPort
+  Qt5::Network
+  Qt5::Svg
+)
+
+# qt5_use_modules(${PROGRAM_NAME} Widgets SerialPort Network Svg)
 
 if (BUILD_QWT)
   add_dependencies(${PROGRAM_NAME} QWT)
