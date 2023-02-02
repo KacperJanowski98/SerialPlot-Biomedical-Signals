@@ -1,4 +1,30 @@
-# SerialPlot
+# SerialPlot for the analysis of biomedical signals
+
+The modification of the software is aimed at adding the functionality of analyzing biomedical signals.
+
+## Features
+
+* Replacing deprecated functions against Qt5.15.2
+
+## Installation for Windows
+### Qt5.15.2 installation with MinGW 8.1.0
+
+Include the following in the system path:
+* ```installation\path\to\Qt\Tools\mingw810_64\bin```
+* ```installation\path\to\Qt\5.15.2\mingw81_64\bin```
+* ```installation\path\to\Qt\5.15.2\mingw81_64\lib```
+
+### Qwt 6.2.0
+
+Manual installation of Qwt https://qwt.sourceforge.io/qwtinstall.html
+If there is a build error related to tests that are not required when using the library, you should disconnect them from the build process. In the qwtconfig.pri file, remove the line ```QWT_CONFIG += QwtTests```
+
+Include the following in the system path:
+- installation\path\to\qwt-6.2.0\lib
+
+In the configuration, set ```BUILD_QWT``` to ```false```.
+
+# SerialPlot - original
 
 Small and simple software for plotting data from serial port in realtime.
 
