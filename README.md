@@ -16,11 +16,11 @@ Include the following in the system path:
 
 ### Qwt 6.2.0
 
-Manual installation of Qwt https://qwt.sourceforge.io/qwtinstall.html
+Manual installation of Qwt https://qwt.sourceforge.io/qwtinstall.html.
 If there is a build error related to tests that are not required when using the library, you should disconnect them from the build process. In the qwtconfig.pri file, remove the line ```QWT_CONFIG += QwtTests```
 
 Include the following in the system path:
-- installation\path\to\qwt-6.2.0\lib
+- ```installation\path\to\qwt-6.2.0\lib```
 
 In the configuration, set ```BUILD_QWT``` to ```false```.
 
