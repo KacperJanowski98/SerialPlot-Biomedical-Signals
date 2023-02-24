@@ -71,7 +71,7 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context,
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    QApplication::setApplicationName(PROGRAM_NAME);
+    QApplication::setApplicationName("BimedicalSerialPlot");
     QApplication::setApplicationVersion(VERSION_STRING);
 
 #ifdef Q_OS_WIN

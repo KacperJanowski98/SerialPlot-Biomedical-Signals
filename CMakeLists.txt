@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 
-project(serialplot_workspace VERSION 0.1.0)
+project(serialplot_workspace LANGUAGES CXX C)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 

@@ -146,6 +146,20 @@ add_executable(${PROGRAM_NAME} WIN32
     ${RES_FILES}
 )
 
+# include FFTW shared library
+target_include_directories(${PROGRAM_NAME}
+    PRIVATE
+      ${CMAKE_CURRENT_LIST_DIR}/fftw
+)
+
+set(fftw3_shared "${CMAKE_CURRENT_LIST_DIR}/fftw/libfftw3-3.dll")
+set(fftw3f_shared "${CMAKE_CURRENT_LIST_DIR}/fftw/libfftw3f-3.dll")
+set(fftw3l_shared "${CMAKE_CURRENT_LIST_DIR}/fftw/libfftw3l-3.dll")
+
+configure_file(${fftw3_shared} ${CMAKE_CURRENT_BINARY_DIR}/fftw/libfftw3-3.dll COPYONLY)
+configure_file(${fftw3f_shared} ${CMAKE_CURRENT_BINARY_DIR}/fftw/libfftw3f-3.dll COPYONLY)
+configure_file(${fftw3l_shared} ${CMAKE_CURRENT_BINARY_DIR}/fftw/libfftw3l-3.dll COPYONLY)
+
 # Use the Widgets module from Qt 5.
 target_link_libraries(${PROGRAM_NAME}
     ${QWT_LIBRARY}
@@ -153,6 +167,9 @@ target_link_libraries(${PROGRAM_NAME}
     Qt5::SerialPort
     Qt5::Network
     Qt5::Svg
+    ${fftw3_shared}
+    ${fftw3f_shared}
+    ${fftw3l_shared}
 )
 
 if (BUILD_QWT)
