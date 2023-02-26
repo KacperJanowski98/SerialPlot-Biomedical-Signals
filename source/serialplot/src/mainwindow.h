@@ -94,6 +94,12 @@ private:
     UpdateCheckDialog updateCheckDialog;
     BPSLabel bpsLabel;
 
+    // FFT plot
+    PlotManager* fftPlotMan;
+    PlotControlPanel fftPlotControlPanel;
+    PlotMenu fftPlotMenu;
+    SnapshotManager fftSnapshotMan;
+
     void handleCommandLineOptions(const QCoreApplication &app);
 
     /// Returns true if demo is running
