@@ -75,8 +75,7 @@ MainWindow::MainWindow(QWidget *parent) :
     recordPanel(&stream),
     textView(&stream),
     updateCheckDialog(this),
-    bpsLabel(&portControl, &dataFormatPanel, this),
-    fftSnapshotMan(this, &stream)
+    bpsLabel(&portControl, &dataFormatPanel, this)
 {
     ui->setupUi(this);
 
@@ -98,8 +97,6 @@ MainWindow::MainWindow(QWidget *parent) :
     addToolBar(recordPanel.toolbar());
 
     ui->plotToolBar->addAction(snapshotMan.takeSnapshotAction());
-    // FFT plot
-    ui->plotToolBar->addAction(fftSnapshotMan.takeSnapshotAction());
     menuBar()->insertMenu(ui->menuHelp->menuAction(), snapshotMan.menu());
     menuBar()->insertMenu(ui->menuHelp->menuAction(), commandPanel.menu());
 

@@ -98,7 +98,6 @@ private:
     PlotManager* fftPlotMan;
     PlotControlPanel fftPlotControlPanel;
     PlotMenu fftPlotMenu;
-    SnapshotManager fftSnapshotMan;
 
     void handleCommandLineOptions(const QCoreApplication &app);
 

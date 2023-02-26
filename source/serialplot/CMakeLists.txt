@@ -148,8 +148,9 @@ add_executable(${PROGRAM_NAME} WIN32
 
 # include FFTW shared library
 target_include_directories(${PROGRAM_NAME}
-    PRIVATE
+    PUBLIC
       ${CMAKE_CURRENT_LIST_DIR}/fftw
+      ${CMAKE_CURRENT_LIST_DIR}/src
 )
 
 set(fftw3_shared "${CMAKE_CURRENT_LIST_DIR}/fftw/libfftw3-3.dll")
