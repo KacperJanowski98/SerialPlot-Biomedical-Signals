@@ -1,29 +1,10 @@
-/*
-  Copyright © 2017 Hasan Yavuz Özderya
-
-  This file is part of serialplot.
-
-  serialplot is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  serialplot is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with serialplot.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 #include <QtGlobal>
 
-#include "ringbuffer.h"
+#include "fftringbuffer.h"
 
 #include <QDebug>
 
-RingBuffer::RingBuffer(unsigned n)
+FftRingBuffer::FftRingBuffer(unsigned n)
 {
     _size = n;
     data = new double[_size]();
@@ -33,30 +14,30 @@ RingBuffer::RingBuffer(unsigned n)
     limCache = {0, 0};
 }
 
-RingBuffer::~RingBuffer()
+FftRingBuffer::~FftRingBuffer()
 {
     delete[] data;
 }
 
-unsigned RingBuffer::size() const
+unsigned FftRingBuffer::size() const
 {
     return _size;
 }
 
-double RingBuffer::sample(unsigned i) const
+double FftRingBuffer::sample(unsigned i) const
 {
     unsigned index = headIndex + i;
     if (index >= _size) index -= _size;
     return data[index];
 }
 
-Range RingBuffer::limits() const
+Range FftRingBuffer::limits() const
 {
     if (limInvalid) updateLimits();
     return limCache;
 }
 
-void RingBuffer::resize(unsigned n)
+void FftRingBuffer::resize(unsigned n)
 {
     Q_ASSERT(n != _size);
 
@@ -92,7 +73,7 @@ void RingBuffer::resize(unsigned n)
     limInvalid = true;
 }
 
-void RingBuffer::addSamples(double* samples, unsigned n)
+void FftRingBuffer::addSamples(double* samples, unsigned n)
 {
     unsigned shift = n;
     if (shift < _size)
@@ -103,8 +84,8 @@ void RingBuffer::addSamples(double* samples, unsigned n)
         {
             for (unsigned i = 0; i < shift; i++)
             {
-                data[i+headIndex] = samples[i];
-                // qDebug() << "RingBuffer::addSamples (there is enough room at the end of array): " << i+headIndex << " value " << samples[i];
+                data[i+headIndex] = samples[i] * 2;
+                qDebug() << "RingBuffer::addSamples FFT (there is enough room at the end of array): " << i+headIndex << " value " << samples[i] * 2;
             }
 
             if (shift == x) // we used all the room at the end
@@ -120,13 +101,13 @@ void RingBuffer::addSamples(double* samples, unsigned n)
         {
             for (unsigned i = 0; i < x; i++) // fill the end part
             {
-                data[i+headIndex] = samples[i];
-                // qDebug() << "RingBuffer::addSamples (fill the end part): " << i+headIndex << " value " << samples[i];
+                data[i+headIndex] = samples[i] * 2;
+                qDebug() << "RingBuffer::addSamples FFT (fill the end part): " << i+headIndex << " value " << samples[i] * 2;
             }
             for (unsigned i = 0; i < (shift-x); i++) // continue from the beginning
             {
-                data[i] = samples[i+x];
-                // qDebug() << "RingBuffer::addSamples (continue from the beginning): " << i << " value " << samples[i+x];
+                data[i] = samples[i+x] * 2;
+                qDebug() << "RingBuffer::addSamples FFT (continue from the beginning): " << i << " value " << samples[i+x] * 2;
             }
             headIndex = shift-x;
         }
@@ -136,7 +117,8 @@ void RingBuffer::addSamples(double* samples, unsigned n)
         int x = shift - _size;
         for (unsigned i = 0; i < _size; i++)
         {
-            data[i] = samples[i+x];
+            data[i] = samples[i+x] * 2;
+            qDebug() << "RingBuffer::addSamples FFT (fill the end part): " << i+headIndex << " value " << samples[i];
         }
         headIndex = 0;
     }
@@ -145,7 +127,7 @@ void RingBuffer::addSamples(double* samples, unsigned n)
     limInvalid = true;
 }
 
-void RingBuffer::clear()
+void FftRingBuffer::clear()
 {
     for (unsigned i=0; i < _size; i++)
     {
@@ -156,7 +138,7 @@ void RingBuffer::clear()
     limInvalid = false;
 }
 
-void RingBuffer::updateLimits() const
+void FftRingBuffer::updateLimits() const
 {
     limCache.start = data[0];
     limCache.end = data[0];

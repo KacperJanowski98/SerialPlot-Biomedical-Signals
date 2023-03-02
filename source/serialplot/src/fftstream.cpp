@@ -1,30 +1,11 @@
-/*
-  Copyright © 2018 Hasan Yavuz Özderya
-
-  This file is part of serialplot.
-
-  serialplot is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  serialplot is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with serialplot.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-#include "stream.h"
-#include "ringbuffer.h"
+#include "fftstream.h"
+#include "fftringbuffer.h"
 #include "indexbuffer.h"
 #include "linindexbuffer.h"
 
 #include <QDebug>
 
-Stream::Stream(unsigned nc, bool x, unsigned ns) :
+FftStream::FftStream(unsigned nc, bool x, unsigned ns) :
     _infoModel(nc)
 {
     _numSamples = ns;
@@ -49,12 +30,12 @@ Stream::Stream(unsigned nc, bool x, unsigned ns) :
     // create channels
     for (unsigned i = 0; i < nc; i++)
     {
-        auto c = new StreamChannel(i, xData, new RingBuffer(ns), &_infoModel);
+        auto c = new StreamChannel(i, xData, new FftRingBuffer(ns), &_infoModel);
         channels.append(c);
     }
 }
 
-Stream::~Stream()
+FftStream::~FftStream()
 {
     for (auto ch : channels)
     {
@@ -63,33 +44,33 @@ Stream::~Stream()
     delete xData;
 }
 
-bool Stream::hasX() const
+bool FftStream::hasX() const
 {
     return _hasx;
 }
 
-unsigned Stream::numChannels() const
+unsigned FftStream::numChannels() const
 {
     return channels.length();
 }
 
-unsigned Stream::numSamples() const
+unsigned FftStream::numSamples() const
 {
     return _numSamples;
 }
 
-const StreamChannel* Stream::channel(unsigned index) const
+const StreamChannel* FftStream::channel(unsigned index) const
 {
     Q_ASSERT(index < numChannels());
     return channels[index];
 }
 
-StreamChannel* Stream::channel(unsigned index)
+StreamChannel* FftStream::channel(unsigned index)
 {
-    return const_cast<StreamChannel*>(static_cast<const Stream&>(*this).channel(index));
+    return const_cast<StreamChannel*>(static_cast<const FftStream&>(*this).channel(index));
 }
 
-QVector<const StreamChannel*> Stream::allChannels() const
+QVector<const StreamChannel*> FftStream::allChannels() const
 {
     QVector<const StreamChannel*> result(numChannels());
     for (unsigned ci = 0; ci < numChannels(); ci++)
@@ -99,17 +80,17 @@ QVector<const StreamChannel*> Stream::allChannels() const
     return result;
 }
 
-const ChannelInfoModel* Stream::infoModel() const
+const ChannelInfoModel* FftStream::infoModel() const
 {
     return &_infoModel;
 }
 
-ChannelInfoModel* Stream::infoModel()
+ChannelInfoModel* FftStream::infoModel()
 {
-    return const_cast<ChannelInfoModel*>(static_cast<const Stream&>(*this).infoModel());
+    return const_cast<ChannelInfoModel*>(static_cast<const FftStream&>(*this).infoModel());
 }
 
-void Stream::setNumChannels(unsigned nc, bool x)
+void FftStream::setNumChannels(unsigned nc, bool x)
 {
     unsigned oldNum = numChannels();
     if (oldNum == nc && x == _hasx) return;
@@ -119,7 +100,7 @@ void Stream::setNumChannels(unsigned nc, bool x)
     {
         for (unsigned i = oldNum; i < nc; i++)
         {
-            auto c = new StreamChannel(i, xData, new RingBuffer(_numSamples), &_infoModel);
+            auto c = new StreamChannel(i, xData, new FftRingBuffer(_numSamples), &_infoModel);
             channels.append(c);
         }
     }
@@ -161,7 +142,7 @@ void Stream::setNumChannels(unsigned nc, bool x)
     Sink::setNumChannels(nc, x);
 }
 
-XFrameBuffer* Stream::makeXBuffer() const
+XFrameBuffer* FftStream::makeXBuffer() const
 {
     if (xAsIndex)
     {
@@ -173,7 +154,7 @@ XFrameBuffer* Stream::makeXBuffer() const
     }
 }
 
-const SamplePack* Stream::applyGainOffset(const SamplePack& pack) const
+const SamplePack* FftStream::applyGainOffset(const SamplePack& pack) const
 {
     qDebug() << "Test: Stream::applyGainOffset";
     Q_ASSERT(infoModel()->gainOrOffsetEn());
@@ -212,7 +193,7 @@ const SamplePack* Stream::applyGainOffset(const SamplePack& pack) const
     return mPack;
 }
 
-void Stream::feedIn(const SamplePack& pack)
+void FftStream::feedIn(const SamplePack& pack)
 {
     Q_ASSERT(pack.numChannels() == numChannels() &&
              pack.hasX() == hasX());
@@ -224,7 +205,7 @@ void Stream::feedIn(const SamplePack& pack)
     {
         // TODO: implement XRingBuffer (binary search)
         Q_ASSERT(false);
-        // static_cast<RingBuffer*>(xData)->addSamples(pack.xData(), ns);
+        // static_cast<FftRingBuffer*>(xData)->addSamples(pack.xData(), ns);
     }
 
     // modified pack that gain and offset is applied to
@@ -234,8 +215,9 @@ void Stream::feedIn(const SamplePack& pack)
 
     for (unsigned ci = 0; ci < numChannels(); ci++)
     {
-        auto buf = static_cast<RingBuffer*>(channels[ci]->yData());
+        auto buf = static_cast<FftRingBuffer*>(channels[ci]->yData());
         double* data = (mPack == nullptr) ? pack.data(ci) : mPack->data(ci);
+        // auto test = channels[ci]->xData()->size(); // wielkość buffora na dane wejściowe
         // Tu jest wejście danych (RingBuffer)
         buf->addSamples(data, ns);
     }
@@ -246,20 +228,20 @@ void Stream::feedIn(const SamplePack& pack)
     emit dataAdded();
 }
 
-void Stream::pause(bool paused)
+void FftStream::pause(bool paused)
 {
     _paused = paused;
 }
 
-void Stream::clear()
+void FftStream::clear()
 {
     for (auto c : channels)
     {
-        static_cast<RingBuffer*>(c->yData())->clear();
+        static_cast<FftRingBuffer*>(c->yData())->clear();
     }
 }
 
-void Stream::setNumSamples(unsigned value)
+void FftStream::setNumSamples(unsigned value)
 {
     if (value == _numSamples) return;
     _numSamples = value;
@@ -267,11 +249,11 @@ void Stream::setNumSamples(unsigned value)
     xData->resize(value);
     for (auto c : channels)
     {
-        static_cast<RingBuffer*>(c->yData())->resize(value);
+        static_cast<FftRingBuffer*>(c->yData())->resize(value);
     }
 }
 
-void Stream::setXAxis(bool asIndex, double min, double max)
+void FftStream::setXAxis(bool asIndex, double min, double max)
 {
     xAsIndex = asIndex;
     xMin = min;
@@ -289,12 +271,12 @@ void Stream::setXAxis(bool asIndex, double min, double max)
     }
 }
 
-void Stream::saveSettings(QSettings* settings) const
+void FftStream::saveSettings(QSettings* settings) const
 {
     _infoModel.saveSettings(settings);
 }
 
-void Stream::loadSettings(QSettings* settings)
+void FftStream::loadSettings(QSettings* settings)
 {
     _infoModel.loadSettings(settings);
 }

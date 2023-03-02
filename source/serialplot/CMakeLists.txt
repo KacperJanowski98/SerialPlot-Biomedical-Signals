@@ -113,6 +113,9 @@ add_executable(${PROGRAM_NAME} WIN32
     ${CMAKE_CURRENT_LIST_DIR}/src/indexbuffer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/linindexbuffer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/readonlybuffer.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/fftplotmanager.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/fftringbuffer.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/fftstream.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/framebufferseries.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/numberformatbox.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/endiannessbox.cpp

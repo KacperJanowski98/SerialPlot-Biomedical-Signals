@@ -38,6 +38,7 @@ class Plot : public QwtPlot
     Q_OBJECT
 
     friend class PlotManager;
+    friend class FftPlotManager;
 
 public:
     enum ShowSymbols

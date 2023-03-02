@@ -41,8 +41,10 @@
 #include "recordpanel.h"
 #include "ui_about_dialog.h"
 #include "stream.h"
+#include "fftstream.h"
 #include "snapshotmanager.h"
 #include "plotmanager.h"
+#include "fftplotmanager.h"
 #include "plotmenu.h"
 #include "updatecheckdialog.h"
 #include "samplecounter.h"
@@ -95,7 +97,8 @@ private:
     BPSLabel bpsLabel;
 
     // FFT plot
-    PlotManager* fftPlotMan;
+    FftStream fftStream;
+    FftPlotManager* fftPlotMan;
     PlotControlPanel fftPlotControlPanel;
     PlotMenu fftPlotMenu;
 

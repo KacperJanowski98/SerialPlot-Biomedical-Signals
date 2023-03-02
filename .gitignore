@@ -1,3 +1,4 @@
+.cache/
 .vscode/
 build/
 # C++ objects and libs
