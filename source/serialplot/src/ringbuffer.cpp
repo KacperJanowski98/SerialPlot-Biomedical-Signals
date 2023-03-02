@@ -104,7 +104,6 @@ void RingBuffer::addSamples(double* samples, unsigned n)
             for (unsigned i = 0; i < shift; i++)
             {
                 data[i+headIndex] = samples[i];
-                // qDebug() << "RingBuffer::addSamples (there is enough room at the end of array): " << i+headIndex << " value " << samples[i];
             }
 
             if (shift == x) // we used all the room at the end
@@ -121,12 +120,10 @@ void RingBuffer::addSamples(double* samples, unsigned n)
             for (unsigned i = 0; i < x; i++) // fill the end part
             {
                 data[i+headIndex] = samples[i];
-                // qDebug() << "RingBuffer::addSamples (fill the end part): " << i+headIndex << " value " << samples[i];
             }
             for (unsigned i = 0; i < (shift-x); i++) // continue from the beginning
             {
                 data[i] = samples[i+x];
-                // qDebug() << "RingBuffer::addSamples (continue from the beginning): " << i << " value " << samples[i+x];
             }
             headIndex = shift-x;
         }

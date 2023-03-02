@@ -48,6 +48,12 @@
 Q_IMPORT_PLUGIN(QWindowsIntegrationPlugin)
 #endif
 
+// FFT
+#define AUDIBLE_RANGE_START 20
+#define AUDIBLE_RANGE_END   20000 /* very optimistic */
+#define NUM_SAMPLES 9000
+#define SAMPLE_FREQ 48000
+
 // TODO: depends on tab insertion order, a better solution would be to use object names
 const QMap<int, QString> panelSettingMap({
         {0, "Port"},

@@ -12,11 +12,21 @@ FftRingBuffer::FftRingBuffer(unsigned n)
 
     limInvalid = false;
     limCache = {0, 0};
+    // FFT
+    sampleFft = new double[_size]();
+    mFftIn  = fftw_alloc_real(_size);
+    mFftOut = fftw_alloc_real(_size);
+    mFftPlan = fftw_plan_r2r_1d(_size, mFftIn, mFftOut, FFTW_R2HC, FFTW_ESTIMATE);
 }
 
 FftRingBuffer::~FftRingBuffer()
 {
     delete[] data;
+    delete[] sampleFft;
+    // FFT
+    fftw_free(mFftIn);
+    fftw_free(mFftOut);
+    fftw_destroy_plan(mFftPlan);
 }
 
 unsigned FftRingBuffer::size() const
@@ -80,10 +90,17 @@ void FftRingBuffer::addSamples(double* samples, unsigned n)
     {
         unsigned x = _size - headIndex; // distance of `head` to end
 
+        // FFT
+        // memcpy(mFftIn, samples, n*sizeof(double));
+
+        // fftw_execute(mFftPlan);
+
         if (shift <= x) // there is enough room at the end of array
         {
             for (unsigned i = 0; i < shift; i++)
             {
+//                data[i+headIndex] = abs(mFftOut[i]);
+//                qDebug() << "RingBuffer::addSamples FFT (there is enough room at the end of array): " << i+headIndex << " value " << abs(mFftOut[i]);
                 data[i+headIndex] = samples[i] * 2;
                 qDebug() << "RingBuffer::addSamples FFT (there is enough room at the end of array): " << i+headIndex << " value " << samples[i] * 2;
             }

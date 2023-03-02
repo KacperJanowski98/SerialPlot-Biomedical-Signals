@@ -104,6 +104,7 @@ private:
 
     bool xAsIndex;
     double xMin, xMax;
+    double *temp_buf;
 
     /**
      * Applies gain and offset to given pack.

@@ -22,6 +22,8 @@
 
 #include "framebuffer.h"
 
+#include <fftw3.h>
+
 /// A fast buffer implementation for storing data.
 class RingBuffer : public WFrameBuffer
 {
@@ -40,6 +42,10 @@ private:
     unsigned _size;            ///< size of `data`
     double* data;              ///< storage
     unsigned headIndex;        ///< indicates the actual `0` index of the ring buffer
+
+    fftw_plan mFftPlan;
+    double *mFftIn;
+    double *mFftOut;
 
     mutable bool limInvalid;   ///< Indicates that limits needs to be re-calculated
     mutable Range limCache;    ///< Cache for limits()

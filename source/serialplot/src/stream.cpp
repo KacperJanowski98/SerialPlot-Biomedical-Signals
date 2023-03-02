@@ -237,6 +237,11 @@ void Stream::feedIn(const SamplePack& pack)
         auto buf = static_cast<RingBuffer*>(channels[ci]->yData());
         double* data = (mPack == nullptr) ? pack.data(ci) : mPack->data(ci);
         // Tu jest wejście danych (RingBuffer)
+//        for (unsigned long long i = 0; i < 40; i++)
+//        {
+//            qDebug() << "data: " << data[i];
+//        }
+
         buf->addSamples(data, ns);
     }
 

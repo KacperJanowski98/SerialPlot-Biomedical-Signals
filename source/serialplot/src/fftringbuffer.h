@@ -2,6 +2,8 @@
 #define FFTRINGBUFFER_H
 
 #include "framebuffer.h"
+// FFT
+#include <fftw3.h>
 
 /// A fast buffer implementation for storing data.
 class FftRingBuffer : public WFrameBuffer
@@ -21,6 +23,11 @@ private:
     unsigned _size;            ///< size of `data`
     double* data;              ///< storage
     unsigned headIndex;        ///< indicates the actual `0` index of the ring buffer
+    // FFT
+    double* sampleFft;
+    fftw_plan mFftPlan;
+    double *mFftIn;
+    double *mFftOut;
 
     mutable bool limInvalid;   ///< Indicates that limits needs to be re-calculated
     mutable Range limCache;    ///< Cache for limits()
