@@ -77,6 +77,7 @@ private:
     PortControl portControl;
 
     unsigned int numOfSamples;
+    unsigned int numOfSamplesFft;
 
     QList<QwtPlotCurve*> curves;
     // ChannelManager channelMan;
@@ -127,6 +128,7 @@ private slots:
     void onPortToggled(bool open);
     void onSourceChanged(Source* source);
     void onNumOfSamplesChanged(int value);
+    void onNumOfSamplesFftChanged(int value);
 
     void clearPlot();
     void onSpsChanged(float sps);

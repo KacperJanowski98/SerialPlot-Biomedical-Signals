@@ -197,7 +197,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // FFT plot control signals
     connect(&fftPlotControlPanel, &PlotControlPanel::numOfSamplesChanged,
-            this, &MainWindow::onNumOfSamplesChanged);
+            this, &MainWindow::onNumOfSamplesFftChanged);
 
     connect(&fftPlotControlPanel, &PlotControlPanel::numOfSamplesChanged,
             fftPlotMan, &FftPlotManager::setNumOfSamples);
@@ -262,8 +262,8 @@ MainWindow::MainWindow(QWidget *parent) :
     plotControlPanel.setChannelInfoModel(stream.infoModel());
 
     // init FFT plot
-    numOfSamples = fftPlotControlPanel.numOfSamples();
-    fftStream.setNumSamples(numOfSamples);
+    numOfSamplesFft = fftPlotControlPanel.numOfSamples();
+    fftStream.setNumSamples(numOfSamplesFft);
     fftPlotControlPanel.setChannelInfoModel(fftStream.infoModel());
 
     // init scales
@@ -278,15 +278,15 @@ MainWindow::MainWindow(QWidget *parent) :
     plotMan->setPlotWidth(plotControlPanel.plotWidth());
 
     // init scales FFT
-    fftStream.setXAxis(plotControlPanel.xAxisAsIndex(),
-                    plotControlPanel.xMin(), plotControlPanel.xMax());
+    fftStream.setXAxis(fftPlotControlPanel.xAxisAsIndex(),
+                    fftPlotControlPanel.xMin(), fftPlotControlPanel.xMax());
 
-    fftPlotMan->setYAxis(plotControlPanel.autoScale(),
-                      plotControlPanel.yMin(), plotControlPanel.yMax());
-    fftPlotMan->setXAxis(plotControlPanel.xAxisAsIndex(),
-                      plotControlPanel.xMin(), plotControlPanel.xMax());
-    fftPlotMan->setNumOfSamples(numOfSamples);
-    fftPlotMan->setPlotWidth(plotControlPanel.plotWidth());
+    fftPlotMan->setYAxis(fftPlotControlPanel.autoScale(),
+                      fftPlotControlPanel.yMin(), fftPlotControlPanel.yMax());
+    fftPlotMan->setXAxis(fftPlotControlPanel.xAxisAsIndex(),
+                      fftPlotControlPanel.xMin(), fftPlotControlPanel.xMax());
+    fftPlotMan->setNumOfSamples(numOfSamplesFft);
+    fftPlotMan->setPlotWidth(fftPlotControlPanel.plotWidth());
 
     // init bps (bits per second) counter
     ui->statusBar->addPermanentWidget(&bpsLabel);
@@ -457,9 +457,16 @@ void MainWindow::onNumOfSamplesChanged(int value)
     numOfSamples = value;
     stream.setNumSamples(value);
     // FFT
-    fftStream.setNumSamples(value);
+//    fftStream.setNumSamples(value);
     plotMan->replot();
     // FFT
+//    fftPlotMan->replot();
+}
+
+void MainWindow::onNumOfSamplesFftChanged(int value)
+{
+    numOfSamplesFft = value;
+    fftStream.setNumSamples(value);
     fftPlotMan->replot();
 }
 

@@ -12,6 +12,9 @@
 #include "streamchannel.h"
 #include "framebuffer.h"
 
+// FFT
+#include <fftw3.h>
+
 class FftStream : public QObject, public Sink
 {
     Q_OBJECT
@@ -79,6 +82,11 @@ private:
     bool xAsIndex;
     double xMin, xMax;
 
+    // FFT
+    fftw_plan mFftPlan;
+    double *mFftIn;
+    double *mFftOut;
+
     /**
      * Applies gain and offset to given pack.
      *
@@ -91,6 +99,9 @@ private:
      * @return modified data
      */
     const SamplePack* applyGainOffset(const SamplePack& pack) const;
+
+    // FFT
+    void calculateFft(double* dataIn, double* dataOut, unsigned n);
 
     /// Returns a new virtual X buffer for settings
     XFrameBuffer* makeXBuffer() const;

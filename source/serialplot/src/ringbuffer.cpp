@@ -104,6 +104,7 @@ void RingBuffer::addSamples(double* samples, unsigned n)
             for (unsigned i = 0; i < shift; i++)
             {
                 data[i+headIndex] = samples[i];
+//                qDebug() << "Index: " << i+headIndex <<" Value: " << samples[i];
             }
 
             if (shift == x) // we used all the room at the end

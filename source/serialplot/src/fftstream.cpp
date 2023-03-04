@@ -33,6 +33,10 @@ FftStream::FftStream(unsigned nc, bool x, unsigned ns) :
         auto c = new StreamChannel(i, xData, new FftRingBuffer(ns), &_infoModel);
         channels.append(c);
     }
+    // FFT
+//    mFftIn  = fftw_alloc_real(ns);
+//    mFftOut = fftw_alloc_real(ns);
+//    mFftPlan = fftw_plan_r2r_1d(ns, mFftIn, mFftOut, FFTW_R2HC, FFTW_ESTIMATE);
 }
 
 FftStream::~FftStream()
@@ -42,6 +46,10 @@ FftStream::~FftStream()
         delete ch;
     }
     delete xData;
+    // FFT
+//    fftw_free(mFftIn);
+//    fftw_free(mFftOut);
+//    fftw_destroy_plan(mFftPlan);
 }
 
 bool FftStream::hasX() const
@@ -219,7 +227,10 @@ void FftStream::feedIn(const SamplePack& pack)
         double* data = (mPack == nullptr) ? pack.data(ci) : mPack->data(ci);
         // auto test = channels[ci]->xData()->size(); // wielkość buffora na dane wejściowe
         // Tu jest wejście danych (RingBuffer)
-        buf->addSamples(data, ns);
+        double sampleFft[ns/2];
+        calculateFft(data, sampleFft, ns);
+//        buf->addSamples(data, ns);
+        buf->addSamples(sampleFft, ns/2);
     }
 
     Sink::feedIn((mPack == nullptr) ? pack : *mPack);
@@ -251,6 +262,25 @@ void FftStream::setNumSamples(unsigned value)
     {
         static_cast<FftRingBuffer*>(c->yData())->resize(value);
     }
+}
+
+void FftStream::calculateFft(double* dataIn, double* dataOut, unsigned n)
+{
+    mFftIn  = fftw_alloc_real(n);
+    mFftOut = fftw_alloc_real(n);
+    mFftPlan = fftw_plan_r2r_1d(n, mFftIn, mFftOut, FFTW_R2HC, FFTW_ESTIMATE);
+
+    memcpy(mFftIn, dataIn, n*sizeof(double));
+    fftw_execute(mFftPlan);
+
+    for (unsigned i = 0; i < n/2; i++)
+    {
+        dataOut[i] = abs(mFftOut[i]);
+//        qDebug() << "Value: " << abs(mFftOut[i]);
+    }
+    fftw_free(mFftIn);
+    fftw_free(mFftOut);
+    fftw_destroy_plan(mFftPlan);
 }
 
 void FftStream::setXAxis(bool asIndex, double min, double max)
