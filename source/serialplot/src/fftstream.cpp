@@ -15,6 +15,8 @@ FftStream::FftStream(unsigned nc, bool x, unsigned ns) :
     xMin = 0;
     xMax = 1;
 
+    flag = true;
+
     // create xdata buffer
     _hasx = x;
     if (x)
@@ -258,12 +260,27 @@ void FftStream::setNumSamples(unsigned value)
 
 void FftStream::calculateFft(double* dataIn, double* dataOut, unsigned n)
 {
-    mFftIn  = fftw_alloc_real(n);
-    mFftOut = fftw_alloc_real(n);
-    mFftPlan = fftw_plan_r2r_1d(n, mFftIn, mFftOut, FFTW_R2HC, FFTW_ESTIMATE);
+    if (flag)
+    {
+        unsigned temp = n - 12;
 
-    memcpy(mFftIn, dataIn, n*sizeof(double));
-    fftw_execute(mFftPlan);
+        mFftIn  = fftw_alloc_real(temp);
+        mFftOut = fftw_alloc_real(temp);
+        mFftPlan = fftw_plan_r2r_1d(temp, mFftIn, mFftOut, FFTW_R2HC, FFTW_ESTIMATE);
+
+        memcpy(mFftIn, dataIn + 12, temp*sizeof(double));
+        fftw_execute(mFftPlan);
+
+        flag = false;
+    } else
+    {
+        mFftIn  = fftw_alloc_real(n);
+        mFftOut = fftw_alloc_real(n);
+        mFftPlan = fftw_plan_r2r_1d(n, mFftIn, mFftOut, FFTW_R2HC, FFTW_ESTIMATE);
+
+        memcpy(mFftIn, dataIn, n*sizeof(double));
+        fftw_execute(mFftPlan);
+    }
 
     for (unsigned i = 0; i < n/2; i++)
     {

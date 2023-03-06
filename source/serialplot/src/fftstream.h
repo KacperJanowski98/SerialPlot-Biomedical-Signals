@@ -86,6 +86,7 @@ private:
     fftw_plan mFftPlan;
     double *mFftIn;
     double *mFftOut;
+    bool flag;
 
     /**
      * Applies gain and offset to given pack.
