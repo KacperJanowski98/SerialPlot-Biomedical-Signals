@@ -1,5 +1,5 @@
 #include "fftstream.h"
-#include "fftringbuffer.h"
+#include "ringbuffer.h"
 #include "indexbuffer.h"
 #include "linindexbuffer.h"
 
@@ -30,13 +30,9 @@ FftStream::FftStream(unsigned nc, bool x, unsigned ns) :
     // create channels
     for (unsigned i = 0; i < nc; i++)
     {
-        auto c = new StreamChannel(i, xData, new FftRingBuffer(ns), &_infoModel);
+        auto c = new StreamChannel(i, xData, new RingBuffer(ns), &_infoModel);
         channels.append(c);
     }
-    // FFT
-//    mFftIn  = fftw_alloc_real(ns);
-//    mFftOut = fftw_alloc_real(ns);
-//    mFftPlan = fftw_plan_r2r_1d(ns, mFftIn, mFftOut, FFTW_R2HC, FFTW_ESTIMATE);
 }
 
 FftStream::~FftStream()
@@ -46,10 +42,6 @@ FftStream::~FftStream()
         delete ch;
     }
     delete xData;
-    // FFT
-//    fftw_free(mFftIn);
-//    fftw_free(mFftOut);
-//    fftw_destroy_plan(mFftPlan);
 }
 
 bool FftStream::hasX() const
@@ -108,7 +100,7 @@ void FftStream::setNumChannels(unsigned nc, bool x)
     {
         for (unsigned i = oldNum; i < nc; i++)
         {
-            auto c = new StreamChannel(i, xData, new FftRingBuffer(_numSamples), &_infoModel);
+            auto c = new StreamChannel(i, xData, new RingBuffer(_numSamples), &_infoModel);
             channels.append(c);
         }
     }
@@ -223,7 +215,7 @@ void FftStream::feedIn(const SamplePack& pack)
 
     for (unsigned ci = 0; ci < numChannels(); ci++)
     {
-        auto buf = static_cast<FftRingBuffer*>(channels[ci]->yData());
+        auto buf = static_cast<RingBuffer*>(channels[ci]->yData());
         double* data = (mPack == nullptr) ? pack.data(ci) : mPack->data(ci);
         // auto test = channels[ci]->xData()->size(); // wielkość buffora na dane wejściowe
         // Tu jest wejście danych (RingBuffer)
@@ -248,7 +240,7 @@ void FftStream::clear()
 {
     for (auto c : channels)
     {
-        static_cast<FftRingBuffer*>(c->yData())->clear();
+        static_cast<RingBuffer*>(c->yData())->clear();
     }
 }
 
@@ -260,7 +252,7 @@ void FftStream::setNumSamples(unsigned value)
     xData->resize(value);
     for (auto c : channels)
     {
-        static_cast<FftRingBuffer*>(c->yData())->resize(value);
+        static_cast<RingBuffer*>(c->yData())->resize(value);
     }
 }
 
