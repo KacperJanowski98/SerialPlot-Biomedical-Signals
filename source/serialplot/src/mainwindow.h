@@ -51,6 +51,8 @@
 #include "datatextview.h"
 #include "bpslabel.h"
 
+#include "qcustomplot.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -123,6 +125,10 @@ private:
 
     /// `QWidget::closeEvent` handler
     void closeEvent(QCloseEvent * event);
+
+public slots:
+    // FFT
+    void fftPlot();
 
 private slots:
     void onPortToggled(bool open);

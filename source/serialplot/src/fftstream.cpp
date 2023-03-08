@@ -1,5 +1,6 @@
 #include "fftstream.h"
-#include "ringbuffer.h"
+//#include "ringbuffer.h"
+#include "fftringbuffer.h"
 #include "indexbuffer.h"
 #include "linindexbuffer.h"
 
@@ -16,6 +17,12 @@ FftStream::FftStream(unsigned nc, bool x, unsigned ns) :
     xMax = 1;
 
     flag = true;
+    flagOverBuff = false;
+    fftBufferiN = nullptr;
+    fftBufferOUT = nullptr;
+
+    offset = 0;
+    size = 0;
 
     // create xdata buffer
     _hasx = x;
@@ -32,7 +39,7 @@ FftStream::FftStream(unsigned nc, bool x, unsigned ns) :
     // create channels
     for (unsigned i = 0; i < nc; i++)
     {
-        auto c = new StreamChannel(i, xData, new RingBuffer(ns), &_infoModel);
+        auto c = new StreamChannel(i, xData, new FftRingBuffer(ns), &_infoModel);
         channels.append(c);
     }
 }
@@ -44,6 +51,11 @@ FftStream::~FftStream()
         delete ch;
     }
     delete xData;
+    // FFT
+    if (fftBufferiN != nullptr)
+        delete[] fftBufferiN;
+    if (fftBufferOUT != nullptr)
+        delete[] fftBufferOUT;
 }
 
 bool FftStream::hasX() const
@@ -102,7 +114,7 @@ void FftStream::setNumChannels(unsigned nc, bool x)
     {
         for (unsigned i = oldNum; i < nc; i++)
         {
-            auto c = new StreamChannel(i, xData, new RingBuffer(_numSamples), &_infoModel);
+            auto c = new StreamChannel(i, xData, new FftRingBuffer(_numSamples), &_infoModel);
             channels.append(c);
         }
     }
@@ -217,20 +229,88 @@ void FftStream::feedIn(const SamplePack& pack)
 
     for (unsigned ci = 0; ci < numChannels(); ci++)
     {
-        auto buf = static_cast<RingBuffer*>(channels[ci]->yData());
+        auto buf = static_cast<FftRingBuffer*>(channels[ci]->yData());
         double* data = (mPack == nullptr) ? pack.data(ci) : mPack->data(ci);
         // auto test = channels[ci]->xData()->size(); // wielkość buffora na dane wejściowe
         // Tu jest wejście danych (RingBuffer)
-        double sampleFft[ns/2];
-        calculateFft(data, sampleFft, ns);
+        size = buf->size();
+        createFftBuffer(data, size, ns);
+//        double sampleFft[ns/2];
+//        calculateFft(data, sampleFft, ns);
 //        buf->addSamples(data, ns);
-        buf->addSamples(sampleFft, ns/2);
+//        buf->addSamples(sampleFft, ns/2);
     }
 
     Sink::feedIn((mPack == nullptr) ? pack : *mPack);
 
     if (mPack != nullptr) delete mPack;
+    if (offset == size)
+    {
+        calculateFft(fftBufferiN, size);
+        emit fftBufferFull();
+//        auto buf = new FftRingBuffer(offset);
+//        buf->addSamples(fftBuffer, offset);
+//        emit dataAdded();
+    }
     emit dataAdded();
+}
+
+void FftStream::createFftBuffer(double *data, unsigned size, unsigned ns)
+{
+    if (fftBufferiN == nullptr)
+        fftBufferiN = new double[size]();
+
+    if (fftBufferOUT == nullptr)
+        fftBufferOUT = new double[size/2]();
+
+    if (flagOverBuff)
+    {
+        offset = 0;
+        flag = true;
+        flagOverBuff = false;
+        if (fftBufferiN != nullptr)
+        {
+            delete[] fftBufferiN;
+            fftBufferiN = new double[size]();
+        }
+        if (fftBufferOUT != nullptr)
+        {
+            delete[] fftBufferOUT;
+            fftBufferOUT = new double[size/2]();
+        }
+    }
+
+    if (flag)
+    {
+        unsigned temp = ns - 12;
+        memcpy(fftBufferiN + offset, data + 12, temp*sizeof(double));
+        offset += temp;
+        flag = false;
+    } else
+    {
+        memcpy(fftBufferiN + offset, data, ns*sizeof(double));
+        offset += ns;
+    }
+
+    if (offset == size)
+    {
+        flagOverBuff = true;
+    }
+}
+
+double* FftStream::getFftBuffer()
+{
+    if (fftBufferOUT != nullptr){
+        return fftBufferOUT;
+    } else
+    {
+        return nullptr;
+    }
+}
+
+unsigned FftStream::getSize()
+{
+    return size/2;
 }
 
 void FftStream::pause(bool paused)
@@ -242,7 +322,7 @@ void FftStream::clear()
 {
     for (auto c : channels)
     {
-        static_cast<RingBuffer*>(c->yData())->clear();
+        static_cast<FftRingBuffer*>(c->yData())->clear();
     }
 }
 
@@ -254,39 +334,50 @@ void FftStream::setNumSamples(unsigned value)
     xData->resize(value);
     for (auto c : channels)
     {
-        static_cast<RingBuffer*>(c->yData())->resize(value);
+        static_cast<FftRingBuffer*>(c->yData())->resize(value);
     }
 }
 
-void FftStream::calculateFft(double* dataIn, double* dataOut, unsigned n)
+//void FftStream::calculateFft(double* dataIn, double* dataOut, unsigned n)
+void FftStream::calculateFft(double* dataIn, unsigned n)
 {
-    if (flag)
-    {
-        unsigned temp = n - 12;
 
-        mFftIn  = fftw_alloc_real(temp);
-        mFftOut = fftw_alloc_real(temp);
-        mFftPlan = fftw_plan_r2r_1d(temp, mFftIn, mFftOut, FFTW_R2HC, FFTW_ESTIMATE);
+//    if (flag)
+//    {
+//        unsigned temp = n - 12;
 
-        memcpy(mFftIn, dataIn + 12, temp*sizeof(double));
-        fftw_execute(mFftPlan);
+//        mFftIn  = fftw_alloc_real(temp);
+//        mFftOut = fftw_alloc_real(temp);
+//        mFftPlan = fftw_plan_r2r_1d(temp, mFftIn, mFftOut, FFTW_R2HC, FFTW_ESTIMATE);
 
-        flag = false;
-    } else
-    {
-        mFftIn  = fftw_alloc_real(n);
-        mFftOut = fftw_alloc_real(n);
-        mFftPlan = fftw_plan_r2r_1d(n, mFftIn, mFftOut, FFTW_R2HC, FFTW_ESTIMATE);
+//        memcpy(mFftIn, dataIn + 12, temp*sizeof(double));
+//        fftw_execute(mFftPlan);
 
-        memcpy(mFftIn, dataIn, n*sizeof(double));
-        fftw_execute(mFftPlan);
-    }
+//        flag = false;
+//    } else
+//    {
+//        mFftIn  = fftw_alloc_real(n);
+//        mFftOut = fftw_alloc_real(n);
+//        mFftPlan = fftw_plan_r2r_1d(n, mFftIn, mFftOut, FFTW_R2HC, FFTW_ESTIMATE);
+
+//        memcpy(mFftIn, dataIn, n*sizeof(double));
+//        fftw_execute(mFftPlan);
+//    }
+
+    mFftIn  = fftw_alloc_real(n);
+    mFftOut = fftw_alloc_real(n);
+    mFftPlan = fftw_plan_r2r_1d(n, mFftIn, mFftOut, FFTW_R2HC, FFTW_ESTIMATE);
+
+    memcpy(mFftIn, dataIn, n*sizeof(double));
+    fftw_execute(mFftPlan);
 
     for (unsigned i = 0; i < n/2; i++)
     {
-        dataOut[i] = abs(mFftOut[i]);
+//        dataOut[i] = abs(mFftOut[i]);
+        fftBufferOUT[i] = abs(mFftOut[i]);
 //        qDebug() << "Value: " << abs(mFftOut[i]);
     }
+
     fftw_free(mFftIn);
     fftw_free(mFftOut);
     fftw_destroy_plan(mFftPlan);

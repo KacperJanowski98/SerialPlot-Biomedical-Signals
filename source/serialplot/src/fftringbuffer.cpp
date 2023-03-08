@@ -19,11 +19,11 @@
 
 #include <QtGlobal>
 
-#include "ringbuffer.h"
+#include "fftringbuffer.h"
 
 #include <QDebug>
 
-RingBuffer::RingBuffer(unsigned n)
+FftRingBuffer::FftRingBuffer(unsigned n)
 {
     _size = n;
     data = new double[_size]();
@@ -35,30 +35,30 @@ RingBuffer::RingBuffer(unsigned n)
     limCache = {0, 0};
 }
 
-RingBuffer::~RingBuffer()
+FftRingBuffer::~FftRingBuffer()
 {
     delete[] data;
 }
 
-unsigned RingBuffer::size() const
+unsigned FftRingBuffer::size() const
 {
     return _size;
 }
 
-double RingBuffer::sample(unsigned i) const
+double FftRingBuffer::sample(unsigned i) const
 {
     unsigned index = headIndex + i;
     if (index >= _size) index -= _size;
     return data[index];
 }
 
-Range RingBuffer::limits() const
+Range FftRingBuffer::limits() const
 {
     if (limInvalid) updateLimits();
     return limCache;
 }
 
-void RingBuffer::resize(unsigned n)
+void FftRingBuffer::resize(unsigned n)
 {
     Q_ASSERT(n != _size);
 
@@ -94,7 +94,7 @@ void RingBuffer::resize(unsigned n)
     limInvalid = true;
 }
 
-void RingBuffer::addSamples(double* samples, unsigned n)
+void FftRingBuffer::addSamples(double* samples, unsigned n)
 {
     unsigned shift = n;
     counter += n;
@@ -147,7 +147,7 @@ void RingBuffer::addSamples(double* samples, unsigned n)
     limInvalid = true;
 }
 
-void RingBuffer::clear()
+void FftRingBuffer::clear()
 {
     for (unsigned i=0; i < _size; i++)
     {
@@ -158,7 +158,7 @@ void RingBuffer::clear()
     limInvalid = false;
 }
 
-void RingBuffer::updateLimits() const
+void FftRingBuffer::updateLimits() const
 {
     limCache.start = data[0];
     limCache.end = data[0];

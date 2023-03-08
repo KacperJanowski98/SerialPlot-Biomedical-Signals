@@ -37,6 +37,10 @@ public:
     QVector<const StreamChannel*> allChannels() const;
     const ChannelInfoModel* infoModel() const;
     ChannelInfoModel* infoModel();
+    // FFT
+    void createFftBuffer(double *data, unsigned size, unsigned ns);
+    double* getFftBuffer();
+    unsigned getSize();
 
     /// Saves channel information
     void saveSettings(QSettings* settings) const;
@@ -54,6 +58,7 @@ signals:
     void channelAdded(const StreamChannel* chan);
     void channelNameChanged(unsigned channel, QString name); // TODO: does it stay?
     void dataAdded(); ///< emitted when data added to channel man.
+    void fftBufferFull();
 
 public slots:
     /// Change number of samples (buffer size)
@@ -86,7 +91,12 @@ private:
     fftw_plan mFftPlan;
     double *mFftIn;
     double *mFftOut;
+    double *fftBufferiN;
+    double *fftBufferOUT;
+    unsigned offset;
     bool flag;
+    bool flagOverBuff;
+    unsigned size;
 
     /**
      * Applies gain and offset to given pack.
@@ -102,7 +112,8 @@ private:
     const SamplePack* applyGainOffset(const SamplePack& pack) const;
 
     // FFT
-    void calculateFft(double* dataIn, double* dataOut, unsigned n);
+//    void calculateFft(double* dataIn, double* dataOut, unsigned n);
+    void calculateFft(double* dataIn, unsigned n);
 
     /// Returns a new virtual X buffer for settings
     XFrameBuffer* makeXBuffer() const;

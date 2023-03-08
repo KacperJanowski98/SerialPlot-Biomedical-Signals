@@ -38,6 +38,7 @@ find_package(Qt5
       SerialPort
       Network
       Svg
+      PrintSupport
 )
 
 # If set, cmake will download Qwt over SVN, build and use it as a static library.
@@ -115,6 +116,7 @@ add_executable(${PROGRAM_NAME} WIN32
     ${CMAKE_CURRENT_LIST_DIR}/src/readonlybuffer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/fftplotmanager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/fftstream.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/fftringbuffer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/framebufferseries.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/numberformatbox.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/endiannessbox.cpp
@@ -143,6 +145,7 @@ add_executable(${PROGRAM_NAME} WIN32
     ${CMAKE_CURRENT_LIST_DIR}/src/ledwidget.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/datatextview.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/bpslabel.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/qcustomplot.cpp
     ${CMAKE_CURRENT_LIST_DIR}/misc/windows_icon.rc
     ${UI_FILES}
     ${RES_FILES}
@@ -170,6 +173,7 @@ target_link_libraries(${PROGRAM_NAME}
     Qt5::SerialPort
     Qt5::Network
     Qt5::Svg
+    Qt5::PrintSupport
     ${fftw3_shared}
     ${fftw3f_shared}
     ${fftw3l_shared}

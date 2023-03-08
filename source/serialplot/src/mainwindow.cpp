@@ -48,12 +48,6 @@
 Q_IMPORT_PLUGIN(QWindowsIntegrationPlugin)
 #endif
 
-// FFT
-#define AUDIBLE_RANGE_START 20
-#define AUDIBLE_RANGE_END   20000 /* very optimistic */
-#define NUM_SAMPLES 9000
-#define SAMPLE_FREQ 48000
-
 // TODO: depends on tab insertion order, a better solution would be to use object names
 const QMap<int, QString> panelSettingMap({
         {0, "Port"},
@@ -113,6 +107,19 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->plotToolBar->setObjectName("tbPlot");
 
     setupAboutDialog();
+
+    // FFT plot
+    ui->fftPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
+    ui->fftPlot->legend->setVisible(false);
+    ui->fftPlot->yAxis->setLabel("");
+    ui->fftPlot->xAxis->setLabel("Frequency");
+    ui->fftPlot->xAxis->setRange(0, 500);
+//    ui->fftPlot->yAxis->setRange(0.0, 500.0);
+    ui->fftPlot->clearGraphs();
+    ui->fftPlot->addGraph();
+
+    ui->fftPlot->graph()->setPen(QPen(Qt::black));
+    ui->fftPlot->graph()->setName("fft");
 
     // init view menu
     ui->menuBar->insertMenu(ui->menuSecondary->menuAction(), &plotMenu);
@@ -194,6 +201,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(&plotControlPanel, &PlotControlPanel::plotWidthChanged,
             plotMan, &PlotManager::setPlotWidth);
+
+    // FFT
+    connect(&fftStream, &FftStream::fftBufferFull, this, &MainWindow::fftPlot);
 
     // FFT plot control signals
     connect(&fftPlotControlPanel, &PlotControlPanel::numOfSamplesChanged,
@@ -354,6 +364,54 @@ MainWindow::~MainWindow()
 
     delete ui;
     ui = NULL; // we check if ui is deleted in messageHandler
+}
+
+void MainWindow::fftPlot()
+{
+    auto temp = fftStream.getFftBuffer();
+    auto size = fftStream.getSize();
+
+    unsigned start = 0;
+    unsigned end = 600; /* very optimistic */
+    unsigned numSamples = size;
+    unsigned sampleFreq = size/2;
+
+//    auto size = fftStream.getSize();
+//    QVector<double> vecY(temp, temp + size);
+    QVector<double> vecY;
+    QVector<double> vecX;
+
+    double freqStep = (double)sampleFreq / (double)numSamples;
+    double f = start;
+    while (f < end)
+    {
+        vecX.append(f);
+        f += freqStep;
+    }
+
+    for (unsigned i = (numSamples/sampleFreq)*start;
+         i < (numSamples/sampleFreq)*end;
+         i ++)
+    {
+        vecY.append(abs(temp[i]));
+    }
+
+//    QVectorIterator<double> itNumbers(tempVec);
+//    while (itNumbers.hasNext()) {
+//        qDebug() << itNumbers.next();
+//    }
+
+//    qDebug() << "Szie x vector: " << vecX.size();
+
+//    for (unsigned i = 0.0; i < size; i++)
+//    {
+//        vecX.append((double)i);
+//    }
+
+//    ui->fftPlot->graph(0)->setData(vecX, vecY);
+    ui->fftPlot->graph(0)->setData(vecX.mid(0, vecY.length()), vecY);
+    ui->fftPlot->rescaleAxes();
+    ui->fftPlot->replot();
 }
 
 void MainWindow::closeEvent(QCloseEvent * event)

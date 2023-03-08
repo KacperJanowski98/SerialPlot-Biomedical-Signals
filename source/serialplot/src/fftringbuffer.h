@@ -25,11 +25,11 @@
 #include <fftw3.h>
 
 /// A fast buffer implementation for storing data.
-class RingBuffer : public WFrameBuffer
+class FftRingBuffer : public WFrameBuffer
 {
 public:
-    RingBuffer(unsigned n);
-    ~RingBuffer();
+    FftRingBuffer(unsigned n);
+    ~FftRingBuffer();
 
     virtual unsigned size() const;
     virtual double sample(unsigned i) const;
