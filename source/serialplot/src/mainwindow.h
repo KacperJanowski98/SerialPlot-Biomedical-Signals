@@ -41,10 +41,8 @@
 #include "recordpanel.h"
 #include "ui_about_dialog.h"
 #include "stream.h"
-#include "fftstream.h"
 #include "snapshotmanager.h"
 #include "plotmanager.h"
-#include "fftplotmanager.h"
 #include "plotmenu.h"
 #include "updatecheckdialog.h"
 #include "samplecounter.h"
@@ -79,7 +77,6 @@ private:
     PortControl portControl;
 
     unsigned int numOfSamples;
-    unsigned int numOfSamplesFft;
 
     QList<QwtPlotCurve*> curves;
     // ChannelManager channelMan;
@@ -98,12 +95,6 @@ private:
     DataTextView textView;
     UpdateCheckDialog updateCheckDialog;
     BPSLabel bpsLabel;
-
-    // FFT plot
-    FftStream fftStream;
-    FftPlotManager* fftPlotMan;
-    PlotControlPanel fftPlotControlPanel;
-    PlotMenu fftPlotMenu;
 
     void handleCommandLineOptions(const QCoreApplication &app);
 
@@ -134,7 +125,6 @@ private slots:
     void onPortToggled(bool open);
     void onSourceChanged(Source* source);
     void onNumOfSamplesChanged(int value);
-    void onNumOfSamplesFftChanged(int value);
 
     void clearPlot();
     void onSpsChanged(float sps);

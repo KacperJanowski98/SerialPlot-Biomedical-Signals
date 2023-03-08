@@ -53,11 +53,10 @@ const QMap<int, QString> panelSettingMap({
         {0, "Port"},
         {1, "DataFormat"},
         {2, "Plot"},
-        {3, "FFT Plot"},
-        {4, "Commands"},
-        {5, "Record"},
-        {6, "TextView"},
-        {7, "Log"}
+        {3, "Commands"},
+        {4, "Record"},
+        {5, "TextView"},
+        {6, "Log"}
     });
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -77,17 +76,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     plotMan = new PlotManager(ui->plotArea, &plotMenu, &stream);
-    // FFT plot
-    fftPlotMan = new FftPlotManager(ui->fftArea, &fftPlotMenu, &fftStream);
 
     ui->tabWidget->insertTab(0, &portControl, "Port");
     ui->tabWidget->insertTab(1, &dataFormatPanel, "Data Format");
     ui->tabWidget->insertTab(2, &plotControlPanel, "Plot");
-    // FFT plot
-    ui->tabWidget->insertTab(3, &fftPlotControlPanel, "FFT Plot");
-    ui->tabWidget->insertTab(4, &commandPanel, "Commands");
-    ui->tabWidget->insertTab(5, &recordPanel, "Record");
-    ui->tabWidget->insertTab(6, &textView, "Text View");
+    ui->tabWidget->insertTab(3, &commandPanel, "Commands");
+    ui->tabWidget->insertTab(4, &recordPanel, "Record");
+    ui->tabWidget->insertTab(5, &textView, "Text View");
     ui->tabWidget->setCurrentIndex(0);
     auto tbPortControl = portControl.toolBar();
     addToolBar(tbPortControl);
@@ -203,26 +198,7 @@ MainWindow::MainWindow(QWidget *parent) :
             plotMan, &PlotManager::setPlotWidth);
 
     // FFT
-    connect(&fftStream, &FftStream::fftBufferFull, this, &MainWindow::fftPlot);
-
-    // FFT plot control signals
-    connect(&fftPlotControlPanel, &PlotControlPanel::numOfSamplesChanged,
-            this, &MainWindow::onNumOfSamplesFftChanged);
-
-    connect(&fftPlotControlPanel, &PlotControlPanel::numOfSamplesChanged,
-            fftPlotMan, &FftPlotManager::setNumOfSamples);
-
-    connect(&fftPlotControlPanel, &PlotControlPanel::yScaleChanged,
-            fftPlotMan, &FftPlotManager::setYAxis);
-
-    connect(&fftPlotControlPanel, &PlotControlPanel::xScaleChanged,
-            &fftStream, &FftStream::setXAxis);
-
-    connect(&fftPlotControlPanel, &PlotControlPanel::xScaleChanged,
-            fftPlotMan, &FftPlotManager::setXAxis);
-
-    connect(&fftPlotControlPanel, &PlotControlPanel::plotWidthChanged,
-            fftPlotMan, &FftPlotManager::setPlotWidth);
+    connect(&stream, &Stream::fftBufferFull, this, &MainWindow::fftPlot);
 
     // plot toolbar signals
     QObject::connect(ui->actionClear, SIGNAL(triggered(bool)),
@@ -231,15 +207,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(snapshotMan.takeSnapshotAction(), &QAction::triggered,
                      plotMan, &PlotManager::flashSnapshotOverlay);
 
-    // FFT plot
-    QObject::connect(snapshotMan.takeSnapshotAction(), &QAction::triggered,
-                     fftPlotMan, &FftPlotManager::flashSnapshotOverlay);
-
     QObject::connect(ui->actionPause, &QAction::triggered,
                      &stream, &Stream::pause);
-
-    QObject::connect(ui->actionPause, &QAction::triggered,
-                     &fftStream, &FftStream::pause);
 
     QObject::connect(ui->actionPause, &QAction::triggered,
                      [this](bool enabled)
@@ -271,11 +240,6 @@ MainWindow::MainWindow(QWidget *parent) :
     stream.setNumSamples(numOfSamples);
     plotControlPanel.setChannelInfoModel(stream.infoModel());
 
-    // init FFT plot
-    numOfSamplesFft = fftPlotControlPanel.numOfSamples();
-    fftStream.setNumSamples(numOfSamplesFft);
-    fftPlotControlPanel.setChannelInfoModel(fftStream.infoModel());
-
     // init scales
     stream.setXAxis(plotControlPanel.xAxisAsIndex(),
                     plotControlPanel.xMin(), plotControlPanel.xMax());
@@ -286,17 +250,6 @@ MainWindow::MainWindow(QWidget *parent) :
                       plotControlPanel.xMin(), plotControlPanel.xMax());
     plotMan->setNumOfSamples(numOfSamples);
     plotMan->setPlotWidth(plotControlPanel.plotWidth());
-
-    // init scales FFT
-    fftStream.setXAxis(fftPlotControlPanel.xAxisAsIndex(),
-                    fftPlotControlPanel.xMin(), fftPlotControlPanel.xMax());
-
-    fftPlotMan->setYAxis(fftPlotControlPanel.autoScale(),
-                      fftPlotControlPanel.yMin(), fftPlotControlPanel.yMax());
-    fftPlotMan->setXAxis(fftPlotControlPanel.xAxisAsIndex(),
-                      fftPlotControlPanel.xMin(), fftPlotControlPanel.xMax());
-    fftPlotMan->setNumOfSamples(numOfSamplesFft);
-    fftPlotMan->setPlotWidth(fftPlotControlPanel.plotWidth());
 
     // init bps (bits per second) counter
     ui->statusBar->addPermanentWidget(&bpsLabel);
@@ -319,10 +272,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QObject::connect(ui->actionDemoMode, &QAction::toggled,
                      plotMan, &PlotManager::showDemoIndicator);
-
-    // init demo FFT
-//    QObject::connect(ui->actionDemoMode, &QAction::toggled,
-//                     fftPlotMan, &PlotManager::showDemoIndicator);
 
     // init stream connections
     connect(&dataFormatPanel, &DataFormatPanel::sourceChanged,
@@ -359,8 +308,6 @@ MainWindow::~MainWindow()
     }
 
     delete plotMan;
-    // FFT plot
-    delete fftPlotMan;
 
     delete ui;
     ui = NULL; // we check if ui is deleted in messageHandler
@@ -368,15 +315,15 @@ MainWindow::~MainWindow()
 
 void MainWindow::fftPlot()
 {
-    auto temp = fftStream.getFftBuffer();
-    auto size = fftStream.getSize();
+    auto temp = stream.getFftBuffer();
+    auto size = stream.getSize();
 
     unsigned start = 0;
     unsigned end = 600; /* very optimistic */
     unsigned numSamples = size;
     unsigned sampleFreq = size/2;
 
-//    auto size = fftStream.getSize();
+//    auto size = stream.getSize();
 //    QVector<double> vecY(temp, temp + size);
     QVector<double> vecY;
     QVector<double> vecX;
@@ -496,36 +443,20 @@ void MainWindow::onPortToggled(bool open)
 void MainWindow::onSourceChanged(Source* source)
 {
     source->connectSink(&stream);
-    // FFT
-    source->connectSink(&fftStream);
     source->connectSink(&sampleCounter);
 }
 
 void MainWindow::clearPlot()
 {
     stream.clear();
-    fftStream.clear();
     plotMan->replot();
-    // FFT plot
-    fftPlotMan->replot();
 }
 
 void MainWindow::onNumOfSamplesChanged(int value)
 {
     numOfSamples = value;
     stream.setNumSamples(value);
-    // FFT
-//    fftStream.setNumSamples(value);
     plotMan->replot();
-    // FFT
-//    fftPlotMan->replot();
-}
-
-void MainWindow::onNumOfSamplesFftChanged(int value)
-{
-    numOfSamplesFft = value;
-    fftStream.setNumSamples(value);
-    fftPlotMan->replot();
 }
 
 void MainWindow::onSpsChanged(float sps)
@@ -662,14 +593,8 @@ void MainWindow::saveAllSettings(QSettings* settings)
     portControl.saveSettings(settings);
     dataFormatPanel.saveSettings(settings);
     stream.saveSettings(settings);
-    // FFT
-    fftStream.saveSettings(settings);
     plotControlPanel.saveSettings(settings);
-    // FFT plot
-    fftPlotControlPanel.saveSettings(settings);
     plotMenu.saveSettings(settings);
-    // FFT plot
-    fftPlotMenu.saveSettings(settings);
     commandPanel.saveSettings(settings);
     recordPanel.saveSettings(settings);
     textView.saveSettings(settings);
@@ -682,14 +607,8 @@ void MainWindow::loadAllSettings(QSettings* settings)
     portControl.loadSettings(settings);
     dataFormatPanel.loadSettings(settings);
     stream.loadSettings(settings);
-    // FFT
-    fftStream.loadSettings(settings);
     plotControlPanel.loadSettings(settings);
-    // FFT plot
-    fftPlotControlPanel.loadSettings(settings);
     plotMenu.loadSettings(settings);
-    // FFT plot
-    fftPlotMenu.loadSettings(settings);
     commandPanel.loadSettings(settings);
     recordPanel.loadSettings(settings);
     textView.loadSettings(settings);

@@ -34,6 +34,14 @@ Stream::Stream(unsigned nc, bool x, unsigned ns) :
     xMin = 0;
     xMax = 1;
 
+    flag = true;
+    flagOverBuff = false;
+    fftBufferiN = nullptr;
+    fftBufferOUT = nullptr;
+
+    offset = 0;
+    size = 0;
+
     // create xdata buffer
     _hasx = x;
     if (x)
@@ -61,6 +69,11 @@ Stream::~Stream()
         delete ch;
     }
     delete xData;
+    // FFT
+    if (fftBufferiN != nullptr)
+        delete[] fftBufferiN;
+    if (fftBufferOUT != nullptr)
+        delete[] fftBufferOUT;
 }
 
 bool Stream::hasX() const
@@ -236,18 +249,19 @@ void Stream::feedIn(const SamplePack& pack)
     {
         auto buf = static_cast<RingBuffer*>(channels[ci]->yData());
         double* data = (mPack == nullptr) ? pack.data(ci) : mPack->data(ci);
-        // Tu jest wejście danych (RingBuffer)
-//        for (unsigned long long i = 0; i < 40; i++)
-//        {
-//            qDebug() << "data: " << data[i];
-//        }
-
         buf->addSamples(data, ns);
+        size = buf->size();
+        createFftBuffer(data, size, ns);
     }
 
     Sink::feedIn((mPack == nullptr) ? pack : *mPack);
 
     if (mPack != nullptr) delete mPack;
+    if (offset == size)
+    {
+        calculateFft(fftBufferiN, size);
+        emit fftBufferFull();
+    }
     emit dataAdded();
 }
 
@@ -274,6 +288,85 @@ void Stream::setNumSamples(unsigned value)
     {
         static_cast<RingBuffer*>(c->yData())->resize(value);
     }
+}
+
+void Stream::createFftBuffer(double *data, unsigned size, unsigned ns)
+{
+    if (fftBufferiN == nullptr)
+        fftBufferiN = new double[size]();
+
+    if (fftBufferOUT == nullptr)
+        fftBufferOUT = new double[size/2]();
+
+    if (flagOverBuff)
+    {
+        offset = 0;
+        flag = true;
+        flagOverBuff = false;
+        if (fftBufferiN != nullptr)
+        {
+            delete[] fftBufferiN;
+            fftBufferiN = new double[size]();
+        }
+        if (fftBufferOUT != nullptr)
+        {
+            delete[] fftBufferOUT;
+            fftBufferOUT = new double[size/2]();
+        }
+    }
+
+    if (flag)
+    {
+        unsigned temp = ns - 12;
+        memcpy(fftBufferiN + offset, data + 12, temp*sizeof(double));
+        offset += temp;
+        flag = false;
+    } else
+    {
+        memcpy(fftBufferiN + offset, data, ns*sizeof(double));
+        offset += ns;
+    }
+
+    if (offset == size)
+    {
+        flagOverBuff = true;
+    }
+}
+
+void Stream::calculateFft(double* dataIn, unsigned n)
+{
+    mFftIn  = fftw_alloc_real(n);
+    mFftOut = fftw_alloc_real(n);
+    mFftPlan = fftw_plan_r2r_1d(n, mFftIn, mFftOut, FFTW_R2HC, FFTW_ESTIMATE);
+
+    memcpy(mFftIn, dataIn, n*sizeof(double));
+    fftw_execute(mFftPlan);
+
+    for (unsigned i = 0; i < n/2; i++)
+    {
+//        dataOut[i] = abs(mFftOut[i]);
+        fftBufferOUT[i] = abs(mFftOut[i]);
+//        qDebug() << "Value: " << abs(mFftOut[i]);
+    }
+
+    fftw_free(mFftIn);
+    fftw_free(mFftOut);
+    fftw_destroy_plan(mFftPlan);
+}
+
+double* Stream::getFftBuffer()
+{
+    if (fftBufferOUT != nullptr){
+        return fftBufferOUT;
+    } else
+    {
+        return nullptr;
+    }
+}
+
+unsigned Stream::getSize()
+{
+    return size/2;
 }
 
 void Stream::setXAxis(bool asIndex, double min, double max)
