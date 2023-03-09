@@ -113,7 +113,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->fftPlot->clearGraphs();
     ui->fftPlot->addGraph();
 
-    ui->fftPlot->graph()->setPen(QPen(Qt::black));
+    ui->fftPlot->graph()->setPen(QPen(Qt::darkBlue));
     ui->fftPlot->graph()->setName("fft");
 
     // init view menu
@@ -199,6 +199,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // FFT
     connect(&stream, &Stream::fftBufferFull, this, &MainWindow::fftPlot);
+    connect(ui->fftPlot, SIGNAL(mousePress(QMouseEvent*)), this, SLOT(mousePressOnFftPlot(QMouseEvent*)));
 
     // plot toolbar signals
     QObject::connect(ui->actionClear, SIGNAL(triggered(bool)),
@@ -361,6 +362,16 @@ void MainWindow::fftPlot()
     ui->fftPlot->replot();
 }
 
+void MainWindow::mousePressOnFftPlot(QMouseEvent *event)
+{
+    if(event->button() == Qt::RightButton)
+    {
+        ui->fftPlot->rescaleAxes();
+        ui->fftPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
+        ui->fftPlot->replot();
+    }
+}
+
 void MainWindow::closeEvent(QCloseEvent * event)
 {
     // save snapshots
@@ -450,6 +461,9 @@ void MainWindow::clearPlot()
 {
     stream.clear();
     plotMan->replot();
+    // FFT
+    ui->fftPlot->graph(0)->data()->clear();
+    ui->fftPlot->replot();
 }
 
 void MainWindow::onNumOfSamplesChanged(int value)

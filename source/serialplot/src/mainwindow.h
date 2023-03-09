@@ -120,6 +120,7 @@ private:
 public slots:
     // FFT
     void fftPlot();
+    void mousePressOnFftPlot(QMouseEvent *event);
 
 private slots:
     void onPortToggled(bool open);
