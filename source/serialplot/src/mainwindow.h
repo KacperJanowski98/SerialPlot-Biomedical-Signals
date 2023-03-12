@@ -44,6 +44,7 @@
 #include "snapshotmanager.h"
 #include "plotmanager.h"
 #include "plotmenu.h"
+#include "fftcontrol.h"
 #include "updatecheckdialog.h"
 #include "samplecounter.h"
 #include "datatextview.h"
@@ -96,6 +97,11 @@ private:
     UpdateCheckDialog updateCheckDialog;
     BPSLabel bpsLabel;
 
+    FftControl fftControl;
+    unsigned startRange;
+    unsigned endRange;
+    unsigned sampleFreq;
+
     void handleCommandLineOptions(const QCoreApplication &app);
 
     /// Returns true if demo is running
@@ -126,6 +132,15 @@ private slots:
     void onPortToggled(bool open);
     void onSourceChanged(Source* source);
     void onNumOfSamplesChanged(int value);
+
+    // FFT control
+//    void onSamplingFrequencyChanged();
+//    void onFrequencyRangeStartChanged();
+//    void onFrequencyRangeEndChanged();
+//    void onSamplingFrequencyChanged(int value);
+//    void onFrequencyRangeStartChanged(int value);
+//    void onFrequencyRangeEndChanged(int value);
+    void onButtonApplyPressed(bool state);
 
     void clearPlot();
     void onSpsChanged(float sps);

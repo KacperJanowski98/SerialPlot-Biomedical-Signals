@@ -255,14 +255,12 @@ void Stream::feedIn(const SamplePack& pack)
     {
         auto buf = static_cast<RingBuffer*>(channels[ci]->yData());
         double* data = (mPack == nullptr) ? pack.data(ci) : mPack->data(ci);
-        qDebug() << "ns: " << ns;
-        auto cnt = buf->addSamples(data, ns);
-        qDebug() << "Counter from ringbuffer: " << cnt;
+//        qDebug() << "ns: " << ns;
+        buf->addSamples(data, ns);
         size = buf->size();
         createFftBuffer(data, size, ns);
     }
 
-    qDebug() << "poza petla for";
     Sink::feedIn((mPack == nullptr) ? pack : *mPack);
 
     if (mPack != nullptr) delete mPack;
@@ -303,8 +301,18 @@ void Stream::setNumSamples(unsigned value)
 void Stream::createFftBuffer(double *data, unsigned size, unsigned ns)
 {
     unsigned newSize = size * 2;
-    qDebug() << "data[0] " << data[0];
+//    qDebug() << "data[0] " << data[0];
+//    qDebug() << "data[1] " << data[1];
+//    qDebug() << "data[2] " << data[2];
+//    qDebug() << "data[3]] " << data[3];
 //    qDebug() << "data[4] " << data[4];
+//    qDebug() << "data[5] " << data[5];
+//    qDebug() << "data[6] " << data[6];
+//    qDebug() << "data[7] " << data[7];
+//    qDebug() << "data[8] " << data[8];
+//    qDebug() << "data[9] " << data[9];
+//    qDebug() << "data[10] " << data[10];
+//    qDebug() << "data[11] " << data[11];
 //    qDebug() << "data[12] " << data[12];
 //    qDebug() << "data[13] " << data[13];
 

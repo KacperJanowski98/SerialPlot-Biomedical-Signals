@@ -53,10 +53,11 @@ const QMap<int, QString> panelSettingMap({
         {0, "Port"},
         {1, "DataFormat"},
         {2, "Plot"},
-        {3, "Commands"},
-        {4, "Record"},
-        {5, "TextView"},
-        {6, "Log"}
+        {3, "FftControl"},
+        {4, "Commands"},
+        {5, "Record"},
+        {6, "TextView"},
+        {7, "Log"}
     });
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -80,9 +81,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tabWidget->insertTab(0, &portControl, "Port");
     ui->tabWidget->insertTab(1, &dataFormatPanel, "Data Format");
     ui->tabWidget->insertTab(2, &plotControlPanel, "Plot");
-    ui->tabWidget->insertTab(3, &commandPanel, "Commands");
-    ui->tabWidget->insertTab(4, &recordPanel, "Record");
-    ui->tabWidget->insertTab(5, &textView, "Text View");
+    ui->tabWidget->insertTab(3, &fftControl, "FFT Control");
+    ui->tabWidget->insertTab(4, &commandPanel, "Commands");
+    ui->tabWidget->insertTab(5, &recordPanel, "Record");
+    ui->tabWidget->insertTab(6, &textView, "Text View");
     ui->tabWidget->setCurrentIndex(0);
     auto tbPortControl = portControl.toolBar();
     addToolBar(tbPortControl);
@@ -103,12 +105,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
     setupAboutDialog();
 
+    // FFT Control
+    sampleFreq = fftControl.getSamplingFreq();
+    startRange = fftControl.getFreqRangeStart();
+    endRange = fftControl.getFreqRangeEnd();
+
     // FFT plot
     ui->fftPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
     ui->fftPlot->legend->setVisible(false);
     ui->fftPlot->yAxis->setLabel("");
     ui->fftPlot->xAxis->setLabel("Frequency [Hz]");
-    ui->fftPlot->xAxis->setRange(0, 200);
+    ui->fftPlot->xAxis->setRange(startRange, endRange);
     ui->fftPlot->clearGraphs();
     ui->fftPlot->addGraph();
 
@@ -199,6 +206,19 @@ MainWindow::MainWindow(QWidget *parent) :
     // FFT
     connect(&stream, &Stream::fftBufferFull, this, &MainWindow::fftPlot);
     connect(ui->fftPlot, SIGNAL(mousePress(QMouseEvent*)), this, SLOT(mousePressOnFftPlot(QMouseEvent*)));
+
+    // FFT Control
+//    connect(&fftControl, &FftControl::samplingFrequencyChanged,
+//            this, &MainWindow::onSamplingFrequencyChanged);
+
+//    connect(&fftControl, &FftControl::frequencyRangeStartChanged,
+//            this, &MainWindow::onFrequencyRangeStartChanged);
+
+//    connect(&fftControl, &FftControl::frequencyRangeEndChanged,
+//            this, &MainWindow::onFrequencyRangeEndChanged);
+
+    connect(&fftControl, &FftControl::buttonApplyPressd,
+            this, &MainWindow::onButtonApplyPressed);
 
     // plot toolbar signals
     QObject::connect(ui->actionClear, SIGNAL(triggered(bool)),
@@ -320,10 +340,10 @@ void MainWindow::fftPlot()
 
     qDebug() << "fftPlot() size of buffer: " << size;
 
-    unsigned start = 0;
-    unsigned end = 12; //ppg to 12
+//    unsigned start = 0;
+//    unsigned end = 12; //ppg to 12
     unsigned numSamples = size;
-    unsigned sampleFreq = 25; //ppg to 25
+//    unsigned sampleFreq = 25; //ppg to 25
 
 //    auto size = stream.getSize();
 //    QVector<double> vecY(temp, temp + size);
@@ -331,15 +351,15 @@ void MainWindow::fftPlot()
     QVector<double> vecX;
 
     double freqStep = (double)sampleFreq / (double)numSamples;
-    double f = start;
-    while (f < end)
+    double f = startRange;
+    while (f < endRange)
     {
         vecX.append(f);
         f += freqStep;
     }
 
-    for (unsigned i = (numSamples/sampleFreq)*start;
-         i < (numSamples/sampleFreq)*end;
+    for (unsigned i = (numSamples/sampleFreq)*startRange;
+         i < (numSamples/sampleFreq)*endRange;
          i ++)
     {
         vecY.append(abs(temp[i]));
@@ -438,6 +458,52 @@ void MainWindow::setupAboutDialog()
     aboutText.replace("$VERSION_STRING$", VERSION_STRING);
     aboutText.replace("$VERSION_REVISION$", VERSION_REVISION);
     uiAboutDialog.lbAbout->setText(aboutText);
+}
+
+// FFT Control
+//void MainWindow::onSamplingFrequencyChanged()
+//{
+//    sampleFreq = fftControl.getSamplingFreq();
+//    qDebug() << "onSamplingFrequencyChanged: " << sampleFreq;
+//}
+
+//void MainWindow::onFrequencyRangeStartChanged()
+//{
+//    startRange = fftControl.getFreqRangeStart();
+//    qDebug() << "onFrequencyRangeStartChanged: " << startRange;
+//}
+
+//void MainWindow::onFrequencyRangeEndChanged()
+//{
+//    endRange = fftControl.getFreqRangeEnd();
+//    qDebug() << "onFrequencyRangeEndChanged: " << endRange;
+//}
+//void MainWindow::onSamplingFrequencyChanged(int value)
+//{
+//    sampleFreq = value;
+//}
+
+//void MainWindow::onFrequencyRangeStartChanged(int value)
+//{
+//    startRange = value;
+//}
+
+//void MainWindow::onFrequencyRangeEndChanged(int value)
+//{
+//    endRange = value;
+//}
+
+void MainWindow::onButtonApplyPressed(bool state)
+{
+    sampleFreq = fftControl.getSamplingFreq();
+    qDebug() << "onSamplingFrequencyChanged: " << sampleFreq;
+    startRange = fftControl.getFreqRangeStart();
+    qDebug() << "onFrequencyRangeStartChanged: " << startRange;
+    endRange = fftControl.getFreqRangeEnd();
+    qDebug() << "onFrequencyRangeEndChanged: " << endRange;
+
+    ui->fftPlot->xAxis->setRange(startRange, endRange);
+    ui->fftPlot->replot();
 }
 
 void MainWindow::onPortToggled(bool open)
@@ -611,6 +677,7 @@ void MainWindow::saveAllSettings(QSettings* settings)
     stream.saveSettings(settings);
     plotControlPanel.saveSettings(settings);
     plotMenu.saveSettings(settings);
+    fftControl.saveSettings(settings);
     commandPanel.saveSettings(settings);
     recordPanel.saveSettings(settings);
     textView.saveSettings(settings);
@@ -625,6 +692,7 @@ void MainWindow::loadAllSettings(QSettings* settings)
     stream.loadSettings(settings);
     plotControlPanel.loadSettings(settings);
     plotMenu.loadSettings(settings);
+    fftControl.loadSettings(settings);
     commandPanel.loadSettings(settings);
     recordPanel.loadSettings(settings);
     textView.loadSettings(settings);
