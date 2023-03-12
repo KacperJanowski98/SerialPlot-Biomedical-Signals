@@ -24,6 +24,7 @@
 #include <QModelIndex>
 #include <QVector>
 #include <QSettings>
+#include <QTimer>
 
 #include "sink.h"
 #include "source.h"
@@ -66,7 +67,8 @@ public:
     // FFT
     void createFftBuffer(double *data, unsigned size, unsigned ns);
     double* getFftBuffer();
-    unsigned getSize();
+    unsigned getFftSize();
+    void clearFft();
 
     /// Saves channel information
     void saveSettings(QSettings* settings) const;
@@ -121,9 +123,16 @@ private:
     double *fftBufferiN;
     double *fftBufferOUT;
     unsigned offset;
+    unsigned offsetData;
+    unsigned offsetSmall;
     bool flag;
+    bool flagReset;
     bool flagOverBuff;
+    bool flagChangeSize;
+    bool flagSmallNs;
     unsigned size;
+    unsigned sizeControl;
+    QTimer timer;
 
     /**
      * Applies gain and offset to given pack.

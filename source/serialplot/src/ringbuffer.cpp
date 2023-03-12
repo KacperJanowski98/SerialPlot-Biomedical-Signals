@@ -28,7 +28,6 @@ RingBuffer::RingBuffer(unsigned n)
     _size = n;
     data = new double[_size]();
     headIndex = 0;
-
     counter = 0;
 
     limInvalid = false;
@@ -88,16 +87,16 @@ void RingBuffer::resize(unsigned n)
     delete data;
     data = newData;
     headIndex = 0;
+    counter = 0;
     _size = n;
 
     // invalidate bounding rectangle
     limInvalid = true;
 }
 
-void RingBuffer::addSamples(double* samples, unsigned n)
+unsigned RingBuffer::addSamples(double* samples, unsigned n)
 {
     unsigned shift = n;
-    counter += n;
 
     if (shift < _size)
     {
@@ -108,7 +107,7 @@ void RingBuffer::addSamples(double* samples, unsigned n)
             for (unsigned i = 0; i < shift; i++)
             {
                 data[i+headIndex] = samples[i];
-//                    qDebug() << "Index: " << i+headIndex <<" Value: " << samples[i];
+//                qDebug() << "Index: " << i+headIndex <<" Value: " << samples[i];
             }
 
             if (shift == x) // we used all the room at the end
@@ -117,19 +116,25 @@ void RingBuffer::addSamples(double* samples, unsigned n)
             }
             else
             {
+
                 headIndex += shift;
             }
+            counter += shift;
         }
         else // there isn't enough room
         {
             for (unsigned i = 0; i < x; i++) // fill the end part
             {
                 data[i+headIndex] = samples[i];
+//                qDebug() << "Index: " << i+headIndex <<" Value: " << samples[i];
             }
+            counter += x;
             for (unsigned i = 0; i < (shift-x); i++) // continue from the beginning
             {
                 data[i] = samples[i+x];
+//                qDebug() << "Index: " << i <<" Value: " << samples[i+x];
             }
+            counter += shift-x;
             headIndex = shift-x;
         }
     }
@@ -139,12 +144,20 @@ void RingBuffer::addSamples(double* samples, unsigned n)
         for (unsigned i = 0; i < _size; i++)
         {
             data[i] = samples[i+x];
+//            qDebug() << "Index: " << i <<" Value: " << samples[i+x];
+//            if (i == _size-1)
+//            {
+//                qDebug() << "Wyjscie przy indeksie: " << i;
+//            }
         }
+        counter += _size;
         headIndex = 0;
     }
 
     // invalidate cache
     limInvalid = true;
+//    qDebug() << "Wyjscie przy headIndex: " << headIndex << " copyHeadIndex: " << counter;
+    return counter;
 }
 
 void RingBuffer::clear()

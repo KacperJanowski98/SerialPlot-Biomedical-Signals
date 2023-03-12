@@ -107,9 +107,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->fftPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
     ui->fftPlot->legend->setVisible(false);
     ui->fftPlot->yAxis->setLabel("");
-    ui->fftPlot->xAxis->setLabel("Frequency");
-    ui->fftPlot->xAxis->setRange(0, 500);
-//    ui->fftPlot->yAxis->setRange(0.0, 500.0);
+    ui->fftPlot->xAxis->setLabel("Frequency [Hz]");
+    ui->fftPlot->xAxis->setRange(0, 200);
     ui->fftPlot->clearGraphs();
     ui->fftPlot->addGraph();
 
@@ -317,12 +316,14 @@ MainWindow::~MainWindow()
 void MainWindow::fftPlot()
 {
     auto temp = stream.getFftBuffer();
-    auto size = stream.getSize();
+    auto size = stream.getFftSize();
+
+    qDebug() << "fftPlot() size of buffer: " << size;
 
     unsigned start = 0;
-    unsigned end = 600; /* very optimistic */
+    unsigned end = 12; //ppg to 12
     unsigned numSamples = size;
-    unsigned sampleFreq = size/2;
+    unsigned sampleFreq = 25; //ppg to 25
 
 //    auto size = stream.getSize();
 //    QVector<double> vecY(temp, temp + size);
@@ -462,6 +463,7 @@ void MainWindow::clearPlot()
     stream.clear();
     plotMan->replot();
     // FFT
+    stream.clearFft();
     ui->fftPlot->graph(0)->data()->clear();
     ui->fftPlot->replot();
 }

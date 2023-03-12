@@ -56,7 +56,8 @@ public:
 class WFrameBuffer : public ResizableBuffer
 {
     /// Add samples to the buffer
-    virtual void addSamples(double* samples, unsigned n) = 0;
+//    virtual void addSamples(double* samples, unsigned n) = 0;
+    virtual unsigned addSamples(double* samples, unsigned n) = 0;
     /// Reset all data to 0
     virtual void clear() = 0;
 };

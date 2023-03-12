@@ -34,13 +34,19 @@ Stream::Stream(unsigned nc, bool x, unsigned ns) :
     xMin = 0;
     xMax = 1;
 
-    flag = true;
+    flag = false;
+    flagReset = false;
     flagOverBuff = false;
+    flagChangeSize = false;
+    flagSmallNs = false;
     fftBufferiN = nullptr;
     fftBufferOUT = nullptr;
 
     offset = 0;
+    offsetData = 0;
+    offsetSmall = 0;
     size = 0;
+    sizeControl = 0;
 
     // create xdata buffer
     _hasx = x;
@@ -249,17 +255,21 @@ void Stream::feedIn(const SamplePack& pack)
     {
         auto buf = static_cast<RingBuffer*>(channels[ci]->yData());
         double* data = (mPack == nullptr) ? pack.data(ci) : mPack->data(ci);
-        buf->addSamples(data, ns);
+        qDebug() << "ns: " << ns;
+        auto cnt = buf->addSamples(data, ns);
+        qDebug() << "Counter from ringbuffer: " << cnt;
         size = buf->size();
         createFftBuffer(data, size, ns);
     }
 
+    qDebug() << "poza petla for";
     Sink::feedIn((mPack == nullptr) ? pack : *mPack);
 
     if (mPack != nullptr) delete mPack;
-    if (offset == size)
+    if (offset >= size)
     {
-        calculateFft(fftBufferiN, size);
+        qDebug() << "FFT ---------------------- przy rozmiarze: " << offset;
+        calculateFft(fftBufferiN, offset);
         emit fftBufferFull();
     }
     emit dataAdded();
@@ -292,43 +302,100 @@ void Stream::setNumSamples(unsigned value)
 
 void Stream::createFftBuffer(double *data, unsigned size, unsigned ns)
 {
+    unsigned newSize = size * 2;
+    qDebug() << "data[0] " << data[0];
+//    qDebug() << "data[4] " << data[4];
+//    qDebug() << "data[12] " << data[12];
+//    qDebug() << "data[13] " << data[13];
+
     if (fftBufferiN == nullptr)
-        fftBufferiN = new double[size]();
+    {
+//        qDebug() << "Tworze nowy fftBufferIN o wielkosci: " << newSize;
+        fftBufferiN = new double[newSize]();
+        sizeControl = size;
+    }
 
     if (fftBufferOUT == nullptr)
-        fftBufferOUT = new double[size/2]();
+//        qDebug() << "Tworze nowy fftBufferOUT o wielkosci: " << newSize/2;
+        fftBufferOUT =  new double[newSize/2]();
+
+    if (flagReset)
+    {
+//        qDebug() << "wlaczona flaga flagReset";
+        flagOverBuff = true;
+        flagReset = false;
+    }
 
     if (flagOverBuff)
     {
+//        qDebug() << "wlaczona flaga flagOverBuff";
         offset = 0;
-        flag = true;
+        sizeControl = size;
         flagOverBuff = false;
+
         if (fftBufferiN != nullptr)
         {
+//            qDebug() << "usuwam i tworze nowy fftBufferIN o wielkosci: " << newSize;
             delete[] fftBufferiN;
-            fftBufferiN = new double[size]();
+            fftBufferiN = new double[newSize]();
         }
         if (fftBufferOUT != nullptr)
         {
+//            qDebug() << "usuwam i tworze nowy fftBufferOUT o wielkosci: " << newSize/2;
             delete[] fftBufferOUT;
-            fftBufferOUT = new double[size/2]();
+            fftBufferOUT = new double[newSize/2]();
         }
+    }
+
+    if (static_cast<unsigned>(data[0]) == 30) // && static_cast<unsigned>(data[4]) == size)
+    {
+        flag = true;
     }
 
     if (flag)
     {
-        unsigned temp = ns - 12;
-        memcpy(fftBufferiN + offset, data + 12, temp*sizeof(double));
-        offset += temp;
-        flag = false;
+        if (ns < 12)
+        {
+//            memcpy(fftBufferiN + offset, data + ns, ns*sizeof(double));
+            offsetSmall += ns;
+            flagSmallNs = true;
+        } else
+        {
+            if (flagSmallNs)
+            {
+                unsigned tempOffset = 12 - offsetSmall;
+                unsigned temp = ns - tempOffset;
+                memcpy(fftBufferiN + offset, data + tempOffset, temp*sizeof(double));
+                offset += temp;
+                flagSmallNs = false;
+                flag = false;
+            } else
+            {
+                unsigned temp = ns - 12;
+        //        qDebug() << "Dodaje pierwsze " << temp << " probki przesuniete o 12";
+                memcpy(fftBufferiN + offset, data + 12, temp*sizeof(double));
+        //        for(unsigned i = 0; i < temp; i++)
+        //        {
+        //            qDebug() << "Calc, index: "<< i << "val: " << fftBufferiN[i+offset];
+        //        }
+                offset += temp;
+                flag = false;
+            }
+        }
     } else
     {
+//        qDebug() << "Dodaje kolejne " << ns << " probek przesuniete o: " << offset;
         memcpy(fftBufferiN + offset, data, ns*sizeof(double));
+//        for(unsigned i = 0; i < ns; i++)
+//        {
+//            qDebug() << "Calc, index: "<< i+offset << "val: " << fftBufferiN[i+offset];
+//        }
         offset += ns;
     }
 
-    if (offset == size)
+    if (offset >= sizeControl)
     {
+//        qDebug() << "offset " << offset << " wiekszy rowny od size: " << size << ", ustawiona flagOverBuff";
         flagOverBuff = true;
     }
 }
@@ -364,9 +431,15 @@ double* Stream::getFftBuffer()
     }
 }
 
-unsigned Stream::getSize()
+unsigned Stream::getFftSize()
 {
-    return size/2;
+//    return size/2;
+    return offset/2;
+}
+
+void Stream::clearFft()
+{
+    flagReset = true;
 }
 
 void Stream::setXAxis(bool asIndex, double min, double max)
