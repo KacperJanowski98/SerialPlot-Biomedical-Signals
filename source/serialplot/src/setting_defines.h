@@ -28,6 +28,8 @@ const char SettingGroup_ASCII[] = "DataFormat_ASCII";
 const char SettingGroup_CustomFrame[] = "DataFormat_CustomFrame";
 const char SettingGroup_Channels[] = "Channels";
 const char SettingGroup_Plot[] = "Plot";
+// FFT Control
+const char SettingGroup_FftControl[] = "FftControl";
 const char SettingGroup_Commands[] = "Commands";
 const char SettingGroup_Record[] = "Record";
 const char SettingGroup_TextView[] = "TextView";
@@ -101,6 +103,11 @@ const char SG_Plot_Legend[] = "legend";
 const char SG_Plot_LegendPos[] = "legendPos";
 const char SG_Plot_MultiPlot[] = "multiPlot";
 const char SG_Plot_Symbols[] = "symbols";
+
+// Fft Control keys
+const char SG_FftControl_samplingFreq[] = "samplingFreq";
+const char SG_FftControl_freqRangeStart[] = "freqRangeStart";
+const char SG_FftControl_freqRangeEnd[] = "freqRangeEnd";
 
 // command setting keys
 const char SG_Commands_Command[] = "command";

@@ -24,12 +24,16 @@
 #include <QModelIndex>
 #include <QVector>
 #include <QSettings>
+#include <QTimer>
 
 #include "sink.h"
 #include "source.h"
 #include "channelinfomodel.h"
 #include "streamchannel.h"
 #include "framebuffer.h"
+
+// FFT
+#include <fftw3.h>
 
 /**
  * Main waveform storage class. It consists of channels. Channels are
@@ -60,6 +64,11 @@ public:
     QVector<const StreamChannel*> allChannels() const;
     const ChannelInfoModel* infoModel() const;
     ChannelInfoModel* infoModel();
+    // FFT
+    void createFftBuffer(double *data, unsigned size, unsigned ns);
+    double* getFftBuffer();
+    unsigned getFftSize();
+    void clearFft();
 
     /// Saves channel information
     void saveSettings(QSettings* settings) const;
@@ -77,6 +86,7 @@ signals:
     void channelAdded(const StreamChannel* chan);
     void channelNameChanged(unsigned channel, QString name); // TODO: does it stay?
     void dataAdded(); ///< emitted when data added to channel man.
+    void fftBufferFull();
 
 public slots:
     /// Change number of samples (buffer size)
@@ -104,6 +114,25 @@ private:
 
     bool xAsIndex;
     double xMin, xMax;
+    double *temp_buf;
+
+    // FFT
+    fftw_plan mFftPlan;
+    double *mFftIn;
+    double *mFftOut;
+    double *fftBufferiN;
+    double *fftBufferOUT;
+    unsigned offset;
+    unsigned offsetData;
+    unsigned offsetSmall;
+    bool flag;
+    bool flagReset;
+    bool flagOverBuff;
+    bool flagChangeSize;
+    bool flagSmallNs;
+    unsigned size;
+    unsigned sizeControl;
+    QTimer timer;
 
     /**
      * Applies gain and offset to given pack.
@@ -117,6 +146,9 @@ private:
      * @return modified data
      */
     const SamplePack* applyGainOffset(const SamplePack& pack) const;
+
+    // FFT
+    void calculateFft(double* dataIn, unsigned n);
 
     /// Returns a new virtual X buffer for settings
     XFrameBuffer* makeXBuffer() const;

@@ -38,6 +38,7 @@ find_package(Qt5
       SerialPort
       Network
       Svg
+      PrintSupport
 )
 
 # If set, cmake will download Qwt over SVN, build and use it as a static library.
@@ -72,6 +73,7 @@ qt5_wrap_ui(UI_FILES
     ${CMAKE_CURRENT_LIST_DIR}/src/demoreadersettings.ui
     ${CMAKE_CURRENT_LIST_DIR}/src/updatecheckdialog.ui
     ${CMAKE_CURRENT_LIST_DIR}/src/datatextview.ui
+    ${CMAKE_CURRENT_LIST_DIR}/src/fftcontrol.ui
 )
 
 if (WIN32)
@@ -141,6 +143,8 @@ add_executable(${PROGRAM_NAME} WIN32
     ${CMAKE_CURRENT_LIST_DIR}/src/ledwidget.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/datatextview.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/bpslabel.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/fftcontrol.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/qcustomplot.cpp
     ${CMAKE_CURRENT_LIST_DIR}/misc/windows_icon.rc
     ${UI_FILES}
     ${RES_FILES}
@@ -148,8 +152,9 @@ add_executable(${PROGRAM_NAME} WIN32
 
 # include FFTW shared library
 target_include_directories(${PROGRAM_NAME}
-    PRIVATE
+    PUBLIC
       ${CMAKE_CURRENT_LIST_DIR}/fftw
+      ${CMAKE_CURRENT_LIST_DIR}/src
 )
 
 set(fftw3_shared "${CMAKE_CURRENT_LIST_DIR}/fftw/libfftw3-3.dll")
@@ -167,6 +172,7 @@ target_link_libraries(${PROGRAM_NAME}
     Qt5::SerialPort
     Qt5::Network
     Qt5::Svg
+    Qt5::PrintSupport
     ${fftw3_shared}
     ${fftw3f_shared}
     ${fftw3l_shared}

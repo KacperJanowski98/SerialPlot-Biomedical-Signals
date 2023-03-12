@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1450</width>
-    <height>823</height>
+    <width>1140</width>
+    <height>612</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -37,10 +37,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QWidget" name="fftArea" native="true">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
+     <widget class="QCustomPlot" name="fftPlot" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
         <horstretch>0</horstretch>
@@ -113,7 +110,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1450</width>
+     <width>1140</width>
      <height>21</height>
     </rect>
    </property>
@@ -297,6 +294,12 @@
    <class>HidableTabWidget</class>
    <extends>QTabWidget</extends>
    <header>hidabletabwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QCustomPlot</class>
+   <extends>QWidget</extends>
+   <header>qcustomplot.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

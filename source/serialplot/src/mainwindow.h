@@ -44,10 +44,13 @@
 #include "snapshotmanager.h"
 #include "plotmanager.h"
 #include "plotmenu.h"
+#include "fftcontrol.h"
 #include "updatecheckdialog.h"
 #include "samplecounter.h"
 #include "datatextview.h"
 #include "bpslabel.h"
+
+#include "qcustomplot.h"
 
 namespace Ui {
 class MainWindow;
@@ -94,11 +97,10 @@ private:
     UpdateCheckDialog updateCheckDialog;
     BPSLabel bpsLabel;
 
-    // FFT plot
-    PlotManager* fftPlotMan;
-    PlotControlPanel fftPlotControlPanel;
-    PlotMenu fftPlotMenu;
-    SnapshotManager fftSnapshotMan;
+    FftControl fftControl;
+    unsigned startRange;
+    unsigned endRange;
+    unsigned sampleFreq;
 
     void handleCommandLineOptions(const QCoreApplication &app);
 
@@ -121,10 +123,24 @@ private:
     /// `QWidget::closeEvent` handler
     void closeEvent(QCloseEvent * event);
 
+public slots:
+    // FFT
+    void fftPlot();
+    void mousePressOnFftPlot(QMouseEvent *event);
+
 private slots:
     void onPortToggled(bool open);
     void onSourceChanged(Source* source);
     void onNumOfSamplesChanged(int value);
+
+    // FFT control
+//    void onSamplingFrequencyChanged();
+//    void onFrequencyRangeStartChanged();
+//    void onFrequencyRangeEndChanged();
+//    void onSamplingFrequencyChanged(int value);
+//    void onFrequencyRangeStartChanged(int value);
+//    void onFrequencyRangeEndChanged(int value);
+    void onButtonApplyPressed(bool state);
 
     void clearPlot();
     void onSpsChanged(float sps);
