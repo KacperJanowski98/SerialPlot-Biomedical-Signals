@@ -208,15 +208,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->fftPlot, SIGNAL(mousePress(QMouseEvent*)), this, SLOT(mousePressOnFftPlot(QMouseEvent*)));
 
     // FFT Control
-//    connect(&fftControl, &FftControl::samplingFrequencyChanged,
-//            this, &MainWindow::onSamplingFrequencyChanged);
-
-//    connect(&fftControl, &FftControl::frequencyRangeStartChanged,
-//            this, &MainWindow::onFrequencyRangeStartChanged);
-
-//    connect(&fftControl, &FftControl::frequencyRangeEndChanged,
-//            this, &MainWindow::onFrequencyRangeEndChanged);
-
     connect(&fftControl, &FftControl::buttonApplyPressd,
             this, &MainWindow::onButtonApplyPressed);
 
@@ -338,15 +329,11 @@ void MainWindow::fftPlot()
     auto temp = stream.getFftBuffer();
     auto size = stream.getFftSize();
 
-    qDebug() << "fftPlot() size of buffer: " << size;
-
 //    unsigned start = 0;
 //    unsigned end = 12; //ppg to 12
     unsigned numSamples = size;
 //    unsigned sampleFreq = 25; //ppg to 25
 
-//    auto size = stream.getSize();
-//    QVector<double> vecY(temp, temp + size);
     QVector<double> vecY;
     QVector<double> vecX;
 
@@ -365,19 +352,6 @@ void MainWindow::fftPlot()
         vecY.append(abs(temp[i]));
     }
 
-//    QVectorIterator<double> itNumbers(tempVec);
-//    while (itNumbers.hasNext()) {
-//        qDebug() << itNumbers.next();
-//    }
-
-//    qDebug() << "Szie x vector: " << vecX.size();
-
-//    for (unsigned i = 0.0; i < size; i++)
-//    {
-//        vecX.append((double)i);
-//    }
-
-//    ui->fftPlot->graph(0)->setData(vecX, vecY);
     ui->fftPlot->graph(0)->setData(vecX.mid(0, vecY.length()), vecY);
     ui->fftPlot->rescaleAxes();
     ui->fftPlot->replot();
@@ -459,39 +433,6 @@ void MainWindow::setupAboutDialog()
     aboutText.replace("$VERSION_REVISION$", VERSION_REVISION);
     uiAboutDialog.lbAbout->setText(aboutText);
 }
-
-// FFT Control
-//void MainWindow::onSamplingFrequencyChanged()
-//{
-//    sampleFreq = fftControl.getSamplingFreq();
-//    qDebug() << "onSamplingFrequencyChanged: " << sampleFreq;
-//}
-
-//void MainWindow::onFrequencyRangeStartChanged()
-//{
-//    startRange = fftControl.getFreqRangeStart();
-//    qDebug() << "onFrequencyRangeStartChanged: " << startRange;
-//}
-
-//void MainWindow::onFrequencyRangeEndChanged()
-//{
-//    endRange = fftControl.getFreqRangeEnd();
-//    qDebug() << "onFrequencyRangeEndChanged: " << endRange;
-//}
-//void MainWindow::onSamplingFrequencyChanged(int value)
-//{
-//    sampleFreq = value;
-//}
-
-//void MainWindow::onFrequencyRangeStartChanged(int value)
-//{
-//    startRange = value;
-//}
-
-//void MainWindow::onFrequencyRangeEndChanged(int value)
-//{
-//    endRange = value;
-//}
 
 void MainWindow::onButtonApplyPressed(bool state)
 {

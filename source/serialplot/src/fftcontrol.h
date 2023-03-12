@@ -26,12 +26,6 @@ public:
     void loadSettings(QSettings* settings);
 
 signals:
-//    void samplingFrequencyChanged();
-//    void frequencyRangeStartChanged();
-//    void frequencyRangeEndChanged();
-//    void samplingFrequencyChanged(int value);
-//    void frequencyRangeStartChanged(int value);
-//    void frequencyRangeEndChanged(int value);
     void buttonApplyPressd(bool state);
 
 private:
@@ -42,14 +36,6 @@ private:
     unsigned _freqRangeEnd;
 
 private slots:
-//    void onSamplingFrequency(int value);
-//    void onFrequencyRangeStart(int value);
-//    void onFrequencyRangeEnd(int value);
-
-//    void onSamplingFrequency();
-//    void onFrequencyRangeStart();
-//    void onFrequencyRangeEnd();
-
     void onButtonApply(bool state);
 };
 

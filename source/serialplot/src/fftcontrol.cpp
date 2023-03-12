@@ -11,24 +11,6 @@ FftControl::FftControl(QWidget *parent) :
 {
     ui->setupUi(this);
 
-//    connect(ui->spinBoxSampling, SIGNAL(valueChanged(int)),
-//            this, SLOT(onSamplingFrequency(int)));
-
-//    connect(ui->spinBoxStart, SIGNAL(valueChanged(int)),
-//            this, SLOT(onFrequencyRangeStart(int)));
-
-//    connect(ui->spinBoxEnd, SIGNAL(valueChanged(int)),
-//            this, SLOT(onFrequencyRangeStart(int)));
-
-//    connect(ui->spinBoxSampling, SIGNAL(editingFinished()),
-//            this, SLOT(onSamplingFrequency(int)));
-
-//    connect(ui->spinBoxStart, SIGNAL(editingFinished()),
-//            this, SLOT(onFrequencyRangeStart(int)));
-
-//    connect(ui->spinBoxEnd, SIGNAL(editingFinished()),
-//            this, SLOT(onFrequencyRangeStart(int)));
-
     connect(ui->buttonApply, SIGNAL(clicked(bool)),
             this, SLOT(onButtonApply(bool)));
 
@@ -57,27 +39,6 @@ unsigned FftControl::getFreqRangeEnd()
     return ui->spinBoxEnd->value();
 }
 
-//void FftControl::onSamplingFrequency()
-//{
-//    _samplingFreq = getSamplingFreq();
-////    _samplingFreq = value;
-////    emit samplingFrequencyChanged(value);
-//}
-
-//void FftControl::onFrequencyRangeStart()
-//{
-//    _freqRangeStart = getFreqRangeStart();
-////    _freqRangeStart = value;
-////    emit frequencyRangeStartChanged(value);
-//}
-
-//void FftControl::onFrequencyRangeEnd()
-//{
-//    _freqRangeEnd = getFreqRangeEnd();
-////    _freqRangeEnd = value;
-////    emit frequencyRangeEndChanged(value);
-//}
-
 void FftControl::onButtonApply(bool state)
 {
     auto sampleingFreq = getSamplingFreq();
@@ -96,12 +57,7 @@ void FftControl::onButtonApply(bool state)
         ui->spinBoxStart->setValue(getFreqRangeStart());
         ui->spinBoxEnd->setValue(getFreqRangeEnd());
     }
-//    emit samplingFrequencyChanged(getSamplingFreq());
-//    emit frequencyRangeStartChanged(getFreqRangeStart());
-//    emit frequencyRangeEndChanged(getFreqRangeEnd());
-//    emit samplingFrequencyChanged();
-//    emit frequencyRangeStartChanged();
-//    emit frequencyRangeEndChanged();
+
     _samplingFreq = getSamplingFreq();
     _freqRangeStart = getFreqRangeStart();
     _freqRangeEnd = getFreqRangeEnd();
