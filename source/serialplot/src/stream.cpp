@@ -268,8 +268,8 @@ void Stream::feedIn(const SamplePack& pack)
         {
             auto buf = static_cast<RingBuffer*>(channels[ci]->yData());
             double* data = (mPack == nullptr) ? pack.data(0) : mPack->data(0);
-//            for (unsigned i = 0; i < ns; i++)
-//                data[i] = data[i] * 1.5;
+            for (unsigned i = 0; i < ns; i++)
+                data[i] = data[i] * 1.5;
     //        qDebug() << "ns: " << ns;
             buf->addSamples(data, ns);
         }

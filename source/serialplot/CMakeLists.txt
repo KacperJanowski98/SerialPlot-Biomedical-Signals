@@ -31,14 +31,16 @@ set(CMAKE_AUTOMOC ON)
 # add local path for cmake modules
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
 
+add_subdirectory(iir1)
+
 # Find the libraries
 find_package(Qt5
-  REQUIRED COMPONENTS 
-      Widgets
-      SerialPort
-      Network
-      Svg
-      PrintSupport
+REQUIRED COMPONENTS 
+Widgets
+SerialPort
+Network
+Svg
+PrintSupport
 )
 
 # If set, cmake will download Qwt over SVN, build and use it as a static library.
@@ -176,6 +178,7 @@ target_link_libraries(${PROGRAM_NAME}
     ${fftw3_shared}
     ${fftw3f_shared}
     ${fftw3l_shared}
+    iir::iir_static
 )
 
 if (BUILD_QWT)
