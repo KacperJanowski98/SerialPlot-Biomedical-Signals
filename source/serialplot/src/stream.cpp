@@ -25,7 +25,7 @@
 #include <QDebug>
 
 Stream::Stream(unsigned nc, bool x, unsigned ns) :
-    _infoModel(nc)
+    _infoModel(nc*2)
 {
     _numSamples = ns;
     _paused = false;
@@ -61,11 +61,14 @@ Stream::Stream(unsigned nc, bool x, unsigned ns) :
     }
 
     // create channels
-    for (unsigned i = 0; i < nc; i++)
+    for (unsigned i = 0; i < nc*2; i++)
     {
         auto c = new StreamChannel(i, xData, new RingBuffer(ns), &_infoModel);
+        // Create channel for filtering data
+//        auto cF = new StreamChannel(i*10, xData, new RingBuffer(ns), &_infoModel);
         channels.append(c);
-    }
+//        channels.append(cF);
+    } 
 }
 
 Stream::~Stream()
@@ -131,20 +134,20 @@ ChannelInfoModel* Stream::infoModel()
 void Stream::setNumChannels(unsigned nc, bool x)
 {
     unsigned oldNum = numChannels();
-    if (oldNum == nc && x == _hasx) return;
+    if (oldNum == nc*2 && x == _hasx) return;
 
     // adjust the number of channels
-    if (nc > oldNum)
+    if (nc*2 > oldNum) //nc
     {
-        for (unsigned i = oldNum; i < nc; i++)
+        for (unsigned i = oldNum; i < nc*2; i++) // nc
         {
             auto c = new StreamChannel(i, xData, new RingBuffer(_numSamples), &_infoModel);
             channels.append(c);
         }
     }
-    else if (nc < oldNum)
+    else if (nc*2 < oldNum) //nc
     {
-        for (unsigned i = oldNum-1; i > nc-1; i--)
+        for (unsigned i = oldNum-1; i > (nc*2)-1; i--) // nc
         {
             delete channels.takeLast();
         }
@@ -170,14 +173,14 @@ void Stream::setNumChannels(unsigned nc, bool x)
         _hasx = x;
     }
 
-    if (nc != oldNum)
+    if (nc != oldNum) // nc
     {
-        _infoModel.setNumOfChannels(nc);
+        _infoModel.setNumOfChannels(nc*2); //nc
         // TODO: how about X change?
-        emit numChannelsChanged(nc);
+        emit numChannelsChanged(nc*2); //nc
     }
 
-    Sink::setNumChannels(nc, x);
+    Sink::setNumChannels(nc*2, x); // nc
 }
 
 XFrameBuffer* Stream::makeXBuffer() const
@@ -194,7 +197,6 @@ XFrameBuffer* Stream::makeXBuffer() const
 
 const SamplePack* Stream::applyGainOffset(const SamplePack& pack) const
 {
-    qDebug() << "Test: Stream::applyGainOffset";
     Q_ASSERT(infoModel()->gainOrOffsetEn());
 
     SamplePack* mPack = new SamplePack(pack);
@@ -233,7 +235,7 @@ const SamplePack* Stream::applyGainOffset(const SamplePack& pack) const
 
 void Stream::feedIn(const SamplePack& pack)
 {
-    Q_ASSERT(pack.numChannels() == numChannels() &&
+    Q_ASSERT(pack.numChannels() == numChannels()/2 &&
              pack.hasX() == hasX());
 
     if (_paused) return;
@@ -253,18 +255,30 @@ void Stream::feedIn(const SamplePack& pack)
 
     for (unsigned ci = 0; ci < numChannels(); ci++)
     {
-        auto buf = static_cast<RingBuffer*>(channels[ci]->yData());
-        double* data = (mPack == nullptr) ? pack.data(ci) : mPack->data(ci);
-//        qDebug() << "ns: " << ns;
-        buf->addSamples(data, ns);
-        size = buf->size();
-        createFftBuffer(data, size, ns);
+        if (ci % 2 == 0) // Real data
+        {
+            auto buf = static_cast<RingBuffer*>(channels[ci]->yData());
+            double* data = (mPack == nullptr) ? pack.data(ci) : mPack->data(ci);
+    //        qDebug() << "ns: " << ns;
+            buf->addSamples(data, ns);
+            size = buf->size();
+            createFftBuffer(data, size, ns);
+        }
+        else // Filtered data
+        {
+            auto buf = static_cast<RingBuffer*>(channels[ci]->yData());
+            double* data = (mPack == nullptr) ? pack.data(0) : mPack->data(0);
+//            for (unsigned i = 0; i < ns; i++)
+//                data[i] = data[i] * 1.5;
+    //        qDebug() << "ns: " << ns;
+            buf->addSamples(data, ns);
+        }
     }
 
     Sink::feedIn((mPack == nullptr) ? pack : *mPack);
 
     if (mPack != nullptr) delete mPack;
-    if (offset >= size)
+    if (offset >= sizeControl)
     {
         qDebug() << "FFT ---------------------- przy rozmiarze: " << offset;
         calculateFft(fftBufferiN, offset);
@@ -300,7 +314,7 @@ void Stream::setNumSamples(unsigned value)
 
 void Stream::createFftBuffer(double *data, unsigned size, unsigned ns)
 {
-    unsigned newSize = size * 2;
+    unsigned newSize = size * 4;
 //    qDebug() << "data[0] " << data[0];
 //    qDebug() << "data[1] " << data[1];
 //    qDebug() << "data[2] " << data[2];
@@ -365,14 +379,18 @@ void Stream::createFftBuffer(double *data, unsigned size, unsigned ns)
         if (ns < 12)
         {
 //            memcpy(fftBufferiN + offset, data + ns, ns*sizeof(double));
+//            qDebug() << "ns < 12: " << ns;
             offsetSmall += ns;
             flagSmallNs = true;
         } else
         {
             if (flagSmallNs)
             {
+//                qDebug() << "flagSmallNs set ns: " << ns;
                 unsigned tempOffset = 12 - offsetSmall;
                 unsigned temp = ns - tempOffset;
+//                qDebug() << "temp: " << temp;
+//                qDebug() << "tempOffset: " << tempOffset;
                 memcpy(fftBufferiN + offset, data + tempOffset, temp*sizeof(double));
                 offset += temp;
                 flagSmallNs = false;
@@ -401,9 +419,12 @@ void Stream::createFftBuffer(double *data, unsigned size, unsigned ns)
         offset += ns;
     }
 
+//    qDebug() << "offset: " << offset;
+//    qDebug() << "sizeControl: " << sizeControl << " size: " << size;
+
     if (offset >= sizeControl)
     {
-//        qDebug() << "offset " << offset << " wiekszy rowny od size: " << size << ", ustawiona flagOverBuff";
+//        qDebug() << "offset " << offset << " wiekszy rowny od sizeControl: " << sizeControl << ", ustawiona flagOverBuff";
         flagOverBuff = true;
     }
 }
@@ -415,6 +436,7 @@ void Stream::calculateFft(double* dataIn, unsigned n)
     mFftPlan = fftw_plan_r2r_1d(n, mFftIn, mFftOut, FFTW_R2HC, FFTW_ESTIMATE);
 
     memcpy(mFftIn, dataIn, n*sizeof(double));
+
     fftw_execute(mFftPlan);
 
     for (unsigned i = 0; i < n/2; i++)
