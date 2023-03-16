@@ -105,23 +105,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     setupAboutDialog();
 
-    // FFT Control
-    sampleFreq = fftControl.getSamplingFreq();
-    startRange = fftControl.getFreqRangeStart();
-    endRange = fftControl.getFreqRangeEnd();
-
-    // FFT plot
-    ui->fftPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
-    ui->fftPlot->legend->setVisible(false);
-    ui->fftPlot->yAxis->setLabel("");
-    ui->fftPlot->xAxis->setLabel("Frequency [Hz]");
-    ui->fftPlot->xAxis->setRange(startRange, endRange);
-    ui->fftPlot->clearGraphs();
-    ui->fftPlot->addGraph();
-
-    ui->fftPlot->graph()->setPen(QPen(Qt::darkBlue));
-    ui->fftPlot->graph()->setName("fft");
-
     // init view menu
     ui->menuBar->insertMenu(ui->menuSecondary->menuAction(), &plotMenu);
     plotMenu.addSeparator();
@@ -293,6 +276,23 @@ MainWindow::MainWindow(QWidget *parent) :
     QSettings settings(PROGRAM_NAME, PROGRAM_NAME);
     loadAllSettings(&settings);
 
+    // FFT Control
+    sampleFreq = fftControl.getSamplingFreq();
+    startRange = fftControl.getFreqRangeStart();
+    endRange = fftControl.getFreqRangeEnd();
+
+    // FFT plot
+    ui->fftPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
+    ui->fftPlot->legend->setVisible(false);
+    ui->fftPlot->yAxis->setLabel("");
+    ui->fftPlot->xAxis->setLabel("Frequency [Hz]");
+    ui->fftPlot->xAxis->setRange(startRange, endRange);
+    ui->fftPlot->clearGraphs();
+    ui->fftPlot->addGraph();
+
+    ui->fftPlot->graph()->setPen(QPen(Qt::darkBlue));
+    ui->fftPlot->graph()->setName("fft");
+
     handleCommandLineOptions(*QApplication::instance());
 
     // ensure command panel has 1 command if none loaded
@@ -349,7 +349,8 @@ void MainWindow::fftPlot()
          i < (numSamples/sampleFreq)*endRange;
          i ++)
     {
-        vecY.append(abs(temp[i]));
+//        vecY.append(abs(temp[i]));
+        vecY.append(temp[i]);
     }
 
     ui->fftPlot->graph(0)->setData(vecX.mid(0, vecY.length()), vecY);

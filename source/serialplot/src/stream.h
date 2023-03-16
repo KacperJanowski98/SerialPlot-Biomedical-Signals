@@ -69,6 +69,8 @@ public:
     double* getFftBuffer();
     unsigned getFftSize();
     void clearFft();
+    // Filter
+    void filterData(double *data, unsigned ns);
 
     /// Saves channel information
     void saveSettings(QSettings* settings) const;

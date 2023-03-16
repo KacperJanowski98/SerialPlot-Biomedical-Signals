@@ -21,6 +21,8 @@
 #include "ringbuffer.h"
 #include "indexbuffer.h"
 #include "linindexbuffer.h"
+// IIR
+#include "Iir.h"
 
 #include <QDebug>
 
@@ -259,7 +261,6 @@ void Stream::feedIn(const SamplePack& pack)
         {
             auto buf = static_cast<RingBuffer*>(channels[ci]->yData());
             double* data = (mPack == nullptr) ? pack.data(ci) : mPack->data(ci);
-    //        qDebug() << "ns: " << ns;
             buf->addSamples(data, ns);
             size = buf->size();
             createFftBuffer(data, size, ns);
@@ -268,9 +269,7 @@ void Stream::feedIn(const SamplePack& pack)
         {
             auto buf = static_cast<RingBuffer*>(channels[ci]->yData());
             double* data = (mPack == nullptr) ? pack.data(0) : mPack->data(0);
-            for (unsigned i = 0; i < ns; i++)
-                data[i] = data[i] * 1.5;
-    //        qDebug() << "ns: " << ns;
+            filterData(data, ns);
             buf->addSamples(data, ns);
         }
     }
@@ -310,6 +309,35 @@ void Stream::setNumSamples(unsigned value)
     {
         static_cast<RingBuffer*>(c->yData())->resize(value);
     }
+}
+
+void Stream::filterData(double *data, unsigned ns)
+{
+    const float fs = 300;
+    const float mains = 50;
+    Iir::RBJ::IIRNotch iirnotch;
+    iirnotch.setup(fs,mains);
+
+    const float ecg_max_f = 140;
+    Iir::Butterworth::LowPass<4> lp;
+    lp.setup(fs,ecg_max_f);
+
+    for (unsigned i = 0; i < ns; i++)
+    {
+        data[i] = lp.filter(data[i]);
+        data[i] = iirnotch.filter(data[i]);
+    }
+
+//    const float samplingRate = 300;
+
+//    Iir::Butterworth::LowPass<8> f;
+//    double cutoff_frequency = 100;
+//    f.setup(samplingRate, cutoff_frequency);
+
+//    for (unsigned i = 0; i < ns; i++)
+//    {
+//        data[i] = f.filter(data[i]);
+//    }
 }
 
 void Stream::createFftBuffer(double *data, unsigned size, unsigned ns)
