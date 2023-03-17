@@ -315,7 +315,7 @@ void Stream::filterData(double *data, unsigned ns)
 {
     const float fs = 300;
 
-    const float ecg_max_f = 100;
+    const float ecg_max_f = 15;
     Iir::Butterworth::LowPass<4> lp;
     lp.setup(fs,ecg_max_f);
 
