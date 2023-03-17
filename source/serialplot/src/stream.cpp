@@ -40,15 +40,15 @@ Stream::Stream(unsigned nc, bool x, unsigned ns) :
     flagReset = false;
     flagOverBuff = false;
     flagChangeSize = false;
-    flagSmallNs = false;
     fftBufferiN = nullptr;
     fftBufferOUT = nullptr;
 
+    flagIIR = false;
+
     offset = 0;
-    offsetData = 0;
-    offsetSmall = 0;
     size = 0;
     sizeControl = 0;
+
 
     // create xdata buffer
     _hasx = x;
@@ -314,49 +314,23 @@ void Stream::setNumSamples(unsigned value)
 void Stream::filterData(double *data, unsigned ns)
 {
     const float fs = 300;
-    const float mains = 50;
-    Iir::RBJ::IIRNotch iirnotch;
-    iirnotch.setup(fs,mains);
 
-    const float ecg_max_f = 140;
+    const float ecg_max_f = 100;
     Iir::Butterworth::LowPass<4> lp;
     lp.setup(fs,ecg_max_f);
+
+    qDebug() << "Liczba probek: " << ns;
 
     for (unsigned i = 0; i < ns; i++)
     {
         data[i] = lp.filter(data[i]);
-        data[i] = iirnotch.filter(data[i]);
+        qDebug() << "Index: " << i << " dane: " << data[i];
     }
-
-//    const float samplingRate = 300;
-
-//    Iir::Butterworth::LowPass<8> f;
-//    double cutoff_frequency = 100;
-//    f.setup(samplingRate, cutoff_frequency);
-
-//    for (unsigned i = 0; i < ns; i++)
-//    {
-//        data[i] = f.filter(data[i]);
-//    }
 }
 
 void Stream::createFftBuffer(double *data, unsigned size, unsigned ns)
 {
     unsigned newSize = size * 4;
-//    qDebug() << "data[0] " << data[0];
-//    qDebug() << "data[1] " << data[1];
-//    qDebug() << "data[2] " << data[2];
-//    qDebug() << "data[3]] " << data[3];
-//    qDebug() << "data[4] " << data[4];
-//    qDebug() << "data[5] " << data[5];
-//    qDebug() << "data[6] " << data[6];
-//    qDebug() << "data[7] " << data[7];
-//    qDebug() << "data[8] " << data[8];
-//    qDebug() << "data[9] " << data[9];
-//    qDebug() << "data[10] " << data[10];
-//    qDebug() << "data[11] " << data[11];
-//    qDebug() << "data[12] " << data[12];
-//    qDebug() << "data[13] " << data[13];
 
     if (fftBufferiN == nullptr)
     {
@@ -397,55 +371,13 @@ void Stream::createFftBuffer(double *data, unsigned size, unsigned ns)
         }
     }
 
-    if (static_cast<unsigned>(data[0]) == 30) // && static_cast<unsigned>(data[4]) == size)
-    {
-        flag = true;
-    }
-
-    if (flag)
-    {
-        if (ns < 12)
-        {
-//            memcpy(fftBufferiN + offset, data + ns, ns*sizeof(double));
-//            qDebug() << "ns < 12: " << ns;
-            offsetSmall += ns;
-            flagSmallNs = true;
-        } else
-        {
-            if (flagSmallNs)
-            {
-//                qDebug() << "flagSmallNs set ns: " << ns;
-                unsigned tempOffset = 12 - offsetSmall;
-                unsigned temp = ns - tempOffset;
-//                qDebug() << "temp: " << temp;
-//                qDebug() << "tempOffset: " << tempOffset;
-                memcpy(fftBufferiN + offset, data + tempOffset, temp*sizeof(double));
-                offset += temp;
-                flagSmallNs = false;
-                flag = false;
-            } else
-            {
-                unsigned temp = ns - 12;
-        //        qDebug() << "Dodaje pierwsze " << temp << " probki przesuniete o 12";
-                memcpy(fftBufferiN + offset, data + 12, temp*sizeof(double));
-        //        for(unsigned i = 0; i < temp; i++)
-        //        {
-        //            qDebug() << "Calc, index: "<< i << "val: " << fftBufferiN[i+offset];
-        //        }
-                offset += temp;
-                flag = false;
-            }
-        }
-    } else
-    {
-//        qDebug() << "Dodaje kolejne " << ns << " probek przesuniete o: " << offset;
-        memcpy(fftBufferiN + offset, data, ns*sizeof(double));
+    memcpy(fftBufferiN + offset, data, ns*sizeof(double));
 //        for(unsigned i = 0; i < ns; i++)
 //        {
 //            qDebug() << "Calc, index: "<< i+offset << "val: " << fftBufferiN[i+offset];
 //        }
-        offset += ns;
-    }
+    offset += ns;
+
 
 //    qDebug() << "offset: " << offset;
 //    qDebug() << "sizeControl: " << sizeControl << " size: " << size;

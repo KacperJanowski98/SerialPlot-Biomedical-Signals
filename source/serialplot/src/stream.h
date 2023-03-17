@@ -125,16 +125,16 @@ private:
     double *fftBufferiN;
     double *fftBufferOUT;
     unsigned offset;
-    unsigned offsetData;
-    unsigned offsetSmall;
     bool flag;
     bool flagReset;
     bool flagOverBuff;
     bool flagChangeSize;
-    bool flagSmallNs;
     unsigned size;
     unsigned sizeControl;
     QTimer timer;
+
+    // Filter
+    bool flagIIR;
 
     /**
      * Applies gain and offset to given pack.
