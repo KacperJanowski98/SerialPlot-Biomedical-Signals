@@ -45,12 +45,10 @@ void FftControl::onButtonApply(bool state)
     auto rangeEnd = getFreqRangeEnd();
     if (sampleingFreq < 2 * rangeEnd)
     {
-        QMessageBox::critical(this, tr("Error"),
-        tr("The sampling frequency fs must be greater than twice the highest frequency component in the measured signal. fmax <= fs/2, fmax = Frequency range end"));
-        auto temp = rangeEnd * 2;
-        ui->spinBoxSampling->setValue(temp);
+        auto temp = sampleingFreq / 2;
+        ui->spinBoxSampling->setValue(getSamplingFreq());
         ui->spinBoxStart->setValue(getFreqRangeStart());
-        ui->spinBoxEnd->setValue(getFreqRangeEnd());
+        ui->spinBoxEnd->setValue(temp);
     } else
     {
         ui->spinBoxSampling->setValue(getSamplingFreq());

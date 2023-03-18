@@ -21,8 +21,7 @@
 #include "ringbuffer.h"
 #include "indexbuffer.h"
 #include "linindexbuffer.h"
-// IIR
-#include "Iir.h"
+
 
 #include <QDebug>
 
@@ -40,6 +39,10 @@ Stream::Stream(unsigned nc, bool x, unsigned ns) :
 
     mFft = new Fft();
     size = 0;
+
+    const float fs = 300;
+    const float ecg_max_f = 10;
+    lp.setup(fs,ecg_max_f);
 
     // create xdata buffer
     _hasx = x;
@@ -258,6 +261,8 @@ void Stream::feedIn(const SamplePack& pack)
             double* data = (mPack == nullptr) ? pack.data(0) : mPack->data(0);
             filterData(data, ns);
             buf->addSamples(data, ns);
+//            size = buf->size();
+//            mFft->createFftBuffer(data, size, ns);
         }
     }
 
@@ -300,11 +305,11 @@ void Stream::setNumSamples(unsigned value)
 
 void Stream::filterData(double *data, unsigned ns)
 {
-    const float fs = 300;
+//    const float fs = 300;
 
-    const float ecg_max_f = 15;
-    Iir::Butterworth::LowPass<4> lp;
-    lp.setup(fs,ecg_max_f);
+//    const float ecg_max_f = 15;
+//    Iir::Butterworth::LowPass<4> lp;
+//    lp.setup(fs,ecg_max_f);
 
 //    qDebug() << "Liczba probek: " << ns;
 

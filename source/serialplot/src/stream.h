@@ -32,6 +32,8 @@
 #include "streamchannel.h"
 #include "framebuffer.h"
 #include "fft.h"
+// IIR
+#include "Iir.h"
 
 /**
  * Main waveform storage class. It consists of channels. Channels are
@@ -120,6 +122,7 @@ private:
     unsigned size;
 
     // Filter
+    Iir::Butterworth::LowPass<4> lp;
     bool flagIIR;
 
     /**
