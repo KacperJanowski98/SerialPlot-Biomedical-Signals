@@ -145,6 +145,7 @@ add_executable(${PROGRAM_NAME} WIN32
     ${CMAKE_CURRENT_LIST_DIR}/src/ledwidget.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/datatextview.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/bpslabel.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/fft.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/fftcontrol.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/qcustomplot.cpp
     ${CMAKE_CURRENT_LIST_DIR}/misc/windows_icon.rc

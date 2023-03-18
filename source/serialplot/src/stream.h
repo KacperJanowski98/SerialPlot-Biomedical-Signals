@@ -31,9 +31,7 @@
 #include "channelinfomodel.h"
 #include "streamchannel.h"
 #include "framebuffer.h"
-
-// FFT
-#include <fftw3.h>
+#include "fft.h"
 
 /**
  * Main waveform storage class. It consists of channels. Channels are
@@ -64,8 +62,7 @@ public:
     QVector<const StreamChannel*> allChannels() const;
     const ChannelInfoModel* infoModel() const;
     ChannelInfoModel* infoModel();
-    // FFT
-    void createFftBuffer(double *data, unsigned size, unsigned ns);
+    // Fft
     double* getFftBuffer();
     unsigned getFftSize();
     void clearFft();
@@ -119,19 +116,8 @@ private:
     double *temp_buf;
 
     // FFT
-    fftw_plan mFftPlan;
-    double *mFftIn;
-    double *mFftOut;
-    double *fftBufferiN;
-    double *fftBufferOUT;
-    unsigned offset;
-    bool flag;
-    bool flagReset;
-    bool flagOverBuff;
-    bool flagChangeSize;
+    Fft* mFft;
     unsigned size;
-    unsigned sizeControl;
-    QTimer timer;
 
     // Filter
     bool flagIIR;
@@ -148,9 +134,6 @@ private:
      * @return modified data
      */
     const SamplePack* applyGainOffset(const SamplePack& pack) const;
-
-    // FFT
-    void calculateFft(double* dataIn, unsigned n);
 
     /// Returns a new virtual X buffer for settings
     XFrameBuffer* makeXBuffer() const;
