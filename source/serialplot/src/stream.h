@@ -119,7 +119,7 @@ private:
 
     // FFT
     Fft* mFft;
-    unsigned size;
+    unsigned mSize;
 
     // Filter
     Iir::Butterworth::LowPass<4> lp;

@@ -38,10 +38,10 @@ Stream::Stream(unsigned nc, bool x, unsigned ns) :
     flagIIR = false;
 
     mFft = new Fft();
-    size = 0;
+    mSize = 0;
 
     const float fs = 300;
-    const float ecg_max_f = 10;
+    const float ecg_max_f = 50;
     lp.setup(fs,ecg_max_f);
 
     // create xdata buffer
@@ -252,8 +252,8 @@ void Stream::feedIn(const SamplePack& pack)
             auto buf = static_cast<RingBuffer*>(channels[ci]->yData());
             double* data = (mPack == nullptr) ? pack.data(ci) : mPack->data(ci);
             buf->addSamples(data, ns);
-            size = buf->size();
-            mFft->createFftBuffer(data, size, ns);
+            mSize = buf->size();
+            mFft->createFftBuffer(data, mSize, ns);
         }
         else // Filtered data
         {

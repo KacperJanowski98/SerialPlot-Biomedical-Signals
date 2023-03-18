@@ -6,36 +6,36 @@ Fft::Fft()
     flagReset = false;
     flagOverBuff = false;
     flagChangeSize = false;
-    fftBufferiN = nullptr;
-    fftBufferOUT = nullptr;
+    mFftBufferiN = nullptr;
+    mFftBufferOUT = nullptr;
 
-    offset = 0;
-    size = 0;
-    sizeControl = 0;
+    mOffset = 0;
+    mSize = 0;
+    mSizeControl = 0;
 }
 
 Fft::~Fft()
 {
-    if (fftBufferiN != nullptr)
-        delete[] fftBufferiN;
-    if (fftBufferOUT != nullptr)
-        delete[] fftBufferOUT;
+    if (mFftBufferiN != nullptr)
+        delete[] mFftBufferiN;
+    if (mFftBufferOUT != nullptr)
+        delete[] mFftBufferOUT;
 }
 
 void Fft::createFftBuffer(double *data, unsigned size, unsigned ns)
 {
     unsigned newSize = size * 4;
 
-    if (fftBufferiN == nullptr)
+    if (mFftBufferiN == nullptr)
     {
 //        qDebug() << "Tworze nowy fftBufferIN o wielkosci: " << newSize;
-        fftBufferiN = new double[newSize]();
-        sizeControl = size;
+        mFftBufferiN = new double[newSize]();
+        mSizeControl = size;
     }
 
-    if (fftBufferOUT == nullptr)
+    if (mFftBufferOUT == nullptr)
 //        qDebug() << "Tworze nowy fftBufferOUT o wielkosci: " << newSize/2;
-        fftBufferOUT =  new double[newSize/2]();
+        mFftBufferOUT =  new double[newSize/2]();
 
     if (flagReset)
     {
@@ -47,35 +47,35 @@ void Fft::createFftBuffer(double *data, unsigned size, unsigned ns)
     if (flagOverBuff)
     {
 //        qDebug() << "wlaczona flaga flagOverBuff";
-        offset = 0;
-        sizeControl = size;
+        mOffset = 0;
+        mSizeControl = size;
         flagOverBuff = false;
 
-        if (fftBufferiN != nullptr)
+        if (mFftBufferiN != nullptr)
         {
 //            qDebug() << "usuwam i tworze nowy fftBufferIN o wielkosci: " << newSize;
-            delete[] fftBufferiN;
-            fftBufferiN = new double[newSize]();
+            delete[] mFftBufferiN;
+            mFftBufferiN = new double[newSize]();
         }
-        if (fftBufferOUT != nullptr)
+        if (mFftBufferOUT != nullptr)
         {
 //            qDebug() << "usuwam i tworze nowy fftBufferOUT o wielkosci: " << newSize/2;
-            delete[] fftBufferOUT;
-            fftBufferOUT = new double[newSize/2]();
+            delete[] mFftBufferOUT;
+            mFftBufferOUT = new double[newSize/2]();
         }
     }
 
-    memcpy(fftBufferiN + offset, data, ns*sizeof(double));
+    memcpy(mFftBufferiN + mOffset, data, ns*sizeof(double));
 //        for(unsigned i = 0; i < ns; i++)
 //        {
 //            qDebug() << "Calc, index: "<< i+offset << "val: " << fftBufferiN[i+offset];
 //        }
-    offset += ns;
+    mOffset += ns;
 
 //    qDebug() << "offset: " << offset;
 //    qDebug() << "sizeControl: " << sizeControl << " size: " << size;
 
-    if (offset >= sizeControl)
+    if (mOffset >= mSizeControl)
     {
 //        qDebug() << "offset " << offset << " wiekszy rowny od sizeControl: " << sizeControl << ", ustawiona flagOverBuff";
         flagOverBuff = true;
@@ -85,18 +85,18 @@ void Fft::createFftBuffer(double *data, unsigned size, unsigned ns)
 //void Fft::calculateFft(double* dataIn, unsigned n)
 void Fft::calculateFft()
 {
-    mFftIn  = fftw_alloc_real(offset);
-    mFftOut = fftw_alloc_real(offset);
-    mFftPlan = fftw_plan_r2r_1d(offset, mFftIn, mFftOut, FFTW_R2HC, FFTW_ESTIMATE);
+    mFftIn  = fftw_alloc_real(mOffset);
+    mFftOut = fftw_alloc_real(mOffset);
+    mFftPlan = fftw_plan_r2r_1d(mOffset, mFftIn, mFftOut, FFTW_R2HC, FFTW_ESTIMATE);
 
-    memcpy(mFftIn, fftBufferiN, offset*sizeof(double));
+    memcpy(mFftIn, mFftBufferiN, mOffset*sizeof(double));
 
     fftw_execute(mFftPlan);
 
-    for (unsigned i = 0; i < offset/2; i++)
+    for (unsigned i = 0; i < mOffset/2; i++)
     {
 //        dataOut[i] = abs(mFftOut[i]);
-        fftBufferOUT[i] = abs(mFftOut[i]);
+        mFftBufferOUT[i] = abs(mFftOut[i]);
 //        qDebug() << "Value: " << abs(mFftOut[i]);
     }
 
@@ -112,8 +112,8 @@ void Fft::clearFft()
 
 double* Fft::getDataBuffer()
 {
-    if (fftBufferiN != nullptr){
-        return fftBufferiN;
+    if (mFftBufferiN != nullptr){
+        return mFftBufferiN;
     } else
     {
         return nullptr;
@@ -122,8 +122,8 @@ double* Fft::getDataBuffer()
 
 double* Fft::getFftBuffer()
 {
-    if (fftBufferOUT != nullptr){
-        return fftBufferOUT;
+    if (mFftBufferOUT != nullptr){
+        return mFftBufferOUT;
     } else
     {
         return nullptr;
@@ -132,15 +132,15 @@ double* Fft::getFftBuffer()
 
 unsigned Fft::getFftSize()
 {
-    return offset/2;
+    return mOffset/2;
 }
 
 unsigned Fft::getOffset()
 {
-    return offset;
+    return mOffset;
 }
 
 unsigned Fft::getSize()
 {
-   return sizeControl;
+   return mSizeControl;
 }

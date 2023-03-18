@@ -23,14 +23,14 @@ private:
     fftw_plan mFftPlan;
     double *mFftIn;
     double *mFftOut;
-    double *fftBufferiN;
-    double *fftBufferOUT;
-    unsigned offset;
+    double *mFftBufferiN;
+    double *mFftBufferOUT;
+    unsigned mOffset;
     bool flagReset;
     bool flagOverBuff;
     bool flagChangeSize;
-    unsigned size;
-    unsigned sizeControl;
+    unsigned mSize;
+    unsigned mSizeControl;
 };
 
 #endif  // FFT_H
