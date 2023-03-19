@@ -35,14 +35,17 @@ Stream::Stream(unsigned nc, bool x, unsigned ns) :
     xMin = 0;
     xMax = 1;
 
-    flagIIR = false;
-
     mFft = new Fft();
     mSize = 0;
 
-    const float fs = 300;
-    const float ecg_max_f = 50;
-    lp.setup(fs,ecg_max_f);
+    mLowPass = new ButterworthFilter(ButterworthType::LowPass,
+                                     FilterOrder::Order4,
+                                     300,
+                                     10);
+
+//    const float fs = 300;
+//    const float ecg_max_f = 50;
+//    lp.setup(fs,ecg_max_f);
 
     // create xdata buffer
     _hasx = x;
@@ -75,6 +78,7 @@ Stream::~Stream()
     }
     delete xData;
     delete mFft;
+    delete mLowPass;
 }
 
 bool Stream::hasX() const
@@ -252,17 +256,18 @@ void Stream::feedIn(const SamplePack& pack)
             auto buf = static_cast<RingBuffer*>(channels[ci]->yData());
             double* data = (mPack == nullptr) ? pack.data(ci) : mPack->data(ci);
             buf->addSamples(data, ns);
-            mSize = buf->size();
-            mFft->createFftBuffer(data, mSize, ns);
+//            mSize = buf->size();
+//            mFft->createFftBuffer(data, mSize, ns);
         }
         else // Filtered data
         {
             auto buf = static_cast<RingBuffer*>(channels[ci]->yData());
             double* data = (mPack == nullptr) ? pack.data(0) : mPack->data(0);
-            filterData(data, ns);
+//            filterData(data, ns);
+            mLowPass->filterData(data, ns);
             buf->addSamples(data, ns);
-//            size = buf->size();
-//            mFft->createFftBuffer(data, size, ns);
+            mSize = buf->size();
+            mFft->createFftBuffer(data, mSize, ns);
         }
     }
 

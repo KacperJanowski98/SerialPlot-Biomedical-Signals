@@ -34,6 +34,7 @@
 #include "fft.h"
 // IIR
 #include "Iir.h"
+#include "butterworthfilter.h"
 
 /**
  * Main waveform storage class. It consists of channels. Channels are
@@ -123,7 +124,7 @@ private:
 
     // Filter
     Iir::Butterworth::LowPass<4> lp;
-    bool flagIIR;
+    ButterworthFilter* mLowPass;
 
     /**
      * Applies gain and offset to given pack.

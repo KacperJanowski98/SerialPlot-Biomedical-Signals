@@ -1,6 +1,0 @@
-#ifndef SIGNALFILTER_H
-#define SIGNALFILTER_H
-
-
-
-#endif // SIGNALFILTER_H
