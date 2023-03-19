@@ -44,6 +44,7 @@
 #include "snapshotmanager.h"
 #include "plotmanager.h"
 #include "plotmenu.h"
+#include "filtercontrol.h"
 #include "fftcontrol.h"
 #include "updatecheckdialog.h"
 #include "samplecounter.h"
@@ -96,6 +97,8 @@ private:
     DataTextView textView;
     UpdateCheckDialog updateCheckDialog;
     BPSLabel bpsLabel;
+
+    FilterControl filterControl;
 
     FftControl fftControl;
     unsigned startRange;

@@ -1,5 +1,12 @@
 #pragma once
 
+enum class FilterType
+{
+    Butterworth,
+    ChebyshevI,
+    ChebyshevII
+};
+
 enum class ButterworthType
 {
     LowPass,
@@ -22,16 +29,6 @@ enum class ChebyshevIIType
     HighPass,
     BandPass,
     BandStop
-};
-
-enum class RBJType
-{
-    LowPass,
-    HighPass,
-    BandPass1,
-    BandPass2,
-    BandStop,
-    IIRNotch,
 };
 
 enum class FilterOrder

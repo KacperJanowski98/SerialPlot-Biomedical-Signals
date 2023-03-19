@@ -53,11 +53,12 @@ const QMap<int, QString> panelSettingMap({
         {0, "Port"},
         {1, "DataFormat"},
         {2, "Plot"},
-        {3, "FftControl"},
-        {4, "Commands"},
-        {5, "Record"},
-        {6, "TextView"},
-        {7, "Log"}
+        {3, "FilterControl"},
+        {4, "FftControl"},
+        {5, "Commands"},
+        {6, "Record"},
+        {7, "TextView"},
+        {8, "Log"}
     });
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -81,10 +82,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tabWidget->insertTab(0, &portControl, "Port");
     ui->tabWidget->insertTab(1, &dataFormatPanel, "Data Format");
     ui->tabWidget->insertTab(2, &plotControlPanel, "Plot");
-    ui->tabWidget->insertTab(3, &fftControl, "FFT Control");
-    ui->tabWidget->insertTab(4, &commandPanel, "Commands");
-    ui->tabWidget->insertTab(5, &recordPanel, "Record");
-    ui->tabWidget->insertTab(6, &textView, "Text View");
+    ui->tabWidget->insertTab(3, &filterControl, "Filter Control");
+    ui->tabWidget->insertTab(4, &fftControl, "FFT Control");
+    ui->tabWidget->insertTab(5, &commandPanel, "Commands");
+    ui->tabWidget->insertTab(6, &recordPanel, "Record");
+    ui->tabWidget->insertTab(7, &textView, "Text View");
     ui->tabWidget->setCurrentIndex(0);
     auto tbPortControl = portControl.toolBar();
     addToolBar(tbPortControl);

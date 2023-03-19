@@ -76,6 +76,7 @@ qt5_wrap_ui(UI_FILES
     ${CMAKE_CURRENT_LIST_DIR}/src/updatecheckdialog.ui
     ${CMAKE_CURRENT_LIST_DIR}/src/datatextview.ui
     ${CMAKE_CURRENT_LIST_DIR}/src/fftcontrol.ui
+    ${CMAKE_CURRENT_LIST_DIR}/src/filtercontrol.ui
 )
 
 if (WIN32)
@@ -147,6 +148,7 @@ add_executable(${PROGRAM_NAME} WIN32
     ${CMAKE_CURRENT_LIST_DIR}/src/bpslabel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/fft.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/fftcontrol.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/filtercontrol.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/butterworthfilter.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/chebyshevI.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/chebyshevII.cpp
