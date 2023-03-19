@@ -38,14 +38,11 @@ Stream::Stream(unsigned nc, bool x, unsigned ns) :
     mFft = new Fft();
     mSize = 0;
 
-    mLowPass = new ButterworthFilter(ButterworthType::LowPass,
-                                     FilterOrder::Order4,
-                                     300,
-                                     10);
-
-//    const float fs = 300;
-//    const float ecg_max_f = 50;
-//    lp.setup(fs,ecg_max_f);
+    mLowPass = new ChebyshevIFilter(ChebyshevIType::LowPass,
+                                      FilterOrder::Order5,
+                                      300,
+                                      10,
+                                      5);
 
     // create xdata buffer
     _hasx = x;
@@ -305,23 +302,6 @@ void Stream::setNumSamples(unsigned value)
     for (auto c : channels)
     {
         static_cast<RingBuffer*>(c->yData())->resize(value);
-    }
-}
-
-void Stream::filterData(double *data, unsigned ns)
-{
-//    const float fs = 300;
-
-//    const float ecg_max_f = 15;
-//    Iir::Butterworth::LowPass<4> lp;
-//    lp.setup(fs,ecg_max_f);
-
-//    qDebug() << "Liczba probek: " << ns;
-
-    for (unsigned i = 0; i < ns; i++)
-    {
-        data[i] = lp.filter(data[i]);
-//        qDebug() << "Index: " << i << " dane: " << data[i];
     }
 }
 

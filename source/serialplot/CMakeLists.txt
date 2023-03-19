@@ -148,6 +148,7 @@ add_executable(${PROGRAM_NAME} WIN32
     ${CMAKE_CURRENT_LIST_DIR}/src/fft.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/fftcontrol.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/butterworthfilter.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/chebyshevI.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/qcustomplot.cpp
     ${CMAKE_CURRENT_LIST_DIR}/misc/windows_icon.rc
     ${UI_FILES}

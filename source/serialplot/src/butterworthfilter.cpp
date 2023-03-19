@@ -3,18 +3,18 @@
 ButterworthFilter::ButterworthFilter(ButterworthType type,
                                        FilterOrder order,
                                        double samplingFreq,
-                                       double maxFreq)
+                                       double cutoffFreq)
     : mType(type)
     , mOrder(order)
     , mSamplingFreq(samplingFreq)
-    , mMaxFreq(maxFreq)
+    , mCutoffFreq(cutoffFreq)
 {
     switch (mType) {
     case ButterworthType::LowPass:
-        mLowPass.setup(static_cast<int>(mOrder), mSamplingFreq, mMaxFreq);
+        mLowPass.setup(static_cast<int>(mOrder), mSamplingFreq, mCutoffFreq);
         break;
     case ButterworthType::HighPass:
-        mHighPass.setup(static_cast<int>(mOrder), mSamplingFreq, mMaxFreq);
+        mHighPass.setup(static_cast<int>(mOrder), mSamplingFreq, mCutoffFreq);
         break;
     default:
         break;
@@ -48,7 +48,6 @@ void ButterworthFilter::filterData(double *data, unsigned ns)
 {
     for (unsigned i = 0; i < ns; i++)
     {
-        data[i] = mLowPass.filter(data[i]);
         switch (mType) {
         case ButterworthType::LowPass:
             data[i] = mLowPass.filter(data[i]);

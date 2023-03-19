@@ -35,6 +35,7 @@
 // IIR
 #include "Iir.h"
 #include "butterworthfilter.h"
+#include "chebyshevI.h"
 
 /**
  * Main waveform storage class. It consists of channels. Channels are
@@ -70,7 +71,6 @@ public:
     unsigned getFftSize();
     void clearFft();
     // Filter
-    void filterData(double *data, unsigned ns);
 
     /// Saves channel information
     void saveSettings(QSettings* settings) const;
@@ -123,8 +123,7 @@ private:
     unsigned mSize;
 
     // Filter
-    Iir::Butterworth::LowPass<4> lp;
-    ButterworthFilter* mLowPass;
+    ChebyshevIFilter* mLowPass;
 
     /**
      * Applies gain and offset to given pack.
