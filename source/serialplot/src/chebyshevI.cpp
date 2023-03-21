@@ -1,6 +1,6 @@
 #include "chebyshevI.h"
 
-ChebyshevIFilter::ChebyshevIFilter(ChebyshevIType type,
+ChebyshevIFilter::ChebyshevIFilter(FilterType type,
                                    FilterOrder order,
                                    double samplingFreq,
                                    double cutoffFreq,
@@ -12,10 +12,10 @@ ChebyshevIFilter::ChebyshevIFilter(ChebyshevIType type,
     , mRippleDb(rippleDb)
 {
     switch (mType) {
-    case ChebyshevIType::LowPass:
+    case FilterType::LowPass:
         mLowPass.setup(static_cast<int>(mOrder), mSamplingFreq, mCutoffFreq, mRippleDb);
         break;
-    case ChebyshevIType::HighPass:
+    case FilterType::HighPass:
         mHighPass.setup(static_cast<int>(mOrder), mSamplingFreq, mCutoffFreq, mRippleDb);
         break;
     default:
@@ -23,7 +23,7 @@ ChebyshevIFilter::ChebyshevIFilter(ChebyshevIType type,
     }
 }
 
-ChebyshevIFilter::ChebyshevIFilter(ChebyshevIType type,
+ChebyshevIFilter::ChebyshevIFilter(FilterType type,
                                    FilterOrder order,
                                    double samplingFreq,
                                    double rippleDb,
@@ -37,10 +37,10 @@ ChebyshevIFilter::ChebyshevIFilter(ChebyshevIType type,
     , mWidthFreq(widthFreq)
 {
     switch (mType) {
-    case ChebyshevIType::BandPass:
+    case FilterType::BandPass:
         mBandPass.setup(static_cast<int>(mOrder), mSamplingFreq, mCenterFreq, mWidthFreq, mRippleDb);
         break;
-    case ChebyshevIType::BandStop:
+    case FilterType::BandStop:
         mBandStop.setup(static_cast<int>(mOrder), mSamplingFreq, mCenterFreq, mWidthFreq, mRippleDb);
         break;
     default:
@@ -53,16 +53,16 @@ void ChebyshevIFilter::filterData(double *data, unsigned ns)
     for(unsigned i = 0; i < ns; i++)
     {
         switch (mType) {
-        case ChebyshevIType::LowPass:
+        case FilterType::LowPass:
             data[i] = mLowPass.filter(data[i]);
             break;
-        case ChebyshevIType::HighPass:
+        case FilterType::HighPass:
             data[i] = mHighPass.filter(data[i]);
             break;
-        case ChebyshevIType::BandPass:
+        case FilterType::BandPass:
             data[i] = mBandPass.filter(data[i]);
             break;
-        case ChebyshevIType::BandStop:
+        case FilterType::BandStop:
             data[i] = mBandStop.filter(data[i]);
             break;
         default:

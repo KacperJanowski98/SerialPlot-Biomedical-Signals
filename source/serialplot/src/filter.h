@@ -1,34 +1,18 @@
 #pragma once
 
+enum class FilterVersion
+{
+    Butterworth = 0,
+    ChebyshevI = 1,
+    ChebyshevII = 2
+};
+
 enum class FilterType
 {
-    Butterworth,
-    ChebyshevI,
-    ChebyshevII
-};
-
-enum class ButterworthType
-{
-    LowPass,
-    HighPass,
-    BandPass,
-    BandStop
-};
-
-enum class ChebyshevIType
-{
-    LowPass,
-    HighPass,
-    BandPass,
-    BandStop
-};
-
-enum class ChebyshevIIType
-{
-    LowPass,
-    HighPass,
-    BandPass,
-    BandStop
+    LowPass = 0,
+    HighPass = 1,
+    BandPass = 2,
+    BandStop = 3
 };
 
 enum class FilterOrder
@@ -42,5 +26,5 @@ enum class FilterOrder
     Order7 = 7,
     Order8 = 8,
     Order9 = 9,
-    Order10 = 10,
+    Order10 = 10
 };

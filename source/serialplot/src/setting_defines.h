@@ -30,6 +30,8 @@ const char SettingGroup_Channels[] = "Channels";
 const char SettingGroup_Plot[] = "Plot";
 // FFT Control
 const char SettingGroup_FftControl[] = "FftControl";
+// Filtering
+const char SettingGroup_FilterControl[] = "FilterControl";
 const char SettingGroup_Commands[] = "Commands";
 const char SettingGroup_Record[] = "Record";
 const char SettingGroup_TextView[] = "TextView";
@@ -108,6 +110,27 @@ const char SG_Plot_Symbols[] = "symbols";
 const char SG_FftControl_samplingFreq[] = "samplingFreq";
 const char SG_FftControl_freqRangeStart[] = "freqRangeStart";
 const char SG_FftControl_freqRangeEnd[] = "freqRangeEnd";
+
+// Filter Control keys
+const char SG_FilterControl_filterVersion[] = "filterVersion";
+const char SG_FilterControl_filterType[] = "filterType";
+const char SG_FilterControl_filterOrderB[] = "filterOrderB";
+const char SG_FilterControl_filterOrderChI[] = "filterOrderChI";
+const char SG_FilterControl_filterOrderChII[] = "filterOrderChII";
+const char SG_FilterControl_samplingFreqB[] = "samplingFreqB";
+const char SG_FilterControl_samplingFreqChI[] = "samplingFreqChI";
+const char SG_FilterControl_samplingFreqChII[] = "samplingFreqChII";
+const char SG_FilterControl_cutoffFreqB[] = "cutoffFreqB";
+const char SG_FilterControl_cutoffFreqChI[] = "cutoffFreqChI";
+const char SG_FilterControl_cutoffFreqChII[] = "cutoffFreqChII";
+const char SG_FilterControl_centerFreqB[] = "centerFreqB";
+const char SG_FilterControl_centerFreqChI[] = "centerFreqChI";
+const char SG_FilterControl_centerFreqChII[] = "centerFreqChII";
+const char SG_FilterControl_widthFreqB[] = "widthFreqB";
+const char SG_FilterControl_widthFreqChI[] = "widthFreqChI";
+const char SG_FilterControl_widthFreqChII[] = "widthFreqChII";
+const char SG_FilterControl_rippleChI[] = "rippleChI";
+const char SG_FilterControl_stopBandChII[] = "stopBandChII";
 
 // command setting keys
 const char SG_Commands_Command[] = "command";

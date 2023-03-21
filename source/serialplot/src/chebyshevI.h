@@ -9,13 +9,13 @@
 class ChebyshevIFilter
 {
 public:
-    ChebyshevIFilter(ChebyshevIType type,
+    ChebyshevIFilter(FilterType type,
                      FilterOrder order,
                      double samplingFreq,
                      double cutoffFreq,
                      double rippleDb);
 
-    ChebyshevIFilter(ChebyshevIType type,
+    ChebyshevIFilter(FilterType type,
                      FilterOrder order,
                      double samplingFreq,
                      double rippleDb,
@@ -27,7 +27,7 @@ public:
     void filterData(double *data, unsigned ns);
 
 private:
-    ChebyshevIType mType;
+    FilterType mType;
     FilterOrder mOrder;
     double mSamplingFreq;   // for LowPass, HighPass, BandPass, BandStop filter
     double mCutoffFreq;     // for LowPass, HighPass filter

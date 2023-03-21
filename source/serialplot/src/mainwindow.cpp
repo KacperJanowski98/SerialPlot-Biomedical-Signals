@@ -622,6 +622,7 @@ void MainWindow::saveAllSettings(QSettings* settings)
     plotControlPanel.saveSettings(settings);
     plotMenu.saveSettings(settings);
     fftControl.saveSettings(settings);
+    filterControl.saveSettings(settings);
     commandPanel.saveSettings(settings);
     recordPanel.saveSettings(settings);
     textView.saveSettings(settings);
@@ -637,6 +638,7 @@ void MainWindow::loadAllSettings(QSettings* settings)
     plotControlPanel.loadSettings(settings);
     plotMenu.loadSettings(settings);
     fftControl.loadSettings(settings);
+    filterControl.loadSettings(settings);
     commandPanel.loadSettings(settings);
     recordPanel.loadSettings(settings);
     textView.loadSettings(settings);

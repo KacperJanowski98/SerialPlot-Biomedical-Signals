@@ -38,11 +38,11 @@ Stream::Stream(unsigned nc, bool x, unsigned ns) :
     mFft = new Fft();
     mSize = 0;
 
-    mLowPass = new ChebyshevIFilter(ChebyshevIType::LowPass,
-                                      FilterOrder::Order5,
-                                      300,
-                                      10,
-                                      5);
+    mLowPass = new ChebyshevIFilter(FilterType::LowPass,
+                                    FilterOrder::Order5,
+                                    300,
+                                    10,
+                                    5);
 
     // create xdata buffer
     _hasx = x;

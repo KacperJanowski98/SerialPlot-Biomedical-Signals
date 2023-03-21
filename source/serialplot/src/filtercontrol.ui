@@ -200,6 +200,9 @@
           <height>16777215</height>
          </size>
         </property>
+        <property name="maximum">
+         <number>10000000</number>
+        </property>
        </widget>
       </item>
       <item row="2" column="0">
@@ -217,12 +220,12 @@
          </size>
         </property>
         <property name="text">
-         <string>Cut off Frequency</string>
+         <string>Cutoff Frequency</string>
         </property>
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QSpinBox" name="sbCutOffFreqButterworth">
+       <widget class="QSpinBox" name="sbCutoffFreqButterworth">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -234,6 +237,9 @@
           <width>100</width>
           <height>16777215</height>
          </size>
+        </property>
+        <property name="maximum">
+         <number>10000000</number>
         </property>
        </widget>
       </item>
@@ -270,6 +276,9 @@
           <height>16777215</height>
          </size>
         </property>
+        <property name="maximum">
+         <number>10000000</number>
+        </property>
        </widget>
       </item>
       <item row="4" column="0">
@@ -304,6 +313,9 @@
           <width>100</width>
           <height>16777215</height>
          </size>
+        </property>
+        <property name="maximum">
+         <number>10000000</number>
         </property>
        </widget>
       </item>
@@ -512,6 +524,9 @@
           <height>16777215</height>
          </size>
         </property>
+        <property name="maximum">
+         <number>10000000</number>
+        </property>
        </widget>
       </item>
       <item row="2" column="0">
@@ -529,12 +544,12 @@
          </size>
         </property>
         <property name="text">
-         <string>Cut off Frequency</string>
+         <string>Cutoff Frequency</string>
         </property>
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QSpinBox" name="sbCutOffFreqChebyshevI">
+       <widget class="QSpinBox" name="sbCutoffFreqChebyshevI">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -546,6 +561,9 @@
           <width>100</width>
           <height>16777215</height>
          </size>
+        </property>
+        <property name="maximum">
+         <number>10000000</number>
         </property>
        </widget>
       </item>
@@ -582,6 +600,9 @@
           <height>16777215</height>
          </size>
         </property>
+        <property name="maximum">
+         <number>10000000</number>
+        </property>
        </widget>
       </item>
       <item row="4" column="0">
@@ -616,6 +637,9 @@
           <width>100</width>
           <height>16777215</height>
          </size>
+        </property>
+        <property name="maximum">
+         <number>10000000</number>
         </property>
        </widget>
       </item>
@@ -652,6 +676,9 @@
           <height>16777215</height>
          </size>
         </property>
+        <property name="maximum">
+         <number>10000000</number>
+        </property>
        </widget>
       </item>
      </layout>
@@ -686,7 +713,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QComboBox" name="cbChebyshevII">
+       <widget class="QComboBox" name="cbOrderChebyshevII">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -771,7 +798,7 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QSpinBox" name="spinBox_11">
+       <widget class="QSpinBox" name="sbSamplingFreqChebyshevII">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -783,6 +810,9 @@
           <width>100</width>
           <height>16777215</height>
          </size>
+        </property>
+        <property name="maximum">
+         <number>10000000</number>
         </property>
        </widget>
       </item>
@@ -801,12 +831,12 @@
          </size>
         </property>
         <property name="text">
-         <string>Cut off Frequency</string>
+         <string>Cutoff Frequency</string>
         </property>
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QSpinBox" name="spinBox_12">
+       <widget class="QSpinBox" name="sbCutoffFreqChebyshevII">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -818,6 +848,9 @@
           <width>100</width>
           <height>16777215</height>
          </size>
+        </property>
+        <property name="maximum">
+         <number>10000000</number>
         </property>
        </widget>
       </item>
@@ -841,7 +874,7 @@
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QSpinBox" name="spinBox_13">
+       <widget class="QSpinBox" name="sbCenterFreqChebyshevII">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -853,6 +886,9 @@
           <width>100</width>
           <height>16777215</height>
          </size>
+        </property>
+        <property name="maximum">
+         <number>10000000</number>
         </property>
        </widget>
       </item>
@@ -876,7 +912,7 @@
        </widget>
       </item>
       <item row="4" column="1">
-       <widget class="QSpinBox" name="spinBox_14">
+       <widget class="QSpinBox" name="sbWidthFreqChebyshevII">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -888,6 +924,9 @@
           <width>100</width>
           <height>16777215</height>
          </size>
+        </property>
+        <property name="maximum">
+         <number>10000000</number>
         </property>
        </widget>
       </item>
@@ -911,7 +950,7 @@
        </widget>
       </item>
       <item row="5" column="1">
-       <widget class="QSpinBox" name="spinBox_15">
+       <widget class="QSpinBox" name="sbStopBandChebyshevII">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -923,6 +962,9 @@
           <width>100</width>
           <height>16777215</height>
          </size>
+        </property>
+        <property name="maximum">
+         <number>10000000</number>
         </property>
        </widget>
       </item>

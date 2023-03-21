@@ -1,6 +1,6 @@
 #include "butterworthfilter.h"
 
-ButterworthFilter::ButterworthFilter(ButterworthType type,
+ButterworthFilter::ButterworthFilter(FilterType type,
                                        FilterOrder order,
                                        double samplingFreq,
                                        double cutoffFreq)
@@ -10,10 +10,10 @@ ButterworthFilter::ButterworthFilter(ButterworthType type,
     , mCutoffFreq(cutoffFreq)
 {
     switch (mType) {
-    case ButterworthType::LowPass:
+    case FilterType::LowPass:
         mLowPass.setup(static_cast<int>(mOrder), mSamplingFreq, mCutoffFreq);
         break;
-    case ButterworthType::HighPass:
+    case FilterType::HighPass:
         mHighPass.setup(static_cast<int>(mOrder), mSamplingFreq, mCutoffFreq);
         break;
     default:
@@ -21,7 +21,7 @@ ButterworthFilter::ButterworthFilter(ButterworthType type,
     }
 }
 
-ButterworthFilter::ButterworthFilter(ButterworthType type,
+ButterworthFilter::ButterworthFilter(FilterType type,
                                      FilterOrder order,
                                      double samplingFreq,
                                      double centerFreq,
@@ -33,10 +33,10 @@ ButterworthFilter::ButterworthFilter(ButterworthType type,
     , mWidthFreq(widthFreq)
 {
     switch (mType) {
-    case ButterworthType::BandPass:
+    case FilterType::BandPass:
         mBandPass.setup(static_cast<int>(mOrder), mSamplingFreq, mCenterFreq, mWidthFreq);
         break;
-    case ButterworthType::BandStop:
+    case FilterType::BandStop:
         mBandStop.setupN(static_cast<int>(mOrder), mSamplingFreq, mCenterFreq, mWidthFreq);
         break;
     default:
@@ -49,16 +49,16 @@ void ButterworthFilter::filterData(double *data, unsigned ns)
     for (unsigned i = 0; i < ns; i++)
     {
         switch (mType) {
-        case ButterworthType::LowPass:
+        case FilterType::LowPass:
             data[i] = mLowPass.filter(data[i]);
             break;
-        case ButterworthType::HighPass:
+        case FilterType::HighPass:
             data[i] = mHighPass.filter(data[i]);
             break;
-        case ButterworthType::BandPass:
+        case FilterType::BandPass:
             data[i] = mBandPass.filter(data[i]);
             break;
-        case ButterworthType::BandStop:
+        case FilterType::BandStop:
             data[i] = mBandStop.filter(data[i]);
             break;
         default:
