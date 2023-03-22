@@ -126,6 +126,8 @@ private:
     /// `QWidget::closeEvent` handler
     void closeEvent(QCloseEvent * event);
 
+    void updateFilterParameter();
+
 public slots:
     // FFT
     void fftPlot();
@@ -144,6 +146,7 @@ private slots:
 //    void onFrequencyRangeStartChanged(int value);
 //    void onFrequencyRangeEndChanged(int value);
     void onButtonApplyPressed(bool state);
+    void onButtonApplyPressedFiltering(bool state);
 
     void clearPlot();
     void onSpsChanged(float sps);

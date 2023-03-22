@@ -72,6 +72,27 @@ public:
     double* getFftBuffer();
     unsigned getFftSize();
     void clearFft();
+    // Filtering
+    void setupFilter();
+    void setFilterVersion(int version);
+    void setFilterType(int type);
+    void setFilterOrderButterworth(int order);
+    void setFilterOrderChebyshevI(int order);
+    void setFilterOrderChebyshevII(int order);
+    void setSamplingFreqButterworth(double freq);
+    void setSamplingFreqChebyshevI(double freq);
+    void setSamplingFreqChebyshevII(double freq);
+    void setCutoffFreqButterworth(double freq);
+    void setCutoffFreqChebyshevI(double freq);
+    void setCutoffFreqChebyshevII(double freq);
+    void setCenterFreqButterworth(double freq);
+    void setCenterFreqChebyshevI(double freq);
+    void setCenterFreqChebyshevII(double freq);
+    void setWidthFreqButterworth(double freq);
+    void setWidthFreqChebyshevI(double freq);
+    void setWidthFreqChebyshevII(double freq);
+    void setRippleChebyshevI(double ripple);
+    void setStopBandChebyshevII(double band);
 
     /// Saves channel information
     void saveSettings(QSettings* settings) const;

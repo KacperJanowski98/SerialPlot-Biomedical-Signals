@@ -9,6 +9,8 @@ FilterControl::FilterControl(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ui->buttonApply->setEnabled(true);
+
     // setup filter version selection widget
     filterVersionButtons.addButton(ui->rbButterworth, static_cast<int>(FilterVersion::Butterworth));
     filterVersionButtons.addButton(ui->rbChebyshevI, static_cast<int>(FilterVersion::ChebyshevI));
@@ -287,6 +289,18 @@ void FilterControl::onFilterType(int index)
 void FilterControl::onFilterVersion(bool state)
 {
     filterControlPanelUpdate();
+}
+
+void FilterControl::onPortToggled(bool open)
+{
+    if (open)
+    {
+        ui->buttonApply->setEnabled(false);
+    }
+    else
+    {
+        ui->buttonApply->setEnabled(true);
+    }
 }
 
 void FilterControl::saveSettings(QSettings* settings)

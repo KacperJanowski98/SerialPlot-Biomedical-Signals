@@ -168,6 +168,8 @@ MainWindow::MainWindow(QWidget *parent) :
     // port control signals
     QObject::connect(&portControl, &PortControl::portToggled,
                      this, &MainWindow::onPortToggled);
+    QObject::connect(&portControl, &PortControl::portToggled,
+                     &filterControl, &FilterControl::onPortToggled);
 
     // plot control signals
     connect(&plotControlPanel, &PlotControlPanel::numOfSamplesChanged,
@@ -198,7 +200,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Filter Control
     connect(&filterControl, &FilterControl::buttonApplyPressd,
-            &stream, &Stream::setFilterParameter);
+            this, &MainWindow::onButtonApplyPressedFiltering);
+
+//    connect(&filterControl, &FilterControl::buttonApplyPressd,
+//            &stream, &Stream::setFilterParameter);
 
     // plot toolbar signals
     QObject::connect(ui->actionClear, SIGNAL(triggered(bool)),
@@ -302,6 +307,8 @@ MainWindow::MainWindow(QWidget *parent) :
     // Filter Control
     // Update control panel after load setting
     filterControl.filterControlPanelUpdate();
+
+    updateFilterParameter();
 
     handleCommandLineOptions(*QApplication::instance());
 
@@ -431,6 +438,31 @@ Try fixing the permissions of file: %1, or just delete it.").arg(file);
     QMainWindow::closeEvent(event);
 }
 
+void MainWindow::updateFilterParameter()
+{
+    stream.setFilterVersion(filterControl.getFilterVersion());
+    stream.setFilterType(filterControl.getFilterType());
+    stream.setFilterOrderButterworth(filterControl.getFilterOrderButterworth());
+    stream.setFilterOrderChebyshevI(filterControl.getFilterOrderChebyshevI());
+    stream.setFilterOrderChebyshevII(filterControl.getFilterOrderChebyshevII());
+    stream.setSamplingFreqButterworth(filterControl.getSamplingFreqButterworth());
+    stream.setSamplingFreqChebyshevI(filterControl.getSamplingFreqChebyshevI());
+    stream.setSamplingFreqChebyshevII(filterControl.getSamplingFreqChebyshevII());
+    stream.setCutoffFreqButterworth(filterControl.getCutoffFreqButterworth());
+    stream.setCutoffFreqChebyshevI(filterControl.getCutoffFreqChebyshevI());
+    stream.setCutoffFreqChebyshevII(filterControl.getCutoffFreqChebyshevII());
+    stream.setCenterFreqButterworth(filterControl.getCenterFreqButterworth());
+    stream.setCenterFreqChebyshevI(filterControl.getCenterFreqChebyshevI());
+    stream.setCenterFreqChebyshevII(filterControl.getCenterFreqChebyshevII());
+    stream.setWidthFreqButterworth(filterControl.getWidthFreqButterworth());
+    stream.setWidthFreqChebyshevI(filterControl.getWidthFreqChebyshevI());
+    stream.setWidthFreqChebyshevII(filterControl.getWidthFreqChebyshevII());
+    stream.setRippleChebyshevI(filterControl.getRippleChebyshevI());
+    stream.setStopBandChebyshevII(filterControl.getStopBandChebyshevII());
+
+    stream.setupFilter();
+}
+
 void MainWindow::setupAboutDialog()
 {
     Ui_AboutDialog uiAboutDialog;
@@ -456,6 +488,20 @@ void MainWindow::onButtonApplyPressed(bool state)
 
     ui->fftPlot->xAxis->setRange(startRange, endRange);
     ui->fftPlot->replot();
+}
+
+void MainWindow::onButtonApplyPressedFiltering(bool state)
+{
+//    if (state)
+//    {
+    stream.clear();
+    plotMan->replot();
+    // FFT
+    stream.clearFft();
+    ui->fftPlot->graph(0)->data()->clear();
+    ui->fftPlot->replot();
+//    }
+    updateFilterParameter();
 }
 
 void MainWindow::onPortToggled(bool open)

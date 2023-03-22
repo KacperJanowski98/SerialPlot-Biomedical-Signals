@@ -44,13 +44,6 @@ Stream::Stream(unsigned nc, bool x, unsigned ns) :
 //                                    10,
 //                                    5);
     mFilter = new FilterManager();
-    mFilter->setFilterVersion((int)FilterVersion::ChebyshevI);
-    mFilter->setFilterType((int)FilterType::LowPass);
-    mFilter->setFilterOrderChI((int)FilterOrder::Order5);
-    mFilter->setSamplingFreqChI(300);
-    mFilter->setCutoffFreqChI(10);
-    mFilter->setRippleChI(5);
-    mFilter->setupFilter();
 
     // create xdata buffer
     _hasx = x;
@@ -333,6 +326,115 @@ unsigned Stream::getFftSize()
 void Stream::clearFft()
 {
     mFft->clearFft();
+}
+
+void Stream::setupFilter()
+{
+    qDebug() << "Konfiguracja filtru";
+
+    mFilter->setupFilter();
+}
+
+void Stream::setFilterVersion(int version)
+{
+    mFilter->setFilterVersion(version);
+
+//    mFilter->setFilterVersion((int)FilterVersion::ChebyshevI);
+//    mFilter->setFilterType((int)FilterType::LowPass);
+//    mFilter->setFilterOrderChI((int)FilterOrder::Order5);
+//    mFilter->setSamplingFreqChI(300);
+//    mFilter->setCutoffFreqChI(10);
+//    mFilter->setRippleChI(5);
+}
+
+void Stream::setFilterType(int type)
+{
+    mFilter->setFilterType(type);
+}
+
+void Stream::setFilterOrderButterworth(int order)
+{
+    mFilter->setFilterOrderB(order);
+}
+
+void Stream::setFilterOrderChebyshevI(int order)
+{
+    mFilter->setFilterOrderChI(order);
+}
+
+void Stream::setFilterOrderChebyshevII(int order)
+{
+    mFilter->setFilterOrderChII(order);
+}
+
+void Stream::setSamplingFreqButterworth(double freq)
+{
+    mFilter->setSamplingFreqB(freq);
+}
+
+void Stream::setSamplingFreqChebyshevI(double freq)
+{
+    mFilter->setSamplingFreqChI(freq);
+}
+
+void Stream::setSamplingFreqChebyshevII(double freq)
+{
+    mFilter->setSamplingFreqChII(freq);
+}
+
+void Stream::setCutoffFreqButterworth(double freq)
+{
+    mFilter->setCutoffFreqB(freq);
+}
+
+void Stream::setCutoffFreqChebyshevI(double freq)
+{
+    mFilter->setCutoffFreqChI(freq);
+}
+
+void Stream::setCutoffFreqChebyshevII(double freq)
+{
+    mFilter->setCutoffFreqChII(freq);
+}
+
+void Stream::setCenterFreqButterworth(double freq)
+{
+    mFilter->setCenterFreqB(freq);
+}
+
+void Stream::setCenterFreqChebyshevI(double freq)
+{
+    mFilter->setCenterFreqChI(freq);
+}
+
+void Stream::setCenterFreqChebyshevII(double freq)
+{
+    mFilter->setCenterFreqChII(freq);
+}
+
+void Stream::setWidthFreqButterworth(double freq)
+{
+    mFilter->setWidthFreqB(freq);
+}
+
+void Stream::setWidthFreqChebyshevI(double freq)
+{
+    mFilter->setWidthFreqChI(freq);
+}
+
+void Stream::setWidthFreqChebyshevII(double freq)
+{
+    mFilter->setWidthFreqChII(freq);
+}
+
+void Stream::setRippleChebyshevI(double ripple)
+{
+    mFilter->setRippleChI(ripple);
+}
+
+void Stream::setStopBandChebyshevII(double band)
+{
+    mFilter->setStopBandChII(band);
 }
 
 void Stream::setXAxis(bool asIndex, double min, double max)

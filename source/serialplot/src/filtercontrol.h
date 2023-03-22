@@ -80,6 +80,8 @@ private slots:
     void onButtonApply(bool state);
     void onFilterType(int index);
     void onFilterVersion(bool state);
+public slots:
+    void onPortToggled(bool open);
 };
 
 #endif // FILTERCONTROL_H
