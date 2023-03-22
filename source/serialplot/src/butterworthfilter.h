@@ -9,13 +9,13 @@
 class ButterworthFilter
 {
 public:
-    ButterworthFilter(FilterType type,
-                      FilterOrder order,
+    ButterworthFilter(int type,
+                      int order,
                       double samplingFreq,
                       double cutoffFreq);
 
-    ButterworthFilter(FilterType type,
-                      FilterOrder order,
+    ButterworthFilter(int type,
+                      int order,
                       double samplingFreq,
                       double centerFreq,
                       double widthFreq);
@@ -25,8 +25,8 @@ public:
     void filterData(double *data, unsigned ns);
 
 private:
-    FilterType mType;
-    FilterOrder mOrder;
+    int mType;
+    int mOrder;
     double mSamplingFreq;   // for LowPass, HighPass, BandPass, BandStop filter
     double mCutoffFreq;     // for LowPass, HighPass filter
     double mCenterFreq;     // for BandPass, BandStop filter

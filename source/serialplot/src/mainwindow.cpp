@@ -196,6 +196,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&fftControl, &FftControl::buttonApplyPressd,
             this, &MainWindow::onButtonApplyPressed);
 
+    // Filter Control
+    connect(&filterControl, &FilterControl::buttonApplyPressd,
+            &stream, &Stream::setFilterParameter);
+
     // plot toolbar signals
     QObject::connect(ui->actionClear, SIGNAL(triggered(bool)),
                      this, SLOT(clearPlot()));

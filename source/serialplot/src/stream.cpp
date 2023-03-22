@@ -38,12 +38,19 @@ Stream::Stream(unsigned nc, bool x, unsigned ns) :
     mFft = new Fft();
     mSize = 0;
 
-    mLowPass = new ChebyshevIFilter(FilterType::BandPass,
-                                    FilterOrder::Order5,
-                                    300,
-                                    5,
-                                    149,
-                                    20);
+//    mLowPass = new ChebyshevIFilter((int)FilterType::LowPass,
+//                                    (int)FilterOrder::Order5,
+//                                    300,
+//                                    10,
+//                                    5);
+    mFilter = new FilterManager();
+    mFilter->setFilterVersion((int)FilterVersion::ChebyshevI);
+    mFilter->setFilterType((int)FilterType::LowPass);
+    mFilter->setFilterOrderChI((int)FilterOrder::Order5);
+    mFilter->setSamplingFreqChI(300);
+    mFilter->setCutoffFreqChI(10);
+    mFilter->setRippleChI(5);
+    mFilter->setupFilter();
 
     // create xdata buffer
     _hasx = x;
@@ -76,7 +83,8 @@ Stream::~Stream()
     }
     delete xData;
     delete mFft;
-    delete mLowPass;
+//    delete mLowPass;
+    delete mFilter;
 }
 
 bool Stream::hasX() const
@@ -262,7 +270,8 @@ void Stream::feedIn(const SamplePack& pack)
             auto buf = static_cast<RingBuffer*>(channels[ci]->yData());
             double* data = (mPack == nullptr) ? pack.data(0) : mPack->data(0);
 //            filterData(data, ns);
-            mLowPass->filterData(data, ns);
+//            mLowPass->filterData(data, ns);
+            mFilter->filterSignal(data, ns);
             buf->addSamples(data, ns);
             mSize = buf->size();
             mFft->createFftBuffer(data, mSize, ns);
@@ -292,6 +301,11 @@ void Stream::clear()
     {
         static_cast<RingBuffer*>(c->yData())->clear();
     }
+}
+
+void Stream::setFilterParameter()
+{
+    qDebug() << "Udalo sie dostac w odpowiednie miejsce!";
 }
 
 void Stream::setNumSamples(unsigned value)

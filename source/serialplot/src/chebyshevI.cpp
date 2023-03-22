@@ -1,7 +1,7 @@
 #include "chebyshevI.h"
 
-ChebyshevIFilter::ChebyshevIFilter(FilterType type,
-                                   FilterOrder order,
+ChebyshevIFilter::ChebyshevIFilter(int type,
+                                   int order,
                                    double samplingFreq,
                                    double cutoffFreq,
                                    double rippleDb)
@@ -12,19 +12,19 @@ ChebyshevIFilter::ChebyshevIFilter(FilterType type,
     , mRippleDb(rippleDb)
 {
     switch (mType) {
-    case FilterType::LowPass:
-        mLowPass.setup(static_cast<int>(mOrder), mSamplingFreq, mCutoffFreq, mRippleDb);
+    case 0:
+        mLowPass.setup(mOrder, mSamplingFreq, mCutoffFreq, mRippleDb);
         break;
-    case FilterType::HighPass:
-        mHighPass.setup(static_cast<int>(mOrder), mSamplingFreq, mCutoffFreq, mRippleDb);
+    case 1:
+        mHighPass.setup(mOrder, mSamplingFreq, mCutoffFreq, mRippleDb);
         break;
     default:
         break;
     }
 }
 
-ChebyshevIFilter::ChebyshevIFilter(FilterType type,
-                                   FilterOrder order,
+ChebyshevIFilter::ChebyshevIFilter(int type,
+                                   int order,
                                    double samplingFreq,
                                    double rippleDb,
                                    double centerFreq,
@@ -37,11 +37,11 @@ ChebyshevIFilter::ChebyshevIFilter(FilterType type,
     , mWidthFreq(widthFreq)
 {
     switch (mType) {
-    case FilterType::BandPass:
-        mBandPass.setup(static_cast<int>(mOrder), mSamplingFreq, mCenterFreq, mWidthFreq, mRippleDb);
+    case 2:
+        mBandPass.setup(mOrder, mSamplingFreq, mCenterFreq, mWidthFreq, mRippleDb);
         break;
-    case FilterType::BandStop:
-        mBandStop.setup(static_cast<int>(mOrder), mSamplingFreq, mCenterFreq, mWidthFreq, mRippleDb);
+    case 3:
+        mBandStop.setup(mOrder, mSamplingFreq, mCenterFreq, mWidthFreq, mRippleDb);
         break;
     default:
         break;
@@ -53,16 +53,16 @@ void ChebyshevIFilter::filterData(double *data, unsigned ns)
     for(unsigned i = 0; i < ns; i++)
     {
         switch (mType) {
-        case FilterType::LowPass:
+        case 0:
             data[i] = mLowPass.filter(data[i]);
             break;
-        case FilterType::HighPass:
+        case 1:
             data[i] = mHighPass.filter(data[i]);
             break;
-        case FilterType::BandPass:
+        case 2:
             data[i] = mBandPass.filter(data[i]);
             break;
-        case FilterType::BandStop:
+        case 3:
             data[i] = mBandStop.filter(data[i]);
             break;
         default:

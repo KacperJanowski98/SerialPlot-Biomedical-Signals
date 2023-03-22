@@ -1,7 +1,7 @@
 #include "butterworthfilter.h"
 
-ButterworthFilter::ButterworthFilter(FilterType type,
-                                       FilterOrder order,
+ButterworthFilter::ButterworthFilter(int type,
+                                       int order,
                                        double samplingFreq,
                                        double cutoffFreq)
     : mType(type)
@@ -10,19 +10,19 @@ ButterworthFilter::ButterworthFilter(FilterType type,
     , mCutoffFreq(cutoffFreq)
 {
     switch (mType) {
-    case FilterType::LowPass:
-        mLowPass.setup(static_cast<int>(mOrder), mSamplingFreq, mCutoffFreq);
+    case 0:
+        mLowPass.setup(mOrder, mSamplingFreq, mCutoffFreq);
         break;
-    case FilterType::HighPass:
-        mHighPass.setup(static_cast<int>(mOrder), mSamplingFreq, mCutoffFreq);
+    case 1:
+        mHighPass.setup(mOrder, mSamplingFreq, mCutoffFreq);
         break;
     default:
         break;
     }
 }
 
-ButterworthFilter::ButterworthFilter(FilterType type,
-                                     FilterOrder order,
+ButterworthFilter::ButterworthFilter(int type,
+                                     int order,
                                      double samplingFreq,
                                      double centerFreq,
                                      double widthFreq)
@@ -33,11 +33,11 @@ ButterworthFilter::ButterworthFilter(FilterType type,
     , mWidthFreq(widthFreq)
 {
     switch (mType) {
-    case FilterType::BandPass:
-        mBandPass.setup(static_cast<int>(mOrder), mSamplingFreq, mCenterFreq, mWidthFreq);
+    case 2:
+        mBandPass.setup(mOrder, mSamplingFreq, mCenterFreq, mWidthFreq);
         break;
-    case FilterType::BandStop:
-        mBandStop.setupN(static_cast<int>(mOrder), mSamplingFreq, mCenterFreq, mWidthFreq);
+    case 3:
+        mBandStop.setupN(mOrder, mSamplingFreq, mCenterFreq, mWidthFreq);
         break;
     default:
         break;
@@ -49,16 +49,16 @@ void ButterworthFilter::filterData(double *data, unsigned ns)
     for (unsigned i = 0; i < ns; i++)
     {
         switch (mType) {
-        case FilterType::LowPass:
+        case 0:
             data[i] = mLowPass.filter(data[i]);
             break;
-        case FilterType::HighPass:
+        case 1:
             data[i] = mHighPass.filter(data[i]);
             break;
-        case FilterType::BandPass:
+        case 2:
             data[i] = mBandPass.filter(data[i]);
             break;
-        case FilterType::BandStop:
+        case 3:
             data[i] = mBandStop.filter(data[i]);
             break;
         default:

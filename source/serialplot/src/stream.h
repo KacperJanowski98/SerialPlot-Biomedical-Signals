@@ -37,6 +37,8 @@
 #include "butterworthfilter.h"
 #include "chebyshevI.h"
 
+#include "filtermanager.h"
+
 /**
  * Main waveform storage class. It consists of channels. Channels are
  * synchronized with each other.
@@ -70,7 +72,6 @@ public:
     double* getFftBuffer();
     unsigned getFftSize();
     void clearFft();
-    // Filter
 
     /// Saves channel information
     void saveSettings(QSettings* settings) const;
@@ -104,6 +105,8 @@ public slots:
     /// Clears buffer data (fills with 0)
     void clear();
 
+    void setFilterParameter();
+
 private:
     unsigned _numSamples;
     bool _paused;
@@ -123,7 +126,8 @@ private:
     unsigned mSize;
 
     // Filter
-    ChebyshevIFilter* mLowPass;
+//    ChebyshevIFilter* mLowPass;
+    FilterManager* mFilter;
 
     /**
      * Applies gain and offset to given pack.

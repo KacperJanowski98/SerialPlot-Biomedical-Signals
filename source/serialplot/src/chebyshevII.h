@@ -9,14 +9,14 @@
 class ChebyshevIIFilter
 {
 public:
-    ChebyshevIIFilter(FilterType type,
-                      FilterOrder order,
+    ChebyshevIIFilter(int type,
+                      int order,
                       double samplingFreq,
                       double cutoffFreq,
                       double stopBandDb);
 
-    ChebyshevIIFilter(FilterType type,
-                      FilterOrder order,
+    ChebyshevIIFilter(int type,
+                      int order,
                       double samplingFreq,
                       double stopBandDb,
                       double centerFreq,
@@ -27,8 +27,8 @@ public:
     void filterData(double *data, unsigned ns);
 
 private:
-    FilterType mType;
-    FilterOrder mOrder;
+    int mType;
+    int mOrder;
     double mSamplingFreq;   // for LowPass, HighPass, BandPass, BandStop filter
     double mCutoffFreq;     // for LowPass, HighPass filter
     double mStopBandDb;     // for LowPass, HighPass, BandPass, BandStop filter

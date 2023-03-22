@@ -66,9 +66,9 @@ void FftControl::onButtonApply(bool state)
 void FftControl::saveSettings(QSettings* settings)
 {
     settings->beginGroup(SettingGroup_FftControl);
-    settings->setValue(SG_FftControl_samplingFreq, _samplingFreq);
-    settings->setValue(SG_FftControl_freqRangeStart, _freqRangeStart);
-    settings->setValue(SG_FftControl_freqRangeEnd, _freqRangeEnd);
+    settings->setValue(SG_FftControl_samplingFreq, ui->spinBoxSampling->value());
+    settings->setValue(SG_FftControl_freqRangeStart,  ui->spinBoxStart->value());
+    settings->setValue(SG_FftControl_freqRangeEnd, ui->spinBoxEnd->value());
     settings->endGroup();
 }
 
@@ -76,10 +76,10 @@ void FftControl::loadSettings(QSettings* settings)
 {
     settings->beginGroup(SettingGroup_FftControl);
     ui->spinBoxSampling->setValue(
-                settings->value(SG_FftControl_samplingFreq, getSamplingFreq()).toInt());
+                settings->value(SG_FftControl_samplingFreq, ui->spinBoxSampling->value()).toInt());
     ui->spinBoxStart->setValue(
-                settings->value(SG_FftControl_freqRangeStart, getFreqRangeStart()).toInt());
+                settings->value(SG_FftControl_freqRangeStart, ui->spinBoxStart->value()).toInt());
     ui->spinBoxEnd->setValue(
-                settings->value(SG_FftControl_freqRangeEnd, getFreqRangeEnd()).toInt());
+                settings->value(SG_FftControl_freqRangeEnd, ui->spinBoxEnd->value()).toInt());
     settings->endGroup();
 }
