@@ -43,9 +43,9 @@ void FftControl::onButtonApply(bool state)
 {
     auto sampleingFreq = getSamplingFreq();
     auto rangeEnd = getFreqRangeEnd();
-    if (sampleingFreq < 2 * rangeEnd)
+    if (sampleingFreq < 2 * (rangeEnd + 1))
     {
-        auto temp = sampleingFreq / 2;
+        auto temp = (sampleingFreq / 2) - 1;
         ui->spinBoxSampling->setValue(getSamplingFreq());
         ui->spinBoxStart->setValue(getFreqRangeStart());
         ui->spinBoxEnd->setValue(temp);

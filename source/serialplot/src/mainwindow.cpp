@@ -295,6 +295,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->fftPlot->graph()->setPen(QPen(Qt::darkBlue));
     ui->fftPlot->graph()->setName("fft");
 
+    // Filter Control
+    // Update control panel after load setting
+    filterControl.filterControlPanelUpdate();
+
     handleCommandLineOptions(*QApplication::instance());
 
     // ensure command panel has 1 command if none loaded
