@@ -259,13 +259,9 @@ void Stream::feedIn(const SamplePack& pack)
         {
             auto buf = static_cast<RingBuffer*>(channels[ci]->yData());
             double* data = (mPack == nullptr) ? pack.data(0) : mPack->data(0);
-//            filterData(data, ns);
-//            mLowPass->filterData(data, ns);
             mFilter->filterSignal(data, ns);
             buf->addSamples(data, ns);
             mFftFilter->createFftBuffer(data, buf->size(), ns);
-//            mSize = buf->size();
-//            mFft->createFftBuffer(data, mSize, ns);
         }
     }
 
@@ -297,11 +293,6 @@ void Stream::clear()
     {
         static_cast<RingBuffer*>(c->yData())->clear();
     }
-}
-
-void Stream::setFilterParameter()
-{
-    qDebug() << "Udalo sie dostac w odpowiednie miejsce!";
 }
 
 void Stream::setNumSamples(unsigned value)
@@ -344,8 +335,6 @@ unsigned Stream::getFftFilterSize()
 
 void Stream::setupFilter()
 {
-    qDebug() << "Konfiguracja filtru";
-
     mFilter->setupFilter();
 }
 

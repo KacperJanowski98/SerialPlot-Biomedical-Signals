@@ -32,11 +32,6 @@
 #include "streamchannel.h"
 #include "framebuffer.h"
 #include "fft.h"
-// IIR
-#include "Iir.h"
-#include "butterworthfilter.h"
-#include "chebyshevI.h"
-
 #include "filtermanager.h"
 
 /**
@@ -129,8 +124,6 @@ public slots:
 
     /// Clears buffer data (fills with 0)
     void clear();
-
-    void setFilterParameter();
 
 private:
     unsigned _numSamples;

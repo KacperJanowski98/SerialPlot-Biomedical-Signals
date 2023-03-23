@@ -55,6 +55,8 @@ public:
     /// Returns a list of channel names
     QStringList channelNames() const;
 
+    void setName(unsigned i, QString name);
+
     // implemented from QAbstractItemModel
     int           rowCount(const QModelIndex &parent = QModelIndex()) const;
     int           columnCount(const QModelIndex &parent = QModelIndex()) const;

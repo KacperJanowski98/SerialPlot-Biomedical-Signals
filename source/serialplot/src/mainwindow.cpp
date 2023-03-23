@@ -306,6 +306,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->fftPlot->graph(1)->setPen(QPen(Qt::darkGreen));
     ui->fftPlot->graph()->setName("fft");
 
+    // FFT visability
+    connect(plotMan, &PlotManager::visabilityPlotChange, this, &MainWindow::fftPlotVisableChange);
+
     // Filter Control
     // Update control panel after load setting
     filterControl.filterControlPanelUpdate();
@@ -368,7 +371,6 @@ void MainWindow::fftPlot()
          i < (numSamples/sampleFreq)*endRange;
          i ++)
     {
-//        vecY.append(abs(temp[i]));
         vecY.append(temp[i]);
     }
 
@@ -402,7 +404,6 @@ void MainWindow::fftFilterPlot()
          i < (numSamples/sampleFreq)*endRange;
          i ++)
     {
-//        vecY.append(abs(temp[i]));
         vecY.append(temp[i]);
     }
     ui->fftPlot->graph(1)->setData(vecX.mid(0, vecY.length()), vecY);
@@ -416,6 +417,20 @@ void MainWindow::mousePressOnFftPlot(QMouseEvent *event)
     {
         ui->fftPlot->rescaleAxes();
         ui->fftPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
+        ui->fftPlot->replot();
+    }
+}
+
+void MainWindow::fftPlotVisableChange(int index, bool visable)
+{
+    if (index % 2 == 0)
+    {
+        ui->fftPlot->graph(0)->setVisible(visable);
+        ui->fftPlot->replot();
+    }
+    else
+    {
+        ui->fftPlot->graph(1)->setVisible(visable);
         ui->fftPlot->replot();
     }
 }
@@ -527,8 +542,6 @@ void MainWindow::onButtonApplyPressed(bool state)
 
 void MainWindow::onButtonApplyPressedFiltering(bool state)
 {
-//    if (state)
-//    {
     stream.clear();
     plotMan->replot();
     // FFT
@@ -536,7 +549,6 @@ void MainWindow::onButtonApplyPressedFiltering(bool state)
     ui->fftPlot->graph(0)->data()->clear();
     ui->fftPlot->graph(1)->data()->clear();
     ui->fftPlot->replot();
-//    }
     updateFilterParameter();
 }
 

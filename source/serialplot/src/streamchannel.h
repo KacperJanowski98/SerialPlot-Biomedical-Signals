@@ -50,6 +50,8 @@ public:
     const ChannelInfoModel* info() const;
     void setX(const XFrameBuffer* x);
 
+    void setName(const QString name) const;
+
     /**
      * Returns sample value for `x`.
      *

@@ -20,6 +20,8 @@
 #include "channelinfomodel.h"
 #include "setting_defines.h"
 
+#include <QDebug>
+
 #define NUMOF_COLORS  (32)
 
 const QColor colors[NUMOF_COLORS] =
@@ -161,6 +163,11 @@ QStringList ChannelInfoModel::channelNames() const
         r << name(ci);
     }
     return r;
+}
+
+void ChannelInfoModel::setName(unsigned i, QString name)
+{
+    infos[i].name = name;
 }
 
 int ChannelInfoModel::rowCount(const QModelIndex &parent) const

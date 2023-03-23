@@ -26,7 +26,8 @@
 #include "plot.h"
 #include "plotmanager.h"
 #include "utils.h"
-#include "setting_defines.h"
+
+#include <QDebug>
 
 PlotManager::PlotManager(QWidget* plotArea, PlotMenu* menu,
                          const Stream* stream, QObject* parent) :
@@ -54,6 +55,11 @@ PlotManager::PlotManager(QWidget* plotArea, PlotMenu* menu,
     // add initial curves if any?
     for (unsigned int i = 0; i < stream->numChannels(); i++)
     {
+        // Set new name
+        if (i % 2 == 0)
+            stream->channel(i)->setName("Basic signal");
+        else
+            stream->channel(i)->setName("Filtered signal");
         addCurve(stream->channel(i)->name(), stream->channel(i)->xData(), stream->channel(i)->yData());
     }
 }
@@ -154,6 +160,11 @@ void PlotManager::onNumChannelsChanged(unsigned value)
         // add new channels
         for (unsigned int i = oldNum; i < numOfChannels; i++)
         {
+            // Set new name
+            if (i % 2 == 0)
+                _stream->channel(i)->setName("Basic signal");
+            else
+                _stream->channel(i)->setName("Filtered signal");
             addCurve(_stream->channel(i)->name(), _stream->channel(i)->xData(), _stream->channel(i)->yData());
         }
     }
@@ -195,6 +206,7 @@ void PlotManager::onChannelInfoChanged(const QModelIndex &topLeft,
             }
             syncScales();
         }
+        emit visabilityPlotChange(ci, visible);
     }
 
     checkNoVisChannels();

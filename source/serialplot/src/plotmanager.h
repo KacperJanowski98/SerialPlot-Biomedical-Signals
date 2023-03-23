@@ -74,6 +74,9 @@ public slots:
     /// Maximum width of X axis (limit of hscroll)
     void setPlotWidth(double width);
 
+signals:
+    void visabilityPlotChange(int index, bool visable);
+
 private:
     bool isMulti;
     QWidget* _plotArea;

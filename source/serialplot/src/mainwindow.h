@@ -133,6 +133,7 @@ public slots:
     void fftPlot();
     void fftFilterPlot();
     void mousePressOnFftPlot(QMouseEvent *event);
+    void fftPlotVisableChange(int index, bool visable);
 
 private slots:
     void onPortToggled(bool open);

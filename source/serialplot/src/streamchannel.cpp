@@ -44,6 +44,11 @@ FrameBuffer* StreamChannel::yData() {return _y;}
 const ChannelInfoModel* StreamChannel::info() const {return _info;}
 void StreamChannel::setX(const XFrameBuffer* x) {_x = x;};
 
+void StreamChannel::setName(const QString name) const
+{
+    _info->setName(_index, name);
+}
+
 double StreamChannel::findValue(double x) const
 {
     int index = _x->findIndex(x);
