@@ -130,8 +130,10 @@ private:
 
 public slots:
     // FFT
-    void fftPlot();
-    void fftFilterPlot();
+//    void fftPlot();
+    void fftPlot(double* buffer, unsigned size);
+//    void fftFilterPlot();
+    void fftFilterPlot(double* buffer, unsigned size);
     void mousePressOnFftPlot(QMouseEvent *event);
     void fftPlotVisableChange(int index, bool visable);
 

@@ -272,12 +272,13 @@ void Stream::feedIn(const SamplePack& pack)
     {
         qDebug() << "FFT ---------------------- przy rozmiarze: " << mFft->getSize();
         mFft->calculateFft();
-        emit fftBufferFull();
+        emit fftBufferFull(mFft->getFftBuffer(), mFft->getFftSize());
+//        emit fftBufferFull();
     }
     if (mFftFilter->getOffset() >= mFftFilter->getSize())
     {
         mFftFilter->calculateFft();
-        emit fftFilterBufferFull();
+        emit fftFilterBufferFull(mFftFilter->getFftBuffer(), mFftFilter->getFftSize());
     }
     emit dataAdded();
 }
@@ -307,15 +308,15 @@ void Stream::setNumSamples(unsigned value)
     }
 }
 
-double* Stream::getFftBuffer()
-{
-    return mFft->getFftBuffer();
-}
+//double* Stream::getFftBuffer()
+//{
+//    return mFft->getFftBuffer();
+//}
 
-unsigned Stream::getFftSize()
-{
-    return mFft->getFftSize();
-}
+//unsigned Stream::getFftSize()
+//{
+//    return mFft->getFftSize();
+//}
 
 void Stream::clearFft()
 {
@@ -323,15 +324,15 @@ void Stream::clearFft()
     mFftFilter->clearFft();
 }
 
-double* Stream::getFftFilterBuffer()
-{
-    return mFftFilter->getFftBuffer();
-}
+//double* Stream::getFftFilterBuffer()
+//{
+//    return mFftFilter->getFftBuffer();
+//}
 
-unsigned Stream::getFftFilterSize()
-{
-    return mFftFilter->getFftSize();
-}
+//unsigned Stream::getFftFilterSize()
+//{
+//    return mFftFilter->getFftSize();
+//}
 
 void Stream::setupFilter()
 {

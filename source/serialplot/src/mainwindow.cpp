@@ -346,10 +346,11 @@ MainWindow::~MainWindow()
     ui = NULL; // we check if ui is deleted in messageHandler
 }
 
-void MainWindow::fftPlot()
+//void MainWindow::fftPlot()
+void MainWindow::fftPlot(double* buffer, unsigned size)
 {
-    auto temp = stream.getFftBuffer();
-    auto size = stream.getFftSize();
+//    auto temp = stream.getFftBuffer();
+//    auto size = stream.getFftSize();
 
 //    unsigned start = 0;
 //    unsigned end = 12; //ppg to 12
@@ -371,7 +372,7 @@ void MainWindow::fftPlot()
          i < (numSamples/sampleFreq)*endRange;
          i ++)
     {
-        vecY.append(temp[i]);
+        vecY.append(buffer[i]);
     }
 
     ui->fftPlot->graph(0)->setData(vecX.mid(0, vecY.length()), vecY);
@@ -379,10 +380,10 @@ void MainWindow::fftPlot()
     ui->fftPlot->replot();
 }
 
-void MainWindow::fftFilterPlot()
+void MainWindow::fftFilterPlot(double* buffer, unsigned size)
 {
-    auto temp = stream.getFftFilterBuffer();
-    auto size = stream.getFftFilterSize();
+//    auto temp = stream.getFftFilterBuffer();
+//    auto size = stream.getFftFilterSize();
 
 //    unsigned start = 0;
 //    unsigned end = 12; //ppg to 12
@@ -404,7 +405,7 @@ void MainWindow::fftFilterPlot()
          i < (numSamples/sampleFreq)*endRange;
          i ++)
     {
-        vecY.append(temp[i]);
+        vecY.append(buffer[i]);
     }
     ui->fftPlot->graph(1)->setData(vecX.mid(0, vecY.length()), vecY);
     ui->fftPlot->rescaleAxes();
