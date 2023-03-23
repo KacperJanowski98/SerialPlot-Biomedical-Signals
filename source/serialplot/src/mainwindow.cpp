@@ -304,7 +304,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->fftPlot->graph(0)->setPen(QPen(Qt::darkBlue));
     ui->fftPlot->graph(1)->setPen(QPen(Qt::darkGreen));
-    ui->fftPlot->graph()->setName("fft");
+    ui->fftPlot->legend->setVisible(true);
+    ui->fftPlot->graph(0)->setName("FFT basic signal");
+    ui->fftPlot->graph(1)->setName("FFT filtered signal");
 
     // FFT visability
     connect(plotMan, &PlotManager::visabilityPlotChange, this, &MainWindow::fftPlotVisableChange);
@@ -427,11 +429,19 @@ void MainWindow::fftPlotVisableChange(int index, bool visable)
     if (index % 2 == 0)
     {
         ui->fftPlot->graph(0)->setVisible(visable);
+        if (visable)
+            ui->fftPlot->graph(0)->setName("FFT basic signal");
+        else
+            ui->fftPlot->graph(0)->setName("");
         ui->fftPlot->replot();
     }
     else
     {
         ui->fftPlot->graph(1)->setVisible(visable);
+        if (visable)
+            ui->fftPlot->graph(1)->setName("FFT filtered signal");
+        else
+            ui->fftPlot->graph(1)->setName("");
         ui->fftPlot->replot();
     }
 }
