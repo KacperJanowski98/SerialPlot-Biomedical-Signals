@@ -1,4 +1,5 @@
 #include "filtermanager.h"
+#include <QDebug>
 
 FilterManager::FilterManager()
 {
@@ -42,10 +43,14 @@ void FilterManager::setupFilter()
     if (_filterVersion == 0) // Butterworth
     {
         if (mButterworthFilter != nullptr)
+        {
+//            qDebug() << "Destruktor mButterworthFilter";
             delete mButterworthFilter;
+        }
 
         if (_filterType == 0 or _filterType == 1)
         {
+//            qDebug() << "Utworzenie ButterworthFilter LowPass or HighPass";
              mButterworthFilter = new ButterworthFilter(_filterType,
                                                         _filterOrderB,
                                                         _samplingFreqB,
@@ -53,6 +58,7 @@ void FilterManager::setupFilter()
         }
         else if (_filterType == 2 or _filterType == 3)
         {
+//            qDebug() << "Utworzenie ButterworthFilter BandPass BandStop";
             mButterworthFilter = new ButterworthFilter(_filterType,
                                                        _filterOrderB,
                                                        _samplingFreqB,
@@ -63,18 +69,23 @@ void FilterManager::setupFilter()
     else if (_filterVersion == 1) // ChebyshevI
     {
         if (mChebyshevIFilter != nullptr)
+        {
+//            qDebug() << "Destruktor mChebyshevIFilter";
             delete mChebyshevIFilter;
+        }
 
         if (_filterType == 0 or _filterType == 1)
         {
-             mChebyshevIFilter = new ChebyshevIFilter(_filterType,
-                                                      _filterOrderChI,
-                                                      _samplingFreqChI,
-                                                      _cutoffFreqChI,
-                                                      _rippleChI);
+//            qDebug() << "Utworzenie ChebyshevIFilter LowPass HighPass";
+            mChebyshevIFilter = new ChebyshevIFilter(_filterType,
+                                                     _filterOrderChI,
+                                                     _samplingFreqChI,
+                                                     _cutoffFreqChI,
+                                                     _rippleChI);
         }
         else if (_filterType == 2 or _filterType == 3)
         {
+//            qDebug() << "Utworzenie ChebyshevIFilter BandPass BandStop";
             mChebyshevIFilter = new ChebyshevIFilter(_filterType,
                                                      _filterOrderChI,
                                                      _samplingFreqChI,
@@ -86,18 +97,23 @@ void FilterManager::setupFilter()
     else if (_filterVersion == 2) // ChebyshevII
     {
         if (mChebyshevIIFilter != nullptr)
+        {
+//            qDebug() << "Destruktor ChebyshevIIFilter";
             delete mChebyshevIIFilter;
+        }
 
         if (_filterType == 0 or _filterType == 1)
         {
-             mChebyshevIIFilter = new ChebyshevIIFilter(_filterType,
-                                                        _filterOrderChII,
-                                                        _samplingFreqChII,
-                                                        _cutoffFreqChII,
-                                                        _stopBandChII);
+//            qDebug() << "Utworzenie ChebyshevIIFilter LowPass HighPass";
+            mChebyshevIIFilter = new ChebyshevIIFilter(_filterType,
+                                                       _filterOrderChII,
+                                                       _samplingFreqChII,
+                                                       _cutoffFreqChII,
+                                                       _stopBandChII);
         }
         else if (_filterType == 2 or _filterType == 3)
         {
+//            qDebug() << "Utworzenie ChebyshevIIFilter BandPass BandStop";
             mChebyshevIIFilter = new ChebyshevIIFilter(_filterType,
                                                        _filterOrderChII,
                                                        _samplingFreqChII,

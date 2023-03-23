@@ -73,6 +73,9 @@ public:
     unsigned getFftSize();
     void clearFft();
     // Filtering
+    double* getFftFilterBuffer();
+    unsigned getFftFilterSize();
+
     void setupFilter();
     void setFilterVersion(int version);
     void setFilterType(int type);
@@ -111,6 +114,7 @@ signals:
     void channelNameChanged(unsigned channel, QString name); // TODO: does it stay?
     void dataAdded(); ///< emitted when data added to channel man.
     void fftBufferFull();
+    void fftFilterBufferFull();
 
 public slots:
     /// Change number of samples (buffer size)
@@ -145,9 +149,9 @@ private:
     // FFT
     Fft* mFft;
     unsigned mSize;
+    Fft* mFftFilter;
 
     // Filter
-//    ChebyshevIFilter* mLowPass;
     FilterManager* mFilter;
 
     /**

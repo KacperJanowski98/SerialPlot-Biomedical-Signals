@@ -131,6 +131,7 @@ private:
 public slots:
     // FFT
     void fftPlot();
+    void fftFilterPlot();
     void mousePressOnFftPlot(QMouseEvent *event);
 
 private slots:

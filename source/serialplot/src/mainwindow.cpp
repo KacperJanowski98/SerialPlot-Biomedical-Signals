@@ -202,8 +202,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&filterControl, &FilterControl::buttonApplyPressd,
             this, &MainWindow::onButtonApplyPressedFiltering);
 
-//    connect(&filterControl, &FilterControl::buttonApplyPressd,
-//            &stream, &Stream::setFilterParameter);
+    // FFT filtered data
+    connect(&stream, &Stream::fftFilterBufferFull, this, &MainWindow::fftFilterPlot);
 
     // plot toolbar signals
     QObject::connect(ui->actionClear, SIGNAL(triggered(bool)),
@@ -300,8 +300,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->fftPlot->xAxis->setRange(startRange, endRange);
     ui->fftPlot->clearGraphs();
     ui->fftPlot->addGraph();
+    ui->fftPlot->addGraph();
 
-    ui->fftPlot->graph()->setPen(QPen(Qt::darkBlue));
+    ui->fftPlot->graph(0)->setPen(QPen(Qt::darkBlue));
+    ui->fftPlot->graph(1)->setPen(QPen(Qt::darkGreen));
     ui->fftPlot->graph()->setName("fft");
 
     // Filter Control
@@ -371,6 +373,39 @@ void MainWindow::fftPlot()
     }
 
     ui->fftPlot->graph(0)->setData(vecX.mid(0, vecY.length()), vecY);
+    ui->fftPlot->rescaleAxes();
+    ui->fftPlot->replot();
+}
+
+void MainWindow::fftFilterPlot()
+{
+    auto temp = stream.getFftFilterBuffer();
+    auto size = stream.getFftFilterSize();
+
+//    unsigned start = 0;
+//    unsigned end = 12; //ppg to 12
+    unsigned numSamples = size;
+//    unsigned sampleFreq = 25; //ppg to 25
+
+    QVector<double> vecY;
+    QVector<double> vecX;
+
+    double freqStep = (double)sampleFreq / (double)numSamples;
+    double f = startRange;
+    while (f < endRange)
+    {
+        vecX.append(f);
+        f += freqStep;
+    }
+
+    for (unsigned i = (numSamples/sampleFreq)*startRange;
+         i < (numSamples/sampleFreq)*endRange;
+         i ++)
+    {
+//        vecY.append(abs(temp[i]));
+        vecY.append(temp[i]);
+    }
+    ui->fftPlot->graph(1)->setData(vecX.mid(0, vecY.length()), vecY);
     ui->fftPlot->rescaleAxes();
     ui->fftPlot->replot();
 }
@@ -499,6 +534,7 @@ void MainWindow::onButtonApplyPressedFiltering(bool state)
     // FFT
     stream.clearFft();
     ui->fftPlot->graph(0)->data()->clear();
+    ui->fftPlot->graph(1)->data()->clear();
     ui->fftPlot->replot();
 //    }
     updateFilterParameter();
@@ -529,6 +565,7 @@ void MainWindow::clearPlot()
     // FFT
     stream.clearFft();
     ui->fftPlot->graph(0)->data()->clear();
+    ui->fftPlot->graph(1)->data()->clear();
     ui->fftPlot->replot();
 }
 

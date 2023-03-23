@@ -38,11 +38,8 @@ Stream::Stream(unsigned nc, bool x, unsigned ns) :
     mFft = new Fft();
     mSize = 0;
 
-//    mLowPass = new ChebyshevIFilter((int)FilterType::LowPass,
-//                                    (int)FilterOrder::Order5,
-//                                    300,
-//                                    10,
-//                                    5);
+    mFftFilter = new Fft();
+
     mFilter = new FilterManager();
 
     // create xdata buffer
@@ -76,7 +73,7 @@ Stream::~Stream()
     }
     delete xData;
     delete mFft;
-//    delete mLowPass;
+    delete mFftFilter;
     delete mFilter;
 }
 
@@ -255,8 +252,8 @@ void Stream::feedIn(const SamplePack& pack)
             auto buf = static_cast<RingBuffer*>(channels[ci]->yData());
             double* data = (mPack == nullptr) ? pack.data(ci) : mPack->data(ci);
             buf->addSamples(data, ns);
-//            mSize = buf->size();
-//            mFft->createFftBuffer(data, mSize, ns);
+            mSize = buf->size();
+            mFft->createFftBuffer(data, mSize, ns);
         }
         else // Filtered data
         {
@@ -266,8 +263,9 @@ void Stream::feedIn(const SamplePack& pack)
 //            mLowPass->filterData(data, ns);
             mFilter->filterSignal(data, ns);
             buf->addSamples(data, ns);
-            mSize = buf->size();
-            mFft->createFftBuffer(data, mSize, ns);
+            mFftFilter->createFftBuffer(data, buf->size(), ns);
+//            mSize = buf->size();
+//            mFft->createFftBuffer(data, mSize, ns);
         }
     }
 
@@ -279,6 +277,11 @@ void Stream::feedIn(const SamplePack& pack)
         qDebug() << "FFT ---------------------- przy rozmiarze: " << mFft->getSize();
         mFft->calculateFft();
         emit fftBufferFull();
+    }
+    if (mFftFilter->getOffset() >= mFftFilter->getSize())
+    {
+        mFftFilter->calculateFft();
+        emit fftFilterBufferFull();
     }
     emit dataAdded();
 }
@@ -326,6 +329,17 @@ unsigned Stream::getFftSize()
 void Stream::clearFft()
 {
     mFft->clearFft();
+    mFftFilter->clearFft();
+}
+
+double* Stream::getFftFilterBuffer()
+{
+    return mFftFilter->getFftBuffer();
+}
+
+unsigned Stream::getFftFilterSize()
+{
+    return mFftFilter->getFftSize();
 }
 
 void Stream::setupFilter()
