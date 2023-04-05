@@ -57,9 +57,9 @@ PlotManager::PlotManager(QWidget* plotArea, PlotMenu* menu,
     {
         // Set new name
         if (i % 2 == 0)
-            stream->channel(i)->setName("Basic signal");
+            stream->channel(i)->setName("Basic_signal");
         else
-            stream->channel(i)->setName("Filtered signal");
+            stream->channel(i)->setName("Filtered_signal");
         addCurve(stream->channel(i)->name(), stream->channel(i)->xData(), stream->channel(i)->yData());
     }
 }
@@ -162,9 +162,9 @@ void PlotManager::onNumChannelsChanged(unsigned value)
         {
             // Set new name
             if (i % 2 == 0)
-                _stream->channel(i)->setName("Basic signal");
+                _stream->channel(i)->setName("Basic_signal");
             else
-                _stream->channel(i)->setName("Filtered signal");
+                _stream->channel(i)->setName("Filtered_signal");
             addCurve(_stream->channel(i)->name(), _stream->channel(i)->xData(), _stream->channel(i)->yData());
         }
     }
