@@ -169,8 +169,7 @@ SamplePack* AsciiReader::parseLine(const QString& line) const
     // check number of channels (skipped if auto num channels is enabled)
     if ((!numComingChannels) || (!autoNumOfChannels && numComingChannels != _numChannels))
     {
-        qWarning() << "Line parsing error: invalid number of channels!";
-        qWarning() << "Read line: " << line;
+        qInfo() << line;
         return nullptr;
     }
 
@@ -193,9 +192,7 @@ SamplePack* AsciiReader::parseLine(const QString& line) const
         }
         if (!ok)
         {
-            qWarning() << "Data parsing error for channel: " << ci;
-            qWarning() << "Read line: " << line;
-
+            qInfo() << line;
             delete samples;
             return nullptr;
         }

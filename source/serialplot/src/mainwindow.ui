@@ -105,6 +105,9 @@
           </property>
          </widget>
         </item>
+        <item>
+         <widget class="QPlainTextEdit" name="ptLogStream"/>
+        </item>
        </layout>
       </widget>
      </widget>

@@ -32,7 +32,7 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context,
                     const QString &msg)
 {
     QString logString;
-
+    
     switch (type)
     {
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 5, 0))

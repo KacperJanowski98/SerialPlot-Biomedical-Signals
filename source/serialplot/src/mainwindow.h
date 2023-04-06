@@ -67,6 +67,8 @@ public:
 
     PlotViewSettings viewSettings() const;
 
+    const QString extractMsg(const QString &logString);
+
     void messageHandler(QtMsgType type, const QString &logString, const QString &msg);
 
 private:

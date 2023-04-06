@@ -36,6 +36,7 @@
 #include <cmath>
 #include <iostream>
 #include <cstdlib>
+#include <string>
 
 #include <plot.h>
 #include <barplot.h>
@@ -714,12 +715,39 @@ PlotViewSettings MainWindow::viewSettings() const
     return plotMenu.viewSettings();
 }
 
+const QString MainWindow::extractMsg(const QString &logString)
+{
+    std::string temp = logString.toStdString();
+    std::string found_text;
+    std::string::size_type start_position = 0;
+    std::string::size_type end_position = 0;
+
+    start_position = temp.find("\"");
+    if (start_position != std::string::npos)
+    {
+        ++start_position; // start after the double quotes.
+        // look for end position;
+        end_position = temp.find("\"");
+        if (end_position != std::string::npos)
+        {
+            found_text = temp.substr(start_position, end_position - start_position);
+            found_text.pop_back();
+        }
+    }
+    return QString::fromStdString(found_text);
+}
+
 void MainWindow::messageHandler(QtMsgType type,
                                 const QString &logString,
                                 const QString &msg)
 {
     if (ui != NULL)
-        ui->ptLog->appendPlainText(logString);
+    {
+        if (logString.contains("log") || logString.contains("err"))
+            ui->ptLogStream->appendPlainText(extractMsg(logString));
+        else
+            ui->ptLog->appendPlainText(logString);
+    }
 
     if (type != QtDebugMsg && ui != NULL)
     {
