@@ -80,6 +80,7 @@ int main(int argc, char *argv[])
 #endif
 
     qInstallMessageHandler(messageHandler);
+
     MainWindow w;
     pMainWindow = &w;
 

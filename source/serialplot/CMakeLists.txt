@@ -32,6 +32,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
 
 add_subdirectory(iir1)
+add_subdirectory(python)
 
 # Find the libraries
 find_package(Qt5
@@ -186,6 +187,7 @@ target_link_libraries(${PROGRAM_NAME}
     ${fftw3f_shared}
     ${fftw3l_shared}
     iir::iir_static
+    cpython::lib
 )
 
 if (BUILD_QWT)
@@ -255,6 +257,9 @@ if (ENABLE_TESTS)
   enable_testing()
   add_subdirectory(tests)
 endif ()
+
+# add python modules
+# configure_file(${CMAKE_CURRENT_LIST_DIR}/src/python_modules/biosignal_analysis.py ${CMAKE_BINARY_DIR}/python_modules/biosignal_analysis.py COPYONLY)
 
 # packaging
 include(BuildLinuxAppImage)

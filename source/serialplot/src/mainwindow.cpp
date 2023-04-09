@@ -78,7 +78,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+
     plotMan = new PlotManager(ui->plotArea, &plotMenu, &stream);
+    pyInstance = new CPyInstance();
 
     ui->tabWidget->insertTab(0, &portControl, "Port");
     ui->tabWidget->insertTab(1, &dataFormatPanel, "Data Format");
@@ -107,6 +109,19 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->plotToolBar->setObjectName("tbPlot");
 
     setupAboutDialog();
+
+    // test python
+    PyRun_SimpleString("import sys");
+    PyRun_SimpleString("import os");
+    PyRun_SimpleString("sys.path.append(os.getcwd())");
+
+    PyObject* my_module = PyImport_ImportModule("python_modules.biosignal_analysis");
+    PyErr_Print();
+    PyObject* my_function = PyObject_GetAttrString(my_module, "print_something");
+    PyObject_CallObject(my_function, NULL);
+
+    PyObject* calc = PyObject_GetAttrString(my_module, "calc_basic");
+    PyObject_CallObject(calc, NULL);
 
     // init view menu
     ui->menuBar->insertMenu(ui->menuSecondary->menuAction(), &plotMenu);
@@ -344,6 +359,7 @@ MainWindow::~MainWindow()
     }
 
     delete plotMan;
+    delete pyInstance;
 
     delete ui;
     ui = NULL; // we check if ui is deleted in messageHandler

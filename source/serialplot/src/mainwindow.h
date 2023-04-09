@@ -52,6 +52,7 @@
 #include "bpslabel.h"
 
 #include "qcustomplot.h"
+#include "pyhelper.h"
 
 namespace Ui {
 class MainWindow;
@@ -73,6 +74,8 @@ public:
 
 private:
     Ui::MainWindow *ui;
+
+    CPyInstance *pyInstance;
 
     QDialog aboutDialog;
     void setupAboutDialog();
