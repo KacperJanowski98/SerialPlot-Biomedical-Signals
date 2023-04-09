@@ -111,17 +111,23 @@ MainWindow::MainWindow(QWidget *parent) :
     setupAboutDialog();
 
     // test python
+    qDebug() << "TEST 1";
+
     PyRun_SimpleString("import sys");
     PyRun_SimpleString("import os");
     PyRun_SimpleString("sys.path.append(os.getcwd())");
 
     PyObject* my_module = PyImport_ImportModule("python_modules.biosignal_analysis");
     PyErr_Print();
-    PyObject* my_function = PyObject_GetAttrString(my_module, "print_something");
-    PyObject_CallObject(my_function, NULL);
+    // PyObject* my_function = PyObject_GetAttrString(my_module, "print_something");
+    // PyObject_CallObject(my_function, NULL);
 
     PyObject* calc = PyObject_GetAttrString(my_module, "calc_basic");
-    PyObject_CallObject(calc, NULL);
+    PyObject* my_calc = PyObject_CallObject(calc, NULL);
+    double result = PyFloat_AsDouble(my_calc);
+
+    qDebug() << "TEST 2";
+    qDebug() << "Result: " << result;
 
     // init view menu
     ui->menuBar->insertMenu(ui->menuSecondary->menuAction(), &plotMenu);
