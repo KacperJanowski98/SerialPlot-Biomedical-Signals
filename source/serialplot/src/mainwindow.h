@@ -162,6 +162,9 @@ private slots:
     void enableDemo(bool enabled);
     void showBarPlot(bool show);
 
+    // log record panel
+    bool selectLogFile();
+
     void onExportCsv();
     void onExportSvg();
     void onSaveSettings();

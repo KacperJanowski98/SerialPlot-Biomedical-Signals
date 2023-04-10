@@ -111,23 +111,18 @@ MainWindow::MainWindow(QWidget *parent) :
     setupAboutDialog();
 
     // test python
-    qDebug() << "TEST 1";
+//    PyRun_SimpleString("import sys");
+//    PyRun_SimpleString("import os");
+//    PyRun_SimpleString("sys.path.append(os.getcwd())");
 
-    PyRun_SimpleString("import sys");
-    PyRun_SimpleString("import os");
-    PyRun_SimpleString("sys.path.append(os.getcwd())");
+//    PyObject* my_module = PyImport_ImportModule("python_modules.biosignal_analysis");
+//    PyErr_Print();
 
-    PyObject* my_module = PyImport_ImportModule("python_modules.biosignal_analysis");
-    PyErr_Print();
-    // PyObject* my_function = PyObject_GetAttrString(my_module, "print_something");
-    // PyObject_CallObject(my_function, NULL);
+//    PyObject* calc = PyObject_GetAttrString(my_module, "calc_basic");
+//    PyObject* my_calc = PyObject_CallObject(calc, NULL);
+//    double result = PyFloat_AsDouble(my_calc);
 
-    PyObject* calc = PyObject_GetAttrString(my_module, "calc_basic");
-    PyObject* my_calc = PyObject_CallObject(calc, NULL);
-    double result = PyFloat_AsDouble(my_calc);
-
-    qDebug() << "TEST 2";
-    qDebug() << "Result: " << result;
+//    qDebug() << "Result: " << result;
 
     // init view menu
     ui->menuBar->insertMenu(ui->menuSecondary->menuAction(), &plotMenu);
@@ -340,6 +335,12 @@ MainWindow::MainWindow(QWidget *parent) :
     updateFilterParameter();
 
     handleCommandLineOptions(*QApplication::instance());
+
+    // panel log signal
+    QList saveList = ui->tabLog->findChildren<QPushButton*>("pbBrowse");
+    QPushButton *saveLog = saveList[0];
+    connect(saveLog, &QPushButton::clicked,
+            this, &MainWindow::selectLogFile);
 
     // ensure command panel has 1 command if none loaded
     if (!commandPanel.numOfCommands())
@@ -692,6 +693,34 @@ void MainWindow::showBarPlot(bool show)
     else
     {
         hideSecondary();
+    }
+}
+
+bool MainWindow::selectLogFile()
+{
+    QString fileName = QFileDialog::getSaveFileName(
+        parentWidget(), tr("Select file to save signal logs"));
+
+    if (fileName.isEmpty())
+    {
+        return false;
+    }
+    else
+    {
+        QList fileList = ui->tabLog->findChildren<QLineEdit*>("lsFileName");
+        QLineEdit *leFileName = fileList[0];
+        leFileName->setText(fileName);
+        QFile file(fileName);
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+            return false;
+
+        QTextStream out(&file);
+        QList plainTextEdit = ui->tabLog->findChildren<QPlainTextEdit*>("ptLogStream");
+        QPlainTextEdit *textLogs = plainTextEdit[0];
+        out << textLogs->toPlainText();
+        textLogs->clear();
+
+        return true;
     }
 }
 

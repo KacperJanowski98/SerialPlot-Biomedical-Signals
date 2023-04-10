@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1232</width>
-    <height>730</height>
+    <width>1415</width>
+    <height>796</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -85,7 +85,7 @@
        <attribute name="toolTip">
         <string>Error and Warning Messages</string>
        </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout">
+       <layout class="QFormLayout" name="formLayout">
         <property name="leftMargin">
          <number>4</number>
         </property>
@@ -98,15 +98,106 @@
         <property name="bottomMargin">
          <number>4</number>
         </property>
-        <item>
+        <item row="3" column="0">
+         <widget class="QLineEdit" name="lsFileName">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>600</width>
+            <height>0</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QPushButton" name="pbBrowse">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>150</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Browse</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QPlainTextEdit" name="ptLogStream">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>600</width>
+            <height>0</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
          <widget class="QPlainTextEdit" name="ptLog">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>600</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>800</width>
+            <height>16777215</height>
+           </size>
+          </property>
           <property name="readOnly">
            <bool>true</bool>
           </property>
          </widget>
         </item>
-        <item>
-         <widget class="QPlainTextEdit" name="ptLogStream"/>
+        <item row="0" column="0">
+         <widget class="QLabel" name="lAppLog">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Application logs</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLabel" name="lSignalLog">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Signal logs</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -119,7 +210,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1232</width>
+     <width>1415</width>
      <height>21</height>
     </rect>
    </property>
