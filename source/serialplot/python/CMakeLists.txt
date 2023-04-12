@@ -1,6 +1,5 @@
 project(cpython)
 
-find_package(Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
 
 set(LIB_PY_DIRS "${Python3_RUNTIME_LIBRARY_DIRS}/Lib/site-packages")
@@ -10,7 +9,11 @@ set(DIRECTORYS
         ${CMAKE_CURRENT_LIST_DIR}/include
         )
 
-add_library(${PROJECT_NAME} EXCLUDE_FROM_ALL)
+set(SOURCES
+        ${CMAKE_CURRENT_LIST_DIR}/src/pyhelper.cpp
+        )
+
+add_library(${PROJECT_NAME} STATIC ${SOURCES})
 add_library(cpython::lib ALIAS ${PROJECT_NAME})
 
 target_include_directories(${PROJECT_NAME}
@@ -24,6 +27,7 @@ target_include_directories(${PROJECT_NAME}
 target_sources(${PROJECT_NAME}
         PUBLIC
         ${DIRECTORYS}
+        ${SOURCES}
         )
 
 target_link_libraries(${PROJECT_NAME}
@@ -31,9 +35,7 @@ target_link_libraries(${PROJECT_NAME}
         ${Python3_LIBRARIES}
         )
 
-set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
-
-add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD
+        add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy
         ${Python3_RUNTIME_LIBRARY_DIRS}/python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}.dll ${CMAKE_BINARY_DIR}
         )

@@ -4,18 +4,63 @@ import sys
 from pathlib import Path
 from heartpy import heartpy, analysis
 
-def print_something():
-    print("Hello from Python!")
 
-def calc_basic() -> float:
-    dir_path = os.path.dirname(__file__)
-    # print(dir_path)
-    # project_dir = Path(__file__).parent.parent.parent
-    # print(project_dir)
-    # print(sys.path[1])
-    hrdata = heartpy.get_data(filename=f"{dir_path}/A0001.csv", delim=',', column_name='Basic_signal')
-    working_data, measures = heartpy.process(hrdata, 300.0)
-    measures, working_data = analysis.calc_breathing(rrlist=working_data['RR_list_cor'],
-                                                        measures=measures, working_data=working_data)
-    # print(f"Basic signal breathing rate: {round(measures['breathingrate'], 3)} Hz")
-    return measures['breathingrate']
+class HeartAnalysis:
+    """
+    Heart rate analysis based on PPG or ECG signal.
+    """
+    def __init__(self, sampling: float, column_name: str):
+        self.sampling = sampling
+        self.dir_path = os.path.dirname(__file__)
+        self.data = heartpy.get_data(filename=f"{self.dir_path}/data.csv", delim=',', column_name=column_name)
+        self.working_data, self.measures = heartpy.process(self.data, self.sampling)
+
+    def get_bpm(self) -> float:
+        """
+        Heart rate download - the number of heart beats per minute.
+        :return: Heart rate.
+        """
+        return round(self.measures['bpm'], 3)
+
+    def get_ibi(self) -> float:
+        """
+        The interval between heartbeats.
+        :return: RR interval.
+        """
+        return round(self.measures['ibi'], 3)
+
+    def get_sdnn(self) -> float:
+        """
+        Standard deviation of RR intervals.
+        :return: Deviation.
+        """
+        return round(self.measures['sdnn'], 3)
+
+    def get_sdsd(self) -> float:
+        """
+        Standard deviation of successive differences.
+        :return: Deviation.
+        """
+        return round(self.measures['sdsd'], 3)
+
+    def get_rmssd(self) -> float:
+        """
+        RMS of consecutive differences.
+        :return: RMS.
+        """
+        return round(self.measures['rmssd'], 3)
+
+    def get_hr_mad(self) -> float:
+        """
+        Median absolute deviation of RR intervals.
+        :return: Median deviation.
+        """
+        return round(self.measures['hr_mad'], 3)
+
+    def get_breathingrate(self) -> float:
+        """
+        Respiratory rate.
+        :return: Breathingrate.
+        """
+        return round(self.measures['breathingrate'], 3)
+    

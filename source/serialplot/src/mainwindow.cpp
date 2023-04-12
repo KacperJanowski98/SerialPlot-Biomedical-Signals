@@ -56,10 +56,11 @@ const QMap<int, QString> panelSettingMap({
         {2, "Plot"},
         {3, "FilterControl"},
         {4, "FftControl"},
-        {5, "Commands"},
-        {6, "Record"},
-        {7, "TextView"},
-        {8, "Log"}
+        {5, "HeartAnalysis"},
+        {6, "Commands"},
+        {7, "Record"},
+        {8, "TextView"},
+        {9, "Log"}
     });
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -78,18 +79,17 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-
     plotMan = new PlotManager(ui->plotArea, &plotMenu, &stream);
-    pyInstance = new CPyInstance();
 
     ui->tabWidget->insertTab(0, &portControl, "Port");
     ui->tabWidget->insertTab(1, &dataFormatPanel, "Data Format");
     ui->tabWidget->insertTab(2, &plotControlPanel, "Plot");
     ui->tabWidget->insertTab(3, &filterControl, "Filter Control");
     ui->tabWidget->insertTab(4, &fftControl, "FFT Control");
-    ui->tabWidget->insertTab(5, &commandPanel, "Commands");
-    ui->tabWidget->insertTab(6, &recordPanel, "Record");
-    ui->tabWidget->insertTab(7, &textView, "Text View");
+    ui->tabWidget->insertTab(5, &heartAnalysisPanel, "Heart Analysis");
+    ui->tabWidget->insertTab(6, &commandPanel, "Commands");
+    ui->tabWidget->insertTab(7, &recordPanel, "Record");
+    ui->tabWidget->insertTab(8, &textView, "Text View");
     ui->tabWidget->setCurrentIndex(0);
     auto tbPortControl = portControl.toolBar();
     addToolBar(tbPortControl);
@@ -111,6 +111,24 @@ MainWindow::MainWindow(QWidget *parent) :
     setupAboutDialog();
 
     // test python
+
+    objBase = new PyHelper(
+        "python_modules.biosignal_analysis",
+        "HeartAnalysis",
+        300.0f,
+        "Basic_signal"
+        );
+
+    objFiltered = new PyHelper(
+        "python_modules.biosignal_analysis",
+        "HeartAnalysis",
+        300.0f,
+        "Filtered_signal"
+        );
+
+    double result = objBase->getPyMethod("get_bpm");
+    qDebug() << "Result: " << result;
+
 //    PyRun_SimpleString("import sys");
 //    PyRun_SimpleString("import os");
 //    PyRun_SimpleString("sys.path.append(os.getcwd())");
@@ -366,7 +384,9 @@ MainWindow::~MainWindow()
     }
 
     delete plotMan;
-    delete pyInstance;
+
+    delete objBase;
+    delete objFiltered;
 
     delete ui;
     ui = NULL; // we check if ui is deleted in messageHandler
@@ -721,6 +741,32 @@ bool MainWindow::selectLogFile()
         textLogs->clear();
 
         return true;
+    }
+}
+
+void MainWindow::onExportCsvPython()
+{
+    bool wasPaused = ui->actionPause->isChecked();
+    ui->actionPause->setChecked(true); // pause plotting
+
+    const QString fileName = QDir::currentPath() + "/python_modules/data.csv";
+    QDir dir(QDir::currentPath() + "/python_modules");
+
+    if (QFileInfo::exists(fileName))
+    {
+        // Remove existed file with data.
+        dir.remove("data.csv");
+    }
+
+    if (fileName.isNull())  // user canceled export
+    {
+        ui->actionPause->setChecked(wasPaused);
+    }
+    else
+    {
+        Snapshot* snapshot = snapshotMan.makeSnapshot();
+        snapshot->save(fileName);
+        delete snapshot;
     }
 }
 

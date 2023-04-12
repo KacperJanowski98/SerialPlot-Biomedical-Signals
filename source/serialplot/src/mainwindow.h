@@ -46,6 +46,7 @@
 #include "plotmenu.h"
 #include "filtercontrol.h"
 #include "fftcontrol.h"
+#include "heartanalysispanel.h"
 #include "updatecheckdialog.h"
 #include "samplecounter.h"
 #include "datatextview.h"
@@ -75,7 +76,8 @@ public:
 private:
     Ui::MainWindow *ui;
 
-    CPyInstance *pyInstance;
+    PyHelper *objBase;
+    PyHelper *objFiltered;
 
     QDialog aboutDialog;
     void setupAboutDialog();
@@ -109,6 +111,8 @@ private:
     unsigned startRange;
     unsigned endRange;
     unsigned sampleFreq;
+
+    HeartAnalysisPanel heartAnalysisPanel;
 
     void handleCommandLineOptions(const QCoreApplication &app);
 
@@ -164,6 +168,9 @@ private slots:
 
     // log record panel
     bool selectLogFile();
+
+    // Python data analysis
+    void onExportCsvPython();
 
     void onExportCsv();
     void onExportSvg();
