@@ -76,8 +76,8 @@ public:
 private:
     Ui::MainWindow *ui;
 
-    PyHelper *objBase;
-    PyHelper *objFiltered;
+//    PyHelper *objBase;
+//    PyHelper *objFiltered;
 
     QDialog aboutDialog;
     void setupAboutDialog();
@@ -170,7 +170,8 @@ private slots:
     bool selectLogFile();
 
     // Python data analysis
-    void onExportCsvPython();
+//    void onExportCsvPython();
+    void onButtonAnalyzePressed();
 
     void onExportCsv();
     void onExportSvg();

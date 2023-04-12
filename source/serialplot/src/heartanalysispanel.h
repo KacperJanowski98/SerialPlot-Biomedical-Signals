@@ -2,6 +2,7 @@
 #define HEARTANALYSISPANEL_H
 
 #include <QWidget>
+#include "pyhelper.h"
 
 namespace Ui {
 class HeartAnalysisPanel;
@@ -15,8 +16,14 @@ public:
     explicit HeartAnalysisPanel(QWidget *parent = nullptr);
     ~HeartAnalysisPanel();
 
+signals:
+    void buttonAnalyzePressed();
+
 private:
     Ui::HeartAnalysisPanel *ui;
+
+private slots:
+    void onButtonAnalyze(bool state);
 };
 
 #endif // HEARTANALYSISPANEL_H

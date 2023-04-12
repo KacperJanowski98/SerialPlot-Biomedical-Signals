@@ -112,22 +112,22 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // test python
 
-    objBase = new PyHelper(
-        "python_modules.biosignal_analysis",
-        "HeartAnalysis",
-        300.0f,
-        "Basic_signal"
-        );
+//    objBase = new PyHelper(
+//        "python_modules.biosignal_analysis",
+//        "HeartAnalysis",
+//        300.0f,
+//        "Basic_signal"
+//        );
 
-    objFiltered = new PyHelper(
-        "python_modules.biosignal_analysis",
-        "HeartAnalysis",
-        300.0f,
-        "Filtered_signal"
-        );
+//    objFiltered = new PyHelper(
+//        "python_modules.biosignal_analysis",
+//        "HeartAnalysis",
+//        300.0f,
+//        "Filtered_signal"
+//        );
 
-    double result = objBase->getPyMethod("get_bpm");
-    qDebug() << "Result: " << result;
+//    double result = objBase->getPyMethod("get_bpm");
+//    qDebug() << "Result: " << result;
 
 //    PyRun_SimpleString("import sys");
 //    PyRun_SimpleString("import os");
@@ -239,6 +239,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // FFT filtered data
     connect(&stream, &Stream::fftFilterBufferFull, this, &MainWindow::fftFilterPlot);
+
+    // Analyze panel
+    connect(&heartAnalysisPanel, &HeartAnalysisPanel::buttonAnalyzePressed,
+            this, &MainWindow::onButtonAnalyzePressed);
 
     // plot toolbar signals
     QObject::connect(ui->actionClear, SIGNAL(triggered(bool)),
@@ -385,8 +389,8 @@ MainWindow::~MainWindow()
 
     delete plotMan;
 
-    delete objBase;
-    delete objFiltered;
+//    delete objBase;
+//    delete objFiltered;
 
     delete ui;
     ui = NULL; // we check if ui is deleted in messageHandler
@@ -744,10 +748,12 @@ bool MainWindow::selectLogFile()
     }
 }
 
-void MainWindow::onExportCsvPython()
+void MainWindow::onButtonAnalyzePressed()
 {
     bool wasPaused = ui->actionPause->isChecked();
     ui->actionPause->setChecked(true); // pause plotting
+
+    qDebug() << "First";
 
     const QString fileName = QDir::currentPath() + "/python_modules/data.csv";
     QDir dir(QDir::currentPath() + "/python_modules");
