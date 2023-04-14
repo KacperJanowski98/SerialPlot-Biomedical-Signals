@@ -3,11 +3,11 @@
 
 #include <QDebug>
 
-HeartAnalysisPanel::HeartAnalysisPanel(QWidget *parent) :
+HeartAnalysisPanel::HeartAnalysisPanel(FftControl *fftControl, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::HeartAnalysisPanel)
 {
-//    _fftControl = fftControl;
+    _fftControl = fftControl;
 
     ui->setupUi(this);
 
@@ -29,99 +29,266 @@ HeartAnalysisPanel::~HeartAnalysisPanel()
 //    delete pyInstance;
 }
 
-void HeartAnalysisPanel::createClassObject(PyObject *object, float sampling, const char* columnName)
-{
-    PyObject *module, *python_class, *args;
-    // Load the module object
-    module = PyImport_ImportModule("python_modules.biosignal_analysis");
-    if (module == nullptr) {
-        PyErr_Print();
-    }
-
-    // Builds the name of a callable class
-    python_class = PyObject_GetAttrString(module, "HeartAnalysis");
-    if (python_class == nullptr) {
-        PyErr_Print();
-    }
-    Py_DECREF(module);
-
-    args  = Py_BuildValue("(fs)", sampling, columnName);
-
-    // Creates an instance of the class
-    object = PyObject_CallObject(python_class, args);
-
-    Py_DECREF(python_class);
-    Py_DECREF(args);
-}
-
-double HeartAnalysisPanel::getMethod(PyObject *object, const char* methodName)
-{
-    PyObject *method, *calc;
-    // Get class method
-    method = PyObject_GetAttrString(object, "get_bpm");
-    if (method == nullptr) {
-        PyErr_Print();
-    }
-
-    // Execute method
-    calc = PyObject_CallObject(method, NULL);
-    if (calc == nullptr) {
-        PyErr_Print();
-    }
-
-    double result = PyFloat_AsDouble(calc);
-    Py_DECREF(calc);
-    Py_DECREF(method);
-
-    return result;
-}
-
 void HeartAnalysisPanel::onButtonAnalyze(bool state)
 {
-//    emit buttonAnalyzePressed();
+    emit buttonAnalyzePressed();
 
-    PyObject *module, *python_class, *object, *args, *method, *calc;
-//         PyObject *module, *python_class, *object, *args;
-//         double result = 0.0;
+    PyObject *moduleB, *pythonClassB, *objectB, *argsB, *methodB, *calcB;
+    PyObject *moduleF, *pythonClassF, *objectF, *argsF, *methodF, *calcF;
 
+    // ----------------- Create class object for Base signal  -------------------
     // Load the module object
-    module = PyImport_ImportModule("python_modules.biosignal_analysis");
-    if (module == nullptr) {
+    moduleB = PyImport_ImportModule("python_modules.biosignal_analysis");
+    if (moduleB == nullptr) {
         PyErr_Print();
     }
-
     // Builds the name of a callable class
-    python_class = PyObject_GetAttrString(module, "HeartAnalysis");
-    if (python_class == nullptr) {
+    pythonClassB = PyObject_GetAttrString(moduleB, "HeartAnalysis");
+    if (pythonClassB == nullptr) {
         PyErr_Print();
     }
 
-    args  = Py_BuildValue("(fs)", 300.0f, "Basic_signal");
 
-
+    argsB  = Py_BuildValue("(fs)", static_cast<float>(_fftControl->getSamplingFreq()), "Basic_signal");
     // Creates an instance of the class
-    if (PyCallable_Check(python_class)) {
-        object = PyObject_CallObject(python_class, args);
-    } else {
+    objectB = PyObject_CallObject(pythonClassB, argsB);
+    if (objectB == nullptr) {
         PyErr_Print();
     }
 
+    // --------------- Create class object for Filtered signal  ----------------
+    // Load the module object
+    moduleF = PyImport_ImportModule("python_modules.biosignal_analysis");
+    if (moduleF == nullptr) {
+        PyErr_Print();
+    }
+    // Builds the name of a callable class
+    pythonClassF = PyObject_GetAttrString(moduleF, "HeartAnalysis");
+    if (pythonClassF == nullptr) {
+        PyErr_Print();
+    }
+
+    argsF  = Py_BuildValue("(fs)", static_cast<float>(_fftControl->getSamplingFreq()), "Filtered_signal");
+    // Creates an instance of the class
+    objectF = PyObject_CallObject(pythonClassF, argsF);
+    if (objectF == nullptr) {
+        PyErr_Print();
+    }
+    // ----------------- Get Base BPM -------------------
     // Get class method
-    method = PyObject_GetAttrString(object, "get_bpm");
-    if (method == nullptr) {
+    methodB = PyObject_GetAttrString(objectB, "get_bpm");
+    if (methodB == nullptr) {
         PyErr_Print();
-
     }
-
     // Execute method
-    calc = PyObject_CallObject(method, NULL);
-    if (calc == nullptr) {
+    calcB = PyObject_CallObject(methodB, NULL);
+    if (calcB == nullptr) {
         PyErr_Print();
     }
-
     // Get result
-    double result = PyFloat_AsDouble(calc);
-    qDebug() << result;
+    double bpmBase = PyFloat_AsDouble(calcB);
+    // ----------------- Get Base IBI -------------------
+    // Get class method
+    methodB = PyObject_GetAttrString(objectB, "get_ibi");
+    if (methodB == nullptr) {
+        PyErr_Print();
+    }
+    // Execute method
+    calcB = PyObject_CallObject(methodB, NULL);
+    if (calcB == nullptr) {
+        PyErr_Print();
+    }
+    // Get result
+    double ibiBase = PyFloat_AsDouble(calcB);
+    // ----------------- Get Base SDNN -------------------
+    // Get class method
+    methodB = PyObject_GetAttrString(objectB, "get_sdnn");
+    if (methodB == nullptr) {
+        PyErr_Print();
+    }
+    // Execute method
+    calcB = PyObject_CallObject(methodB, NULL);
+    if (calcB == nullptr) {
+        PyErr_Print();
+    }
+    // Get result
+    double sdnnBase = PyFloat_AsDouble(calcB);
+    // ----------------- Get Base SDSD -------------------
+    // Get class method
+    methodB = PyObject_GetAttrString(objectB, "get_sdsd");
+    if (methodB == nullptr) {
+        PyErr_Print();
+    }
+    // Execute method
+    calcB = PyObject_CallObject(methodB, NULL);
+    if (calcB == nullptr) {
+        PyErr_Print();
+    }
+    // Get result
+    double sdsdBase = PyFloat_AsDouble(calcB);
+    // ----------------- Get Base RMSSD -------------------
+    // Get class method
+    methodB = PyObject_GetAttrString(objectB, "get_rmssd");
+    if (methodB == nullptr) {
+        PyErr_Print();
+    }
+    // Execute method
+    calcB = PyObject_CallObject(methodB, NULL);
+    if (calcB == nullptr) {
+        PyErr_Print();
+    }
+    // Get result
+    double rmssdBase = PyFloat_AsDouble(calcB);
+    // ----------------- Get Base HR_MAD -------------------
+    // Get class method
+    methodB = PyObject_GetAttrString(objectB, "get_hr_mad");
+    if (methodB == nullptr) {
+        PyErr_Print();
+    }
+    // Execute method
+    calcB = PyObject_CallObject(methodB, NULL);
+    if (calcB == nullptr) {
+        PyErr_Print();
+    }
+    // Get result
+    double hrMadBase = PyFloat_AsDouble(calcB);
+    // ----------------- Get Base Breathingrate -------------------
+    // Get class method
+    methodB = PyObject_GetAttrString(objectB, "get_breathingrate");
+    if (methodB == nullptr) {
+        PyErr_Print();
+    }
+    // Execute method
+    calcB = PyObject_CallObject(methodB, NULL);
+    if (calcB == nullptr) {
+        PyErr_Print();
+    }
+    // Get result
+    double breathingrateBase = PyFloat_AsDouble(calcB);
+
+    // ----------------- Get Filtered BPM -------------------
+    // Get class method
+    methodF = PyObject_GetAttrString(objectF, "get_bpm");
+    if (methodF == nullptr) {
+        PyErr_Print();
+    }
+    // Execute method
+    calcF = PyObject_CallObject(methodF, NULL);
+    if (calcF == nullptr) {
+        PyErr_Print();
+    }
+    // Get result
+    double bpmFiltered = PyFloat_AsDouble(calcF);
+    // ----------------- Get Filtered IBI -------------------
+    // Get class method
+    methodF = PyObject_GetAttrString(objectF, "get_ibi");
+    if (methodF == nullptr) {
+        PyErr_Print();
+    }
+    // Execute method
+    calcF = PyObject_CallObject(methodF, NULL);
+    if (calcF == nullptr) {
+        PyErr_Print();
+    }
+    // Get result
+    double ibiFiltered = PyFloat_AsDouble(calcF);
+    // ----------------- Get Filtered SDNN -------------------
+    // Get class method
+    methodF = PyObject_GetAttrString(objectF, "get_sdnn");
+    if (methodF == nullptr) {
+        PyErr_Print();
+    }
+    // Execute method
+    calcF = PyObject_CallObject(methodF, NULL);
+    if (calcF == nullptr) {
+        PyErr_Print();
+    }
+    // Get result
+    double sdnnFiltered = PyFloat_AsDouble(calcF);
+    // ----------------- Get Filtered SDSD -------------------
+    // Get class method
+    methodF = PyObject_GetAttrString(objectF, "get_sdsd");
+    if (methodF == nullptr) {
+        PyErr_Print();
+    }
+    // Execute method
+    calcF = PyObject_CallObject(methodF, NULL);
+    if (calcF == nullptr) {
+        PyErr_Print();
+    }
+    // Get result
+    double sdsdFiltered = PyFloat_AsDouble(calcF);
+    // ----------------- Get Filtered RMSSD -------------------
+    // Get class method
+    methodF = PyObject_GetAttrString(objectF, "get_rmssd");
+    if (methodF == nullptr) {
+        PyErr_Print();
+    }
+    // Execute method
+    calcF = PyObject_CallObject(methodF, NULL);
+    if (calcF == nullptr) {
+        PyErr_Print();
+    }
+    // Get result
+    double rmssdFiltered = PyFloat_AsDouble(calcF);
+    // ----------------- Get Filtered HR_MAD -------------------
+    // Get class method
+    methodF = PyObject_GetAttrString(objectF, "get_hr_mad");
+    if (methodF == nullptr) {
+        PyErr_Print();
+    }
+    // Execute method
+    calcF = PyObject_CallObject(methodF, NULL);
+    if (calcF == nullptr) {
+        PyErr_Print();
+    }
+    // Get result
+    double hrMadFiltered = PyFloat_AsDouble(calcF);
+    // ----------------- Get Filtered Breathingrate -------------------
+    // Get class method
+    methodF = PyObject_GetAttrString(objectF, "get_breathingrate");
+    if (methodF == nullptr) {
+        PyErr_Print();
+    }
+    // Execute method
+    calcF = PyObject_CallObject(methodF, NULL);
+    if (calcF == nullptr) {
+        PyErr_Print();
+    }
+    // Get result
+    double breathingrateFiltered = PyFloat_AsDouble(calcF);
+
+    qDebug() << "Base bpm: " << bpmBase;
+    qDebug() << "Base ibi: " << ibiBase;
+    qDebug() << "Base sdnn: " << sdnnBase;
+    qDebug() << "Base sdsd: " << sdsdBase;
+    qDebug() << "Base rmssd: " << rmssdBase;
+    qDebug() << "Base hr_mad: " << hrMadBase;
+    qDebug() << "Base breathingrate: " << breathingrateBase;
+
+    qDebug() << "Filtered bpm: " << bpmFiltered;
+    qDebug() << "Filtered ibi: " << ibiFiltered;
+    qDebug() << "Filtered sdnn: " << sdnnFiltered;
+    qDebug() << "Filtered sdsd: " << sdsdFiltered;
+    qDebug() << "Filtered rmssd: " << rmssdFiltered;
+    qDebug() << "Filtered hr_mad: " << hrMadFiltered;
+    qDebug() << "Filtered breathingrate: " << breathingrateFiltered;
+
+    Py_DECREF(moduleB);
+    Py_DECREF(pythonClassB);
+    Py_DECREF(argsF);
+    Py_DECREF(moduleF);
+    Py_DECREF(pythonClassF);
+    Py_DECREF(argsB);
+    Py_DECREF(calcB);
+    Py_DECREF(methodB);
+    Py_DECREF(objectB);
+    Py_DECREF(calcF);
+    Py_DECREF(methodF);
+    Py_DECREF(objectF);
+
+
+
 
 
 //    float samplingFreq = _fftControl->getSamplingFreq();

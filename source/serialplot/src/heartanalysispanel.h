@@ -14,12 +14,9 @@ class HeartAnalysisPanel : public QWidget
     Q_OBJECT
 
 public:
-    explicit HeartAnalysisPanel(QWidget *parent = nullptr);
-//    explicit HeartAnalysisPanel(FftControl *fftControl, QWidget *parent = nullptr);
+//    explicit HeartAnalysisPanel(QWidget *parent = nullptr);
+    explicit HeartAnalysisPanel(FftControl *fftControl, QWidget *parent = nullptr);
     ~HeartAnalysisPanel();
-
-    void createClassObject(PyObject *object, float sampling, const char* columnName);
-    double getMethod(PyObject *object, const char* methodName);
 
 signals:
     void buttonAnalyzePressed();
@@ -31,7 +28,7 @@ private:
 //    std::unique_ptr<PyHelper> objFiltered;
 //    PyHelper* objBase;
 //    PyHelper* objFiltered;
-//    FftControl* _fftControl;
+    FftControl* _fftControl;
 
 private slots:
     void onButtonAnalyze(bool state);
