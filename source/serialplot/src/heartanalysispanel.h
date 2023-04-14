@@ -2,6 +2,7 @@
 #define HEARTANALYSISPANEL_H
 
 #include <QWidget>
+#include "fftcontrol.h"
 #include "pyhelper.h"
 
 namespace Ui {
@@ -14,13 +15,23 @@ class HeartAnalysisPanel : public QWidget
 
 public:
     explicit HeartAnalysisPanel(QWidget *parent = nullptr);
+//    explicit HeartAnalysisPanel(FftControl *fftControl, QWidget *parent = nullptr);
     ~HeartAnalysisPanel();
+
+    void createClassObject(PyObject *object, float sampling, const char* columnName);
+    double getMethod(PyObject *object, const char* methodName);
 
 signals:
     void buttonAnalyzePressed();
 
 private:
     Ui::HeartAnalysisPanel *ui;
+//    CPyInstance* pyInstance;
+//    std::unique_ptr<PyHelper> objBase;
+//    std::unique_ptr<PyHelper> objFiltered;
+//    PyHelper* objBase;
+//    PyHelper* objFiltered;
+//    FftControl* _fftControl;
 
 private slots:
     void onButtonAnalyze(bool state);

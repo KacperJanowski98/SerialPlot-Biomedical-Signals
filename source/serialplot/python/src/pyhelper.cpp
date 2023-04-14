@@ -1,17 +1,15 @@
 #include "pyhelper.h"
 
+
 PyHelper::PyHelper(const char* moduleName, const char* className, float sampling, const char* columnName)
     : mModuleName(moduleName)
     , mClassName(className)
-    , mSampling(sampling)
     , mColumnName(columnName)
+    , mSampling(sampling)
 {
-    // Initializes the Python interpreter
-    Py_Initialize();
-    
-    PyRun_SimpleString("import sys");
-    PyRun_SimpleString("import os");
-    PyRun_SimpleString("sys.path.append(os.getcwd())");
+    // PyRun_SimpleString("import sys");
+    // PyRun_SimpleString("import os");
+    // PyRun_SimpleString("sys.path.append(os.getcwd())");
 
     // Load the module object
     pModule = PyImport_ImportModule(mModuleName);
@@ -40,11 +38,9 @@ PyHelper::~PyHelper()
     Py_XDECREF(pModule);
     Py_XDECREF(pPythonClass);
     Py_XDECREF(pObject);
-    Py_XDECREF(pArgs);
-    Py_XDECREF(pMethod);
-    Py_XDECREF(pCalc);
-
-    Py_Finalize();
+    Py_DECREF(pArgs);
+    Py_DECREF(pMethod);
+    Py_DECREF(pCalc);
 }
 
 double PyHelper::getPyMethod(const char* method_name)

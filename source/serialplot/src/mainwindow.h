@@ -76,6 +76,7 @@ public:
 private:
     Ui::MainWindow *ui;
 
+    CPyInstance *pyInstance;
 //    PyHelper *objBase;
 //    PyHelper *objFiltered;
 

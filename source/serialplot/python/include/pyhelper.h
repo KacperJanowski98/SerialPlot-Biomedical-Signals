@@ -7,6 +7,20 @@
 #include "Python.h"
 #pragma pop_macro("slots")
 
+class CPyInstance
+{
+public:
+	CPyInstance()
+	{
+		Py_Initialize();
+	}
+
+	~CPyInstance()
+	{
+		Py_Finalize();
+	}
+};
+
 class PyHelper
 {
 public:

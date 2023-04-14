@@ -111,6 +111,11 @@ MainWindow::MainWindow(QWidget *parent) :
     setupAboutDialog();
 
     // test python
+    pyInstance = new CPyInstance();
+
+    PyRun_SimpleString("import sys");
+    PyRun_SimpleString("import os");
+    PyRun_SimpleString("sys.path.append(os.getcwd())");
 
 //    objBase = new PyHelper(
 //        "python_modules.biosignal_analysis",
@@ -388,7 +393,7 @@ MainWindow::~MainWindow()
     }
 
     delete plotMan;
-
+    delete pyInstance;
 //    delete objBase;
 //    delete objFiltered;
 
@@ -750,30 +755,91 @@ bool MainWindow::selectLogFile()
 
 void MainWindow::onButtonAnalyzePressed()
 {
-    bool wasPaused = ui->actionPause->isChecked();
-    ui->actionPause->setChecked(true); // pause plotting
+      PyObject *module, *python_class, *object, *args, *method, *calc;
+//     PyObject *module, *python_class, *object, *args;
+//     double result = 0.0;
 
-    qDebug() << "First";
+     // Load the module object
+     module = PyImport_ImportModule("python_modules.biosignal_analysis");
+     if (module == nullptr) {
+         PyErr_Print();
+         std::cerr << "Fails to import the module.\n";
+     }
 
-    const QString fileName = QDir::currentPath() + "/python_modules/data.csv";
-    QDir dir(QDir::currentPath() + "/python_modules");
+     // Builds the name of a callable class
+     python_class = PyObject_GetAttrString(module, "HeartAnalysis");
+     if (python_class == nullptr) {
+         PyErr_Print();
+         std::cerr << "Fails to get the Python class.\n";
+     }
 
-    if (QFileInfo::exists(fileName))
-    {
-        // Remove existed file with data.
-        dir.remove("data.csv");
-    }
+     args  = Py_BuildValue("(fs)", 300.0f, "Basic_signal");
 
-    if (fileName.isNull())  // user canceled export
-    {
-        ui->actionPause->setChecked(wasPaused);
-    }
-    else
-    {
-        Snapshot* snapshot = snapshotMan.makeSnapshot();
-        snapshot->save(fileName);
-        delete snapshot;
-    }
+
+     // Creates an instance of the class
+     if (PyCallable_Check(python_class)) {
+         object = PyObject_CallObject(python_class, args);
+     } else {
+         std::cout << "Cannot instantiate the Python class" << std::endl;
+     }
+
+      // Get class method
+      method = PyObject_GetAttrString(object, "get_bpm");
+      if (method == nullptr) {
+          PyErr_Print();
+          std::cerr << "Fails to get the Python method.\n";
+      }
+
+      // Execute method
+      calc = PyObject_CallObject(method, NULL);
+      if (calc == nullptr) {
+          PyErr_Print();
+          std::cerr << "Fails to execute Python method.\n";
+      }
+
+      // Get result
+      double result = PyFloat_AsDouble(calc);
+      qDebug() << result;
+//     result = getPyMethod(object, "get_bpm");
+//     std::cout << "Result bpm: " << result << std::endl; // pass to GUI
+
+//     result = getPyMethod(object, "get_ibi");
+//     std::cout << "Result ibi: " << result << std::endl; // pass to GUI
+
+//     result = getPyMethod(object, "get_breathingrate");
+//     std::cout << "Result breathingrate: " << result << std::endl; // pass to GUI
+
+     // Clear
+     Py_XDECREF(module);
+     Py_XDECREF(python_class);
+     Py_XDECREF(object);
+     Py_DECREF(args);
+     Py_DECREF(calc);
+     Py_DECREF(method);
+
+
+//    bool wasPaused = ui->actionPause->isChecked();
+//    ui->actionPause->setChecked(true); // pause plotting
+
+//    const QString fileName = QDir::currentPath() + "/python_modules/data.csv";
+//    QDir dir(QDir::currentPath() + "/python_modules");
+
+//    if (QFileInfo::exists(fileName))
+//    {
+//        // Remove existed file with data.
+//        dir.remove("data.csv");
+//    }
+
+//    if (fileName.isNull())  // user canceled export
+//    {
+//        ui->actionPause->setChecked(wasPaused);
+//    }
+//    else
+//    {
+//        Snapshot* snapshot = snapshotMan.makeSnapshot();
+//        snapshot->save(fileName);
+//        delete snapshot;
+//    }
 }
 
 void MainWindow::onExportCsv()
