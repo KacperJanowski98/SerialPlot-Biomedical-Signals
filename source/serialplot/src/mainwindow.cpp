@@ -118,36 +118,6 @@ MainWindow::MainWindow(QWidget *parent) :
     PyRun_SimpleString("import os");
     PyRun_SimpleString("sys.path.append(os.getcwd())");
 
-//    objBase = new PyHelper(
-//        "python_modules.biosignal_analysis",
-//        "HeartAnalysis",
-//        300.0f,
-//        "Basic_signal"
-//        );
-
-//    objFiltered = new PyHelper(
-//        "python_modules.biosignal_analysis",
-//        "HeartAnalysis",
-//        300.0f,
-//        "Filtered_signal"
-//        );
-
-//    double result = objBase->getPyMethod("get_bpm");
-//    qDebug() << "Result: " << result;
-
-//    PyRun_SimpleString("import sys");
-//    PyRun_SimpleString("import os");
-//    PyRun_SimpleString("sys.path.append(os.getcwd())");
-
-//    PyObject* my_module = PyImport_ImportModule("python_modules.biosignal_analysis");
-//    PyErr_Print();
-
-//    PyObject* calc = PyObject_GetAttrString(my_module, "calc_basic");
-//    PyObject* my_calc = PyObject_CallObject(calc, NULL);
-//    double result = PyFloat_AsDouble(my_calc);
-
-//    qDebug() << "Result: " << result;
-
     // init view menu
     ui->menuBar->insertMenu(ui->menuSecondary->menuAction(), &plotMenu);
     plotMenu.addSeparator();
@@ -395,8 +365,6 @@ MainWindow::~MainWindow()
 
     delete plotMan;
     delete pyInstance;
-//    delete objBase;
-//    delete objFiltered;
 
     delete ui;
     ui = NULL; // we check if ui is deleted in messageHandler

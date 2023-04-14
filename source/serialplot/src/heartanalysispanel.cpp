@@ -11,22 +11,16 @@ HeartAnalysisPanel::HeartAnalysisPanel(FftControl *fftControl, QWidget *parent) 
 
     ui->setupUi(this);
 
-//    CPyInstance pyInstance;
-
-//    PyRun_SimpleString("import sys");
-//    PyRun_SimpleString("import os");
-//    PyRun_SimpleString("sys.path.append(os.getcwd())");
-
-//    pyInstance = new CPyInstance();
-
     connect(ui->pbAnalyze, SIGNAL(clicked(bool)),
             this, SLOT(onButtonAnalyze(bool)));
+
+    connect(ui->pbClear, SIGNAL(clicked(bool)),
+            this, SLOT(onButtonClose(bool)));
 }
 
 HeartAnalysisPanel::~HeartAnalysisPanel()
 {
     delete ui;
-//    delete pyInstance;
 }
 
 void HeartAnalysisPanel::onButtonAnalyze(bool state)
@@ -47,7 +41,6 @@ void HeartAnalysisPanel::onButtonAnalyze(bool state)
     if (pythonClassB == nullptr) {
         PyErr_Print();
     }
-
 
     argsB  = Py_BuildValue("(fs)", static_cast<float>(_fftControl->getSamplingFreq()), "Basic_signal");
     // Creates an instance of the class
@@ -258,21 +251,35 @@ void HeartAnalysisPanel::onButtonAnalyze(bool state)
     // Get result
     double breathingrateFiltered = PyFloat_AsDouble(calcF);
 
-    qDebug() << "Base bpm: " << bpmBase;
-    qDebug() << "Base ibi: " << ibiBase;
-    qDebug() << "Base sdnn: " << sdnnBase;
-    qDebug() << "Base sdsd: " << sdsdBase;
-    qDebug() << "Base rmssd: " << rmssdBase;
-    qDebug() << "Base hr_mad: " << hrMadBase;
-    qDebug() << "Base breathingrate: " << breathingrateBase;
+//    qDebug() << "Base bpm: " << bpmBase;
+    ui->lcdBpmB->display(QString::number(bpmBase));
+//    qDebug() << "Base ibi: " << ibiBase;
+    ui->lcdIbiB->display(QString::number(ibiBase));
+//    qDebug() << "Base sdnn: " << sdnnBase;
+    ui->lcdSdnnB->display(QString::number(sdnnBase));
+//    qDebug() << "Base sdsd: " << sdsdBase;
+    ui->lcdSdsdB->display(QString::number(sdsdBase));
+//    qDebug() << "Base rmssd: " << rmssdBase;
+    ui->lcdRmssdB->display(QString::number(rmssdBase));
+//    qDebug() << "Base hr_mad: " << hrMadBase;
+    ui->lcdHrMadB->display(QString::number(hrMadBase));
+//    qDebug() << "Base breathingrate: " << breathingrateBase;
+    ui->lcdBreathB->display(QString::number(breathingrateBase));
 
-    qDebug() << "Filtered bpm: " << bpmFiltered;
-    qDebug() << "Filtered ibi: " << ibiFiltered;
-    qDebug() << "Filtered sdnn: " << sdnnFiltered;
-    qDebug() << "Filtered sdsd: " << sdsdFiltered;
-    qDebug() << "Filtered rmssd: " << rmssdFiltered;
-    qDebug() << "Filtered hr_mad: " << hrMadFiltered;
-    qDebug() << "Filtered breathingrate: " << breathingrateFiltered;
+//    qDebug() << "Filtered bpm: " << bpmFiltered;
+    ui->lcdBpmF->display(QString::number(bpmFiltered));
+//    qDebug() << "Filtered ibi: " << ibiFiltered;
+    ui->lcdIbiF->display(QString::number(ibiFiltered));
+//    qDebug() << "Filtered sdnn: " << sdnnFiltered;
+    ui->lcdSdnnF->display(QString::number(sdnnFiltered));
+//    qDebug() << "Filtered sdsd: " << sdsdFiltered;
+    ui->lcdSdsdF->display(QString::number(sdsdFiltered));
+//    qDebug() << "Filtered rmssd: " << rmssdFiltered;
+    ui->lcdRmssdF->display(QString::number(rmssdFiltered));
+//    qDebug() << "Filtered hr_mad: " << hrMadFiltered;
+    ui->lcdHrMadF->display(QString::number(hrMadFiltered));
+//    qDebug() << "Filtered breathingrate: " << breathingrateFiltered;
+    ui->lcdBreathF->display(QString::number(breathingrateFiltered));
 
     Py_DECREF(moduleB);
     Py_DECREF(pythonClassB);
@@ -286,52 +293,23 @@ void HeartAnalysisPanel::onButtonAnalyze(bool state)
     Py_DECREF(calcF);
     Py_DECREF(methodF);
     Py_DECREF(objectF);
+}
 
+void HeartAnalysisPanel::onButtonClose(bool state)
+{
+    ui->lcdBpmB->display(QString::number(0));
+    ui->lcdIbiB->display(QString::number(0));
+    ui->lcdSdnnB->display(QString::number(0));
+    ui->lcdSdsdB->display(QString::number(0));
+    ui->lcdRmssdB->display(QString::number(0));
+    ui->lcdHrMadB->display(QString::number(0));
+    ui->lcdBreathB->display(QString::number(0));
 
-
-
-
-//    float samplingFreq = _fftControl->getSamplingFreq();
-//    PyHelper objBase(
-//            "python_modules.biosignal_analysis",
-//            "HeartAnalysis",
-//            300.0f,
-//            "Basic_signal"
-//        );
-//    PyHelper objFiltered(
-//            "python_modules.biosignal_analysis",
-//            "HeartAnalysis",
-//            samplingFreq,
-//            "Filtered_signal"
-//        );
-
-//    objBase = std::make_unique<PyHelper>(
-//            "python_modules.biosignal_analysis",
-//            "HeartAnalysis",
-//            300.0f,
-//            "Basic_signal"
-//        );
-
-//    objFiltered = std::make_unique<PyHelper>(
-//            "python_modules.biosignal_analysis",
-//            "HeartAnalysis",
-//            samplingFreq,
-//            "Filtered_signal"
-//        );
-//    objBase = new PyHelper(
-//        "python_modules.biosignal_analysis",
-//        "HeartAnalysis",
-//        samplingFreq,
-//        "Basic_signal"
-//        );
-
-//    objFiltered = new PyHelper(
-//        "python_modules.biosignal_analysis",
-//        "HeartAnalysis",
-//        samplingFreq,
-//        "Filtered_signal"
-//        );
-
-//    delete objBase;
-//    delete objFiltered;
+    ui->lcdBpmF->display(QString::number(0));
+    ui->lcdIbiF->display(QString::number(0));
+    ui->lcdSdnnF->display(QString::number(0));
+    ui->lcdSdsdF->display(QString::number(0));
+    ui->lcdRmssdF->display(QString::number(0));
+    ui->lcdHrMadF->display(QString::number(0));
+    ui->lcdBreathF->display(QString::number(0));
 }

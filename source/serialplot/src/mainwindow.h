@@ -77,8 +77,6 @@ private:
     Ui::MainWindow *ui;
 
     CPyInstance *pyInstance;
-//    PyHelper *objBase;
-//    PyHelper *objFiltered;
 
     QDialog aboutDialog;
     void setupAboutDialog();
