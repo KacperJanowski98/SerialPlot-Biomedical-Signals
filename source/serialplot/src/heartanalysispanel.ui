@@ -56,7 +56,7 @@
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="bpmB">
         <property name="font">
          <font>
           <pointsize>10</pointsize>
@@ -79,7 +79,7 @@
        </widget>
       </item>
       <item row="0" column="2">
-       <widget class="QLabel" name="label_5">
+       <widget class="QLabel" name="sdsdB">
         <property name="font">
          <font>
           <pointsize>10</pointsize>
@@ -99,7 +99,7 @@
        </widget>
       </item>
       <item row="1" column="0">
-       <widget class="QLabel" name="label_2">
+       <widget class="QLabel" name="ibiB">
         <property name="font">
          <font>
           <pointsize>10</pointsize>
@@ -119,7 +119,7 @@
        </widget>
       </item>
       <item row="1" column="2">
-       <widget class="QLabel" name="label_6">
+       <widget class="QLabel" name="rmssdB">
         <property name="font">
          <font>
           <pointsize>10</pointsize>
@@ -139,7 +139,7 @@
        </widget>
       </item>
       <item row="2" column="0">
-       <widget class="QLabel" name="label_3">
+       <widget class="QLabel" name="sdnnB">
         <property name="font">
          <font>
           <pointsize>10</pointsize>
@@ -159,7 +159,7 @@
        </widget>
       </item>
       <item row="2" column="2">
-       <widget class="QLabel" name="label_7">
+       <widget class="QLabel" name="hrMadB">
         <property name="font">
          <font>
           <pointsize>10</pointsize>
@@ -179,7 +179,7 @@
        </widget>
       </item>
       <item row="3" column="0">
-       <widget class="QLabel" name="label_4">
+       <widget class="QLabel" name="brethB">
         <property name="font">
          <font>
           <pointsize>10</pointsize>
@@ -208,7 +208,7 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
-       <widget class="QLabel" name="label_14">
+       <widget class="QLabel" name="bpmF">
         <property name="font">
          <font>
           <pointsize>10</pointsize>
@@ -228,7 +228,7 @@
        </widget>
       </item>
       <item row="0" column="2">
-       <widget class="QLabel" name="label_9">
+       <widget class="QLabel" name="sdsdF">
         <property name="font">
          <font>
           <pointsize>10</pointsize>
@@ -248,7 +248,7 @@
        </widget>
       </item>
       <item row="1" column="0">
-       <widget class="QLabel" name="label_13">
+       <widget class="QLabel" name="ibiF">
         <property name="font">
          <font>
           <pointsize>10</pointsize>
@@ -268,7 +268,7 @@
        </widget>
       </item>
       <item row="1" column="2">
-       <widget class="QLabel" name="label_11">
+       <widget class="QLabel" name="rmssdF">
         <property name="font">
          <font>
           <pointsize>10</pointsize>
@@ -288,7 +288,7 @@
        </widget>
       </item>
       <item row="2" column="0">
-       <widget class="QLabel" name="label_10">
+       <widget class="QLabel" name="sdnnF">
         <property name="font">
          <font>
           <pointsize>10</pointsize>
@@ -308,7 +308,7 @@
        </widget>
       </item>
       <item row="2" column="2">
-       <widget class="QLabel" name="label_12">
+       <widget class="QLabel" name="hrMadF">
         <property name="font">
          <font>
           <pointsize>10</pointsize>
@@ -328,7 +328,7 @@
        </widget>
       </item>
       <item row="3" column="0">
-       <widget class="QLabel" name="label_8">
+       <widget class="QLabel" name="brethF">
         <property name="font">
          <font>
           <pointsize>10</pointsize>

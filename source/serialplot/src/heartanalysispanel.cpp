@@ -17,6 +17,22 @@ HeartAnalysisPanel::HeartAnalysisPanel(FftControl *fftControl, QWidget *parent) 
 
     connect(ui->pbClear, SIGNAL(clicked(bool)),
             this, SLOT(onButtonClose(bool)));
+
+    // Set hint
+    ui->bpmB->setToolTip("Heart rate - the number of heart beats per minute");
+    ui->bpmF->setToolTip("Heart rate - the number of heart beats per minute");
+    ui->ibiB->setToolTip("The interval between heartbeats");
+    ui->ibiF->setToolTip("The interval between heartbeats");
+    ui->sdnnB->setToolTip("Standard deviation of RR intervals");
+    ui->sdnnF->setToolTip("Standard deviation of RR intervals");
+    ui->sdsdB->setToolTip("Standard deviation of successive differences");
+    ui->sdsdF->setToolTip("Standard deviation of successive differences");
+    ui->rmssdB->setToolTip("RMS of consecutive differences");
+    ui->rmssdF->setToolTip("RMS of consecutive differences");
+    ui->hrMadB->setToolTip("Median absolute deviation of RR intervals");
+    ui->hrMadF->setToolTip("Median absolute deviation of RR intervals");
+    ui->brethB->setToolTip("Respiratory rate");
+    ui->brethF->setToolTip("Respiratory rate");
 }
 
 HeartAnalysisPanel::~HeartAnalysisPanel()
