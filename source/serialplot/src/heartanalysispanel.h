@@ -2,6 +2,7 @@
 #define HEARTANALYSISPANEL_H
 
 #include <QWidget>
+#include <QSettings>
 #include "fftcontrol.h"
 #include "pyhelper.h"
 
@@ -17,12 +18,22 @@ public:
     explicit HeartAnalysisPanel(FftControl *fftControl, QWidget *parent = nullptr);
     ~HeartAnalysisPanel();
 
+    void clearBasic();
+    void clearFiltered();
+
+    void loadVisability(QSettings* settings);
+
 signals:
     void buttonAnalyzePressed();
 
 private:
     Ui::HeartAnalysisPanel *ui;
     FftControl* _fftControl;
+    bool _visableBasic;
+    bool _visableFiltered;
+
+public slots:
+    void analysisVisableChange(int index, bool visable);
 
 private slots:
     void onButtonAnalyze(bool state);

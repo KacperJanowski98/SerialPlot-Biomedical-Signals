@@ -325,6 +325,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // FFT visability
     connect(plotMan, &PlotManager::visabilityPlotChange, this, &MainWindow::fftPlotVisableChange);
+    // Analysis visability
+    connect(plotMan, &PlotManager::visabilityPlotChange,
+            &heartAnalysisPanel, &HeartAnalysisPanel::analysisVisableChange);
 
     // Filter Control
     // Update control panel after load setting
@@ -860,6 +863,7 @@ void MainWindow::loadAllSettings(QSettings* settings)
     recordPanel.loadSettings(settings);
     textView.loadSettings(settings);
     updateCheckDialog.loadSettings(settings);
+    heartAnalysisPanel.loadVisability(settings);
 }
 
 void MainWindow::saveMWSettings(QSettings* settings)

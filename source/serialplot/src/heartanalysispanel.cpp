@@ -1,5 +1,6 @@
 #include "heartanalysispanel.h"
 #include "ui_heartanalysispanel.h"
+#include "setting_defines.h"
 
 #include <QDebug>
 
@@ -251,35 +252,49 @@ void HeartAnalysisPanel::onButtonAnalyze(bool state)
     // Get result
     double breathingrateFiltered = PyFloat_AsDouble(calcF);
 
-//    qDebug() << "Base bpm: " << bpmBase;
-    ui->lcdBpmB->display(QString::number(bpmBasic));
-//    qDebug() << "Base ibi: " << ibiBase;
-    ui->lcdIbiB->display(QString::number(ibiBasic));
-//    qDebug() << "Base sdnn: " << sdnnBase;
-    ui->lcdSdnnB->display(QString::number(sdnnBasic));
-//    qDebug() << "Base sdsd: " << sdsdBase;
-    ui->lcdSdsdB->display(QString::number(sdsdBasic));
-//    qDebug() << "Base rmssd: " << rmssdBase;
-    ui->lcdRmssdB->display(QString::number(rmssdBasic));
-//    qDebug() << "Base hr_mad: " << hrMadBase;
-    ui->lcdHrMadB->display(QString::number(hrMadBasic));
-//    qDebug() << "Base breathingrate: " << breathingrateBase;
-    ui->lcdBreathB->display(QString::number(breathingrateBasic));
+    if (_visableBasic)
+    {
+        //    qDebug() << "Base bpm: " << bpmBase;
+        ui->lcdBpmB->display(QString::number(bpmBasic));
+        //    qDebug() << "Base ibi: " << ibiBase;
+        ui->lcdIbiB->display(QString::number(ibiBasic));
+        //    qDebug() << "Base sdnn: " << sdnnBase;
+        ui->lcdSdnnB->display(QString::number(sdnnBasic));
+        //    qDebug() << "Base sdsd: " << sdsdBase;
+        ui->lcdSdsdB->display(QString::number(sdsdBasic));
+        //    qDebug() << "Base rmssd: " << rmssdBase;
+        ui->lcdRmssdB->display(QString::number(rmssdBasic));
+        //    qDebug() << "Base hr_mad: " << hrMadBase;
+        ui->lcdHrMadB->display(QString::number(hrMadBasic));
+        //    qDebug() << "Base breathingrate: " << breathingrateBase;
+        ui->lcdBreathB->display(QString::number(breathingrateBasic));
+    }
+    else
+    {
+        clearBasic();
+    }
 
-//    qDebug() << "Filtered bpm: " << bpmFiltered;
-    ui->lcdBpmF->display(QString::number(bpmFiltered));
-//    qDebug() << "Filtered ibi: " << ibiFiltered;
-    ui->lcdIbiF->display(QString::number(ibiFiltered));
-//    qDebug() << "Filtered sdnn: " << sdnnFiltered;
-    ui->lcdSdnnF->display(QString::number(sdnnFiltered));
-//    qDebug() << "Filtered sdsd: " << sdsdFiltered;
-    ui->lcdSdsdF->display(QString::number(sdsdFiltered));
-//    qDebug() << "Filtered rmssd: " << rmssdFiltered;
-    ui->lcdRmssdF->display(QString::number(rmssdFiltered));
-//    qDebug() << "Filtered hr_mad: " << hrMadFiltered;
-    ui->lcdHrMadF->display(QString::number(hrMadFiltered));
-//    qDebug() << "Filtered breathingrate: " << breathingrateFiltered;
-    ui->lcdBreathF->display(QString::number(breathingrateFiltered));
+    if (_visableFiltered)
+    {
+        //    qDebug() << "Filtered bpm: " << bpmFiltered;
+        ui->lcdBpmF->display(QString::number(bpmFiltered));
+        //    qDebug() << "Filtered ibi: " << ibiFiltered;
+        ui->lcdIbiF->display(QString::number(ibiFiltered));
+        //    qDebug() << "Filtered sdnn: " << sdnnFiltered;
+        ui->lcdSdnnF->display(QString::number(sdnnFiltered));
+        //    qDebug() << "Filtered sdsd: " << sdsdFiltered;
+        ui->lcdSdsdF->display(QString::number(sdsdFiltered));
+        //    qDebug() << "Filtered rmssd: " << rmssdFiltered;
+        ui->lcdRmssdF->display(QString::number(rmssdFiltered));
+        //    qDebug() << "Filtered hr_mad: " << hrMadFiltered;
+        ui->lcdHrMadF->display(QString::number(hrMadFiltered));
+        //    qDebug() << "Filtered breathingrate: " << breathingrateFiltered;
+        ui->lcdBreathF->display(QString::number(breathingrateFiltered));
+    }
+    else
+    {
+        clearFiltered();
+    }
 
     Py_DECREF(moduleB);
     Py_DECREF(pythonClassB);
@@ -295,7 +310,23 @@ void HeartAnalysisPanel::onButtonAnalyze(bool state)
     Py_DECREF(objectF);
 }
 
-void HeartAnalysisPanel::onButtonClose(bool state)
+void HeartAnalysisPanel::analysisVisableChange(int index, bool visable)
+{
+    if (index % 2 == 0)
+    {
+        _visableBasic = visable;
+        if (!visable)
+            clearBasic();
+    }
+    else
+    {
+        _visableFiltered = visable;
+        if (!visable)
+            clearFiltered();
+    }
+}
+
+void HeartAnalysisPanel::clearBasic()
 {
     ui->lcdBpmB->display(QString::number(0));
     ui->lcdIbiB->display(QString::number(0));
@@ -304,7 +335,10 @@ void HeartAnalysisPanel::onButtonClose(bool state)
     ui->lcdRmssdB->display(QString::number(0));
     ui->lcdHrMadB->display(QString::number(0));
     ui->lcdBreathB->display(QString::number(0));
+}
 
+void HeartAnalysisPanel::clearFiltered()
+{
     ui->lcdBpmF->display(QString::number(0));
     ui->lcdIbiF->display(QString::number(0));
     ui->lcdSdnnF->display(QString::number(0));
@@ -312,4 +346,32 @@ void HeartAnalysisPanel::onButtonClose(bool state)
     ui->lcdRmssdF->display(QString::number(0));
     ui->lcdHrMadF->display(QString::number(0));
     ui->lcdBreathF->display(QString::number(0));
+}
+
+void HeartAnalysisPanel::onButtonClose(bool state)
+{
+    clearBasic();
+    clearFiltered();
+}
+
+void HeartAnalysisPanel::loadVisability(QSettings* settings)
+{
+    settings->beginGroup(SettingGroup_Channels);
+    unsigned size = settings->beginReadArray(SG_Channels_Channel);
+
+    for (unsigned ci = 0; ci < size; ci++)
+    {
+        settings->setArrayIndex(ci);
+        if (ci % 2 == 0)
+        {
+            _visableBasic = settings->value(SG_Channels_Visible  , _visableBasic).toBool();
+        }
+        else
+        {
+            _visableFiltered = settings->value(SG_Channels_Visible  , _visableFiltered).toBool();
+        }
+    }
+
+    settings->endArray();
+    settings->endGroup();
 }
