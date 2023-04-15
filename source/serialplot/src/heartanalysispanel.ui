@@ -49,7 +49,7 @@
    <item>
     <widget class="QGroupBox" name="gbBase">
      <property name="title">
-      <string>Base signal</string>
+      <string>Basic signal</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">

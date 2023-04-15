@@ -111,7 +111,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     setupAboutDialog();
 
-    // test python
+    // python interpreter setup
     pyInstance = new CPyInstance();
 
     PyRun_SimpleString("import sys");

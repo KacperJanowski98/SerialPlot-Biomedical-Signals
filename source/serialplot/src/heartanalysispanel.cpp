@@ -30,7 +30,7 @@ void HeartAnalysisPanel::onButtonAnalyze(bool state)
     PyObject *moduleB, *pythonClassB, *objectB, *argsB, *methodB, *calcB;
     PyObject *moduleF, *pythonClassF, *objectF, *argsF, *methodF, *calcF;
 
-    // ----------------- Create class object for Base signal  -------------------
+    // ----------------- Create class object for Basic signal  -------------------
     // Load the module object
     moduleB = PyImport_ImportModule("python_modules.biosignal_analysis");
     if (moduleB == nullptr) {
@@ -67,7 +67,7 @@ void HeartAnalysisPanel::onButtonAnalyze(bool state)
     if (objectF == nullptr) {
         PyErr_Print();
     }
-    // ----------------- Get Base BPM -------------------
+    // ----------------- Get Basic BPM -------------------
     // Get class method
     methodB = PyObject_GetAttrString(objectB, "get_bpm");
     if (methodB == nullptr) {
@@ -79,8 +79,8 @@ void HeartAnalysisPanel::onButtonAnalyze(bool state)
         PyErr_Print();
     }
     // Get result
-    double bpmBase = PyFloat_AsDouble(calcB);
-    // ----------------- Get Base IBI -------------------
+    double bpmBasic = PyFloat_AsDouble(calcB);
+    // ----------------- Get Basic IBI -------------------
     // Get class method
     methodB = PyObject_GetAttrString(objectB, "get_ibi");
     if (methodB == nullptr) {
@@ -92,8 +92,8 @@ void HeartAnalysisPanel::onButtonAnalyze(bool state)
         PyErr_Print();
     }
     // Get result
-    double ibiBase = PyFloat_AsDouble(calcB);
-    // ----------------- Get Base SDNN -------------------
+    double ibiBasic = PyFloat_AsDouble(calcB);
+    // ----------------- Get Basic SDNN -------------------
     // Get class method
     methodB = PyObject_GetAttrString(objectB, "get_sdnn");
     if (methodB == nullptr) {
@@ -105,8 +105,8 @@ void HeartAnalysisPanel::onButtonAnalyze(bool state)
         PyErr_Print();
     }
     // Get result
-    double sdnnBase = PyFloat_AsDouble(calcB);
-    // ----------------- Get Base SDSD -------------------
+    double sdnnBasic = PyFloat_AsDouble(calcB);
+    // ----------------- Get Basic SDSD -------------------
     // Get class method
     methodB = PyObject_GetAttrString(objectB, "get_sdsd");
     if (methodB == nullptr) {
@@ -118,8 +118,8 @@ void HeartAnalysisPanel::onButtonAnalyze(bool state)
         PyErr_Print();
     }
     // Get result
-    double sdsdBase = PyFloat_AsDouble(calcB);
-    // ----------------- Get Base RMSSD -------------------
+    double sdsdBasic = PyFloat_AsDouble(calcB);
+    // ----------------- Get Basic RMSSD -------------------
     // Get class method
     methodB = PyObject_GetAttrString(objectB, "get_rmssd");
     if (methodB == nullptr) {
@@ -131,8 +131,8 @@ void HeartAnalysisPanel::onButtonAnalyze(bool state)
         PyErr_Print();
     }
     // Get result
-    double rmssdBase = PyFloat_AsDouble(calcB);
-    // ----------------- Get Base HR_MAD -------------------
+    double rmssdBasic = PyFloat_AsDouble(calcB);
+    // ----------------- Get Basic HR_MAD -------------------
     // Get class method
     methodB = PyObject_GetAttrString(objectB, "get_hr_mad");
     if (methodB == nullptr) {
@@ -144,8 +144,8 @@ void HeartAnalysisPanel::onButtonAnalyze(bool state)
         PyErr_Print();
     }
     // Get result
-    double hrMadBase = PyFloat_AsDouble(calcB);
-    // ----------------- Get Base Breathingrate -------------------
+    double hrMadBasic = PyFloat_AsDouble(calcB);
+    // ----------------- Get Basic Breathingrate -------------------
     // Get class method
     methodB = PyObject_GetAttrString(objectB, "get_breathingrate");
     if (methodB == nullptr) {
@@ -157,7 +157,7 @@ void HeartAnalysisPanel::onButtonAnalyze(bool state)
         PyErr_Print();
     }
     // Get result
-    double breathingrateBase = PyFloat_AsDouble(calcB);
+    double breathingrateBasic = PyFloat_AsDouble(calcB);
 
     // ----------------- Get Filtered BPM -------------------
     // Get class method
@@ -252,19 +252,19 @@ void HeartAnalysisPanel::onButtonAnalyze(bool state)
     double breathingrateFiltered = PyFloat_AsDouble(calcF);
 
 //    qDebug() << "Base bpm: " << bpmBase;
-    ui->lcdBpmB->display(QString::number(bpmBase));
+    ui->lcdBpmB->display(QString::number(bpmBasic));
 //    qDebug() << "Base ibi: " << ibiBase;
-    ui->lcdIbiB->display(QString::number(ibiBase));
+    ui->lcdIbiB->display(QString::number(ibiBasic));
 //    qDebug() << "Base sdnn: " << sdnnBase;
-    ui->lcdSdnnB->display(QString::number(sdnnBase));
+    ui->lcdSdnnB->display(QString::number(sdnnBasic));
 //    qDebug() << "Base sdsd: " << sdsdBase;
-    ui->lcdSdsdB->display(QString::number(sdsdBase));
+    ui->lcdSdsdB->display(QString::number(sdsdBasic));
 //    qDebug() << "Base rmssd: " << rmssdBase;
-    ui->lcdRmssdB->display(QString::number(rmssdBase));
+    ui->lcdRmssdB->display(QString::number(rmssdBasic));
 //    qDebug() << "Base hr_mad: " << hrMadBase;
-    ui->lcdHrMadB->display(QString::number(hrMadBase));
+    ui->lcdHrMadB->display(QString::number(hrMadBasic));
 //    qDebug() << "Base breathingrate: " << breathingrateBase;
-    ui->lcdBreathB->display(QString::number(breathingrateBase));
+    ui->lcdBreathB->display(QString::number(breathingrateBasic));
 
 //    qDebug() << "Filtered bpm: " << bpmFiltered;
     ui->lcdBpmF->display(QString::number(bpmFiltered));
