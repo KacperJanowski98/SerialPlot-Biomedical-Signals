@@ -364,11 +364,11 @@ void HeartAnalysisPanel::loadVisability(QSettings* settings)
         settings->setArrayIndex(ci);
         if (ci % 2 == 0)
         {
-            _visableBasic = settings->value(SG_Channels_Visible  , _visableBasic).toBool();
+            _visableBasic = settings->value(SG_Channels_Visible, _visableBasic).toBool();
         }
         else
         {
-            _visableFiltered = settings->value(SG_Channels_Visible  , _visableFiltered).toBool();
+            _visableFiltered = settings->value(SG_Channels_Visible, _visableFiltered).toBool();
         }
     }
 

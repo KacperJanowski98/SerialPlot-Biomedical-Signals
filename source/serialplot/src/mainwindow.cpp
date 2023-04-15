@@ -333,6 +333,9 @@ MainWindow::MainWindow(QWidget *parent) :
     // Update control panel after load setting
     filterControl.filterControlPanelUpdate();
 
+    // Load fft visability
+    loadVisabilityFft(&settings);
+
     updateFilterParameter();
 
     handleCommandLineOptions(*QApplication::instance());
@@ -914,6 +917,41 @@ void MainWindow::loadMWSettings(QSettings* settings)
     restoreState(settings->value(SG_MainWindow_State).toByteArray());
     settings->setValue(SG_MainWindow_State, saveState());
 
+    settings->endGroup();
+}
+
+void MainWindow::loadVisabilityFft(QSettings* settings)
+{
+    settings->beginGroup(SettingGroup_Channels);
+    unsigned size = settings->beginReadArray(SG_Channels_Channel);
+    bool visable = false;
+
+    for (unsigned ci = 0; ci < size; ci++)
+    {
+        settings->setArrayIndex(ci);
+        if (ci % 2 == 0)
+        {
+            visable = settings->value(SG_Channels_Visible, visable).toBool();
+            ui->fftPlot->graph(0)->setVisible(visable);
+            if (visable)
+                ui->fftPlot->graph(0)->setName("FFT basic signal");
+            else
+                ui->fftPlot->graph(0)->setName("");
+            ui->fftPlot->replot();
+        }
+        else
+        {
+            visable = settings->value(SG_Channels_Visible, visable).toBool();
+            ui->fftPlot->graph(1)->setVisible(visable);
+            if (visable)
+                ui->fftPlot->graph(1)->setName("FFT filtered signal");
+            else
+                ui->fftPlot->graph(1)->setName("");
+            ui->fftPlot->replot();
+        }
+    }
+
+    settings->endArray();
     settings->endGroup();
 }
 

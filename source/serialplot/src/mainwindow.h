@@ -130,7 +130,8 @@ private:
     void saveMWSettings(QSettings* settings);
     /// Loads main window settings from a `QSettings`
     void loadMWSettings(QSettings* settings);
-    // Load
+    // Load visability fft plot
+    void loadVisabilityFft(QSettings* settings);
 
     /// `QWidget::closeEvent` handler
     void closeEvent(QCloseEvent * event);
