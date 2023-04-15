@@ -818,7 +818,7 @@ void MainWindow::messageHandler(QtMsgType type,
 {
     if (ui != NULL)
     {
-        if (logString.contains("log") || logString.contains("err"))
+        if (logString.toUpper().contains("LOG") || logString.toUpper().contains("ERR"))
             ui->ptLogStream->appendPlainText(extractMsg(logString));
         else
             ui->ptLog->appendPlainText(logString);
