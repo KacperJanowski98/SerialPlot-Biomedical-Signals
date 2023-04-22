@@ -31,6 +31,7 @@ private:
     FftControl* _fftControl;
     bool _visableBasic;
     bool _visableFiltered;
+    CPyInstance *pyInstance;
 
 public slots:
     void analysisVisableChange(int index, bool visable);

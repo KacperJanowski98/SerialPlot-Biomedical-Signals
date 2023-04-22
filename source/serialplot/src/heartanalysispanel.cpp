@@ -33,11 +33,21 @@ HeartAnalysisPanel::HeartAnalysisPanel(FftControl *fftControl, QWidget *parent) 
     ui->hrMadF->setToolTip("Median absolute deviation of RR intervals");
     ui->brethB->setToolTip("Respiratory rate");
     ui->brethF->setToolTip("Respiratory rate");
+
+    pyInstance = new CPyInstance();
+
+    PyRun_SimpleString("import sys");
+    PyRun_SimpleString("import os");
+    PyRun_SimpleString("sys.path.append(os.getcwd())");
+
+    PyObject *module = PyImport_ImportModule("python_modules.biosignal_analysis");
+    Py_DECREF(module);
 }
 
 HeartAnalysisPanel::~HeartAnalysisPanel()
 {
     delete ui;
+    delete pyInstance;
 }
 
 void HeartAnalysisPanel::onButtonAnalyze(bool state)

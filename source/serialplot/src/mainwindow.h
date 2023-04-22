@@ -76,8 +76,6 @@ public:
 private:
     Ui::MainWindow *ui;
 
-    CPyInstance *pyInstance;
-
     QDialog aboutDialog;
     void setupAboutDialog();
 

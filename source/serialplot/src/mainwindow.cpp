@@ -111,13 +111,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     setupAboutDialog();
 
-    // python interpreter setup
-    pyInstance = new CPyInstance();
-
-    PyRun_SimpleString("import sys");
-    PyRun_SimpleString("import os");
-    PyRun_SimpleString("sys.path.append(os.getcwd())");
-
     // init view menu
     ui->menuBar->insertMenu(ui->menuSecondary->menuAction(), &plotMenu);
     plotMenu.addSeparator();
@@ -370,7 +363,6 @@ MainWindow::~MainWindow()
     }
 
     delete plotMan;
-    delete pyInstance;
 
     delete ui;
     ui = NULL; // we check if ui is deleted in messageHandler
