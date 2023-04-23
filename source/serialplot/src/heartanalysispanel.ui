@@ -30,9 +30,16 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QPushButton" name="pbAnalyze">
+       <widget class="QCheckBox" name="cbAnalysis">
         <property name="text">
-         <string>Analyze</string>
+         <string>Analysis</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pbManual">
+        <property name="text">
+         <string>Manual</string>
         </property>
        </widget>
       </item>

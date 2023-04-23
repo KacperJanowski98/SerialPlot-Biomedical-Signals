@@ -142,5 +142,5 @@ unsigned Fft::getOffset()
 
 unsigned Fft::getSize()
 {
-   return mSizeControl;
+    return mSizeControl;
 }

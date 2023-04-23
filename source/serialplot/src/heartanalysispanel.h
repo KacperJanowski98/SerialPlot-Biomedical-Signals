@@ -15,7 +15,9 @@ class HeartAnalysisPanel : public QWidget
     Q_OBJECT
 
 public:
-    explicit HeartAnalysisPanel(FftControl *fftControl, QWidget *parent = nullptr);
+    explicit HeartAnalysisPanel(
+        FftControl *fftControl,
+        QWidget *parent = nullptr);
     ~HeartAnalysisPanel();
 
     void clearBasic();
@@ -31,12 +33,17 @@ private:
     FftControl* _fftControl;
     bool _visableBasic;
     bool _visableFiltered;
+    bool _analysisState;
     CPyInstance *pyInstance;
+
+    void makeAnalysis();
 
 public slots:
     void analysisVisableChange(int index, bool visable);
+    void bufferSampleFull(double* buffer, unsigned size);
 
 private slots:
+    void onButtonAnalyzeState(bool state);
     void onButtonAnalyze(bool state);
     void onButtonClose(bool state);
 };

@@ -4,7 +4,9 @@
 
 #include <QDebug>
 
-HeartAnalysisPanel::HeartAnalysisPanel(FftControl *fftControl, QWidget *parent) :
+HeartAnalysisPanel::HeartAnalysisPanel(
+                    FftControl *fftControl,
+                    QWidget *parent) :
     QWidget(parent),
     ui(new Ui::HeartAnalysisPanel)
 {
@@ -12,7 +14,10 @@ HeartAnalysisPanel::HeartAnalysisPanel(FftControl *fftControl, QWidget *parent) 
 
     ui->setupUi(this);
 
-    connect(ui->pbAnalyze, SIGNAL(clicked(bool)),
+    connect(ui->cbAnalysis, SIGNAL(clicked(bool)),
+            this, SLOT(onButtonAnalyzeState(bool)));
+
+    connect(ui->pbManual, SIGNAL(clicked(bool)),
             this, SLOT(onButtonAnalyze(bool)));
 
     connect(ui->pbClear, SIGNAL(clicked(bool)),
@@ -34,6 +39,7 @@ HeartAnalysisPanel::HeartAnalysisPanel(FftControl *fftControl, QWidget *parent) 
     ui->brethB->setToolTip("Respiratory rate");
     ui->brethF->setToolTip("Respiratory rate");
 
+    // Python activation
     pyInstance = new CPyInstance();
 
     PyRun_SimpleString("import sys");
@@ -50,10 +56,8 @@ HeartAnalysisPanel::~HeartAnalysisPanel()
     delete pyInstance;
 }
 
-void HeartAnalysisPanel::onButtonAnalyze(bool state)
+void HeartAnalysisPanel::makeAnalysis()
 {
-    emit buttonAnalyzePressed();
-
     PyObject *moduleB, *pythonClassB, *objectB, *argsB, *methodB, *calcB;
     PyObject *moduleF, *pythonClassF, *objectF, *argsF, *methodF, *calcF;
 
@@ -336,6 +340,18 @@ void HeartAnalysisPanel::onButtonAnalyze(bool state)
     Py_DECREF(objectF);
 }
 
+void HeartAnalysisPanel::onButtonAnalyzeState(bool state)
+{
+    qDebug() << "State of check box is: " << state;
+}
+
+void HeartAnalysisPanel::onButtonAnalyze(bool state)
+{
+    emit buttonAnalyzePressed();
+
+    makeAnalysis();
+}
+
 void HeartAnalysisPanel::analysisVisableChange(int index, bool visable)
 {
     if (index % 2 == 0)
@@ -350,6 +366,13 @@ void HeartAnalysisPanel::analysisVisableChange(int index, bool visable)
         if (!visable)
             clearFiltered();
     }
+}
+
+void HeartAnalysisPanel::bufferSampleFull(double* buffer, unsigned size)
+{
+    emit buttonAnalyzePressed();
+
+    makeAnalysis();
 }
 
 void HeartAnalysisPanel::clearBasic()

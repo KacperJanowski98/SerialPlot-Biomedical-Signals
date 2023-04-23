@@ -326,6 +326,10 @@ MainWindow::MainWindow(QWidget *parent) :
     // Update control panel after load setting
     filterControl.filterControlPanelUpdate();
 
+    // Connect full buffer for sample to analysis
+    connect(&stream, &Stream::fftBufferFull,
+            &heartAnalysisPanel, &HeartAnalysisPanel::bufferSampleFull);
+
     // Load fft visability
     loadVisabilityFft(&settings);
 
