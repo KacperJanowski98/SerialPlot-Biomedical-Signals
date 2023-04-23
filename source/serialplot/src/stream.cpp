@@ -270,7 +270,6 @@ void Stream::feedIn(const SamplePack& pack)
     if (mPack != nullptr) delete mPack;
     if (mFft->getOffset() >= mFft->getSize())
     {
-        qDebug() << "FFT ---------------------- przy rozmiarze: " << mFft->getSize();
         mFft->calculateFft();
         emit fftBufferFull(mFft->getFftBuffer(), mFft->getFftSize());
 //        emit fftBufferFull();

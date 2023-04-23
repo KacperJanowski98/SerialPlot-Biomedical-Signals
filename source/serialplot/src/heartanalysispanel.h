@@ -25,6 +25,11 @@ public:
 
     void loadVisability(QSettings* settings);
 
+    /// Saves channel information
+    void saveSettings(QSettings* settings);
+    /// Load channel information
+    void loadSettings(QSettings* settings);
+
 signals:
     void buttonAnalyzePressed();
 

@@ -36,6 +36,8 @@ const char SettingGroup_Commands[] = "Commands";
 const char SettingGroup_Record[] = "Record";
 const char SettingGroup_TextView[] = "TextView";
 const char SettingGroup_UpdateCheck[] = "UpdateCheck";
+// Analysis
+const char SettingGroup_Analysis[] = "Analysis";
 
 // mainwindow setting keys
 const char SG_MainWindow_Size[] = "size";
@@ -131,6 +133,9 @@ const char SG_FilterControl_widthFreqChI[] = "widthFreqChI";
 const char SG_FilterControl_widthFreqChII[] = "widthFreqChII";
 const char SG_FilterControl_rippleChI[] = "rippleChI";
 const char SG_FilterControl_stopBandChII[] = "stopBandChII";
+
+// Analysis keys
+const char SG_Analysis_state[] = "analysisState";
 
 // command setting keys
 const char SG_Commands_Command[] = "command";

@@ -342,14 +342,18 @@ void HeartAnalysisPanel::makeAnalysis()
 
 void HeartAnalysisPanel::onButtonAnalyzeState(bool state)
 {
-    qDebug() << "State of check box is: " << state;
+    _analysisState = state;
+    ui->pbManual->setDisabled(!state);
 }
 
 void HeartAnalysisPanel::onButtonAnalyze(bool state)
 {
-    emit buttonAnalyzePressed();
+    if (_analysisState)
+    {
+        emit buttonAnalyzePressed();
 
-    makeAnalysis();
+        makeAnalysis();
+    }
 }
 
 void HeartAnalysisPanel::analysisVisableChange(int index, bool visable)
@@ -370,9 +374,12 @@ void HeartAnalysisPanel::analysisVisableChange(int index, bool visable)
 
 void HeartAnalysisPanel::bufferSampleFull(double* buffer, unsigned size)
 {
-    emit buttonAnalyzePressed();
+    if (_analysisState)
+    {
+        emit buttonAnalyzePressed();
 
-    makeAnalysis();
+        makeAnalysis();
+    }
 }
 
 void HeartAnalysisPanel::clearBasic()
@@ -422,5 +429,26 @@ void HeartAnalysisPanel::loadVisability(QSettings* settings)
     }
 
     settings->endArray();
+    settings->endGroup();
+}
+
+void HeartAnalysisPanel::saveSettings(QSettings* settings)
+{
+    settings->beginGroup(SettingGroup_Analysis);
+    settings->setValue(SG_Analysis_state, ui->cbAnalysis->isChecked());
+    settings->endGroup();
+}
+
+void HeartAnalysisPanel::loadSettings(QSettings* settings)
+{
+    settings->beginGroup(SettingGroup_Analysis);
+    _analysisState = settings->value(SG_Analysis_state, _analysisState).toBool();
+    if (_analysisState)
+    {
+        ui->cbAnalysis->setCheckState(Qt::CheckState::Checked);
+    } else {
+        ui->cbAnalysis->setCheckState(Qt::CheckState::Unchecked);
+    }
+    ui->pbManual->setDisabled(!_analysisState);
     settings->endGroup();
 }

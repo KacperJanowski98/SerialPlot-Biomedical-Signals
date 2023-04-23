@@ -846,6 +846,7 @@ void MainWindow::saveAllSettings(QSettings* settings)
     recordPanel.saveSettings(settings);
     textView.saveSettings(settings);
     updateCheckDialog.saveSettings(settings);
+    heartAnalysisPanel.saveSettings(settings);
 }
 
 void MainWindow::loadAllSettings(QSettings* settings)
@@ -862,6 +863,7 @@ void MainWindow::loadAllSettings(QSettings* settings)
     recordPanel.loadSettings(settings);
     textView.loadSettings(settings);
     updateCheckDialog.loadSettings(settings);
+    heartAnalysisPanel.loadSettings(settings);
     heartAnalysisPanel.loadVisability(settings);
 }
 
