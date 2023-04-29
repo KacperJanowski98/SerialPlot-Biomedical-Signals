@@ -3,6 +3,7 @@
 #include "setting_defines.h"
 
 #include <QDebug>
+#include <QMessageBox>
 
 HeartAnalysisPanel::HeartAnalysisPanel(
                     FftControl *fftControl,
@@ -19,12 +20,19 @@ HeartAnalysisPanel::HeartAnalysisPanel(
     signalTypeButtons.addButton(ui->rbECG, static_cast<int>(SignalType::ECG));
     signalTypeButtons.addButton(ui->rbEEG, static_cast<int>(SignalType::EEG));
 
+    signalType = signalTypeButtons.checkedId();
+
+    connect(ui->rbPPG, SIGNAL(clicked(bool)),
+            this, SLOT(signalTypeUpdate(bool)));
+    connect(ui->rbECG, SIGNAL(clicked(bool)),
+            this, SLOT(signalTypeUpdate(bool)));
+    connect(ui->rbEEG, SIGNAL(clicked(bool)),
+            this, SLOT(signalTypeUpdate(bool)));
+
     connect(ui->cbAnalysis, SIGNAL(clicked(bool)),
             this, SLOT(onButtonAnalyzeState(bool)));
-
     connect(ui->pbManual, SIGNAL(clicked(bool)),
             this, SLOT(onButtonAnalyze(bool)));
-
     connect(ui->pbClear, SIGNAL(clicked(bool)),
             this, SLOT(onButtonClose(bool)));
 
@@ -59,6 +67,29 @@ HeartAnalysisPanel::~HeartAnalysisPanel()
 {
     delete ui;
     delete pyInstance;
+}
+
+int HeartAnalysisPanel::getSignalType()
+{
+    return signalTypeButtons.checkedId();
+}
+
+void HeartAnalysisPanel::signalTypeUpdate(bool state)
+{
+    if (getSignalType() == static_cast<int>(SignalType::EEG))
+    {
+        QMessageBox::information(this,
+                                 "Not implemented",
+                                 "Heart rate analysis for EEG is temporarily unavailable");
+        if (signalType == static_cast<int>(SignalType::PPG))
+            ui->rbPPG->setChecked(true);
+        else if (signalType == static_cast<int>(SignalType::ECG))
+            ui->rbECG->setChecked(true);
+    }
+    else
+    {
+        signalType = getSignalType();
+    }
 }
 
 void HeartAnalysisPanel::makeAnalysis()
@@ -354,11 +385,21 @@ void HeartAnalysisPanel::onButtonAnalyzeState(bool state)
 
 void HeartAnalysisPanel::onButtonAnalyze(bool state)
 {
-    if (_analysisState)
+    int tempSignalType = getSignalType();
+    if (tempSignalType == static_cast<int>(SignalType::PPG) ||
+        tempSignalType == static_cast<int>(SignalType::ECG))
     {
-        emit buttonAnalyzePressed();
+        if (_analysisState)
+        {
+            emit buttonAnalyzePressed();
 
-        makeAnalysis();
+            makeAnalysis();
+        }
+    }
+    else if (tempSignalType == static_cast<int>(SignalType::EEG))
+    {
+        clearBasic();
+        clearFocus();
     }
 }
 
@@ -380,11 +421,21 @@ void HeartAnalysisPanel::analysisVisableChange(int index, bool visable)
 
 void HeartAnalysisPanel::bufferSampleFull(double* buffer, unsigned size)
 {
-    if (_analysisState)
+    int tempSignalType = getSignalType();
+    if (tempSignalType == static_cast<int>(SignalType::PPG) ||
+        tempSignalType == static_cast<int>(SignalType::ECG))
     {
-        emit buttonAnalyzePressed();
+        if (_analysisState)
+        {
+            emit buttonAnalyzePressed();
 
-        makeAnalysis();
+            makeAnalysis();
+        }
+    }
+    else if (tempSignalType == static_cast<int>(SignalType::EEG))
+    {
+        clearBasic();
+        clearFocus();
     }
 }
 

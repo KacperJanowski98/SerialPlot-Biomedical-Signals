@@ -47,16 +47,19 @@ private:
     bool _visableBasic;
     bool _visableFiltered;
     bool _analysisState;
+    int signalType;
     CPyInstance *pyInstance;
     QButtonGroup signalTypeButtons;
 
     void makeAnalysis();
+    int getSignalType();
 
 public slots:
     void analysisVisableChange(int index, bool visable);
     void bufferSampleFull(double* buffer, unsigned size);
 
 private slots:
+    void signalTypeUpdate(bool state);
     void onButtonAnalyzeState(bool state);
     void onButtonAnalyze(bool state);
     void onButtonClose(bool state);
