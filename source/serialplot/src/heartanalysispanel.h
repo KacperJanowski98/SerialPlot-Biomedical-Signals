@@ -3,8 +3,16 @@
 
 #include <QWidget>
 #include <QSettings>
+#include <QButtonGroup>
 #include "fftcontrol.h"
 #include "pyhelper.h"
+
+enum class SignalType
+{
+    PPG = 0,
+    ECG = 1,
+    EEG = 2
+};
 
 namespace Ui {
 class HeartAnalysisPanel;
@@ -40,6 +48,7 @@ private:
     bool _visableFiltered;
     bool _analysisState;
     CPyInstance *pyInstance;
+    QButtonGroup signalTypeButtons;
 
     void makeAnalysis();
 

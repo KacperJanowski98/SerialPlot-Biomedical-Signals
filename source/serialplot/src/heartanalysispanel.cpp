@@ -14,6 +14,11 @@ HeartAnalysisPanel::HeartAnalysisPanel(
 
     ui->setupUi(this);
 
+    // setup signal type selection widget
+    signalTypeButtons.addButton(ui->rbPPG, static_cast<int>(SignalType::PPG));
+    signalTypeButtons.addButton(ui->rbECG, static_cast<int>(SignalType::ECG));
+    signalTypeButtons.addButton(ui->rbEEG, static_cast<int>(SignalType::EEG));
+
     connect(ui->cbAnalysis, SIGNAL(clicked(bool)),
             this, SLOT(onButtonAnalyzeState(bool)));
 
@@ -344,6 +349,7 @@ void HeartAnalysisPanel::onButtonAnalyzeState(bool state)
 {
     _analysisState = state;
     ui->pbManual->setDisabled(!state);
+    ui->gbSignalType->setDisabled(!state);
 }
 
 void HeartAnalysisPanel::onButtonAnalyze(bool state)
@@ -436,6 +442,7 @@ void HeartAnalysisPanel::saveSettings(QSettings* settings)
 {
     settings->beginGroup(SettingGroup_Analysis);
     settings->setValue(SG_Analysis_state, ui->cbAnalysis->isChecked());
+    settings->setValue(SG_Analysis_signalType, signalTypeButtons.checkedId());
     settings->endGroup();
 }
 
@@ -449,6 +456,14 @@ void HeartAnalysisPanel::loadSettings(QSettings* settings)
     } else {
         ui->cbAnalysis->setCheckState(Qt::CheckState::Unchecked);
     }
+    int tempSignalType = settings->value(SG_Analysis_signalType,
+                                         signalTypeButtons.checkedId()).toInt();
+    if (tempSignalType == static_cast<int>(SignalType::PPG))
+        ui->rbPPG->setChecked(true);
+    else if (tempSignalType == static_cast<int>(SignalType::ECG))
+        ui->rbECG->setChecked(true);
+    else if (tempSignalType == static_cast<int>(SignalType::EEG))
+        ui->rbEEG->setChecked(true);
     ui->pbManual->setDisabled(!_analysisState);
     settings->endGroup();
 }

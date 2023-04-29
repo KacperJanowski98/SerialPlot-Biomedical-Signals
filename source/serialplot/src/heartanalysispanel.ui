@@ -37,6 +37,39 @@
        </widget>
       </item>
       <item>
+       <widget class="QGroupBox" name="gbSignalType">
+        <property name="title">
+         <string>Signal type</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QRadioButton" name="rbPPG">
+           <property name="text">
+            <string>PPG</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="rbECG">
+           <property name="text">
+            <string>ECG</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="rbEEG">
+           <property name="text">
+            <string>EEG</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="pbManual">
         <property name="text">
          <string>Manual</string>

@@ -136,6 +136,7 @@ const char SG_FilterControl_stopBandChII[] = "stopBandChII";
 
 // Analysis keys
 const char SG_Analysis_state[] = "analysisState";
+const char SG_Analysis_signalType[] = "analysisSignalType";
 
 // command setting keys
 const char SG_Commands_Command[] = "command";

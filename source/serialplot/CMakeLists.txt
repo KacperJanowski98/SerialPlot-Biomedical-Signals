@@ -176,7 +176,7 @@ set(fftw3l_shared "${CMAKE_CURRENT_LIST_DIR}/fftw/libfftw3l-3.dll")
 configure_file(${fftw3_shared} ${CMAKE_CURRENT_BINARY_DIR}/fftw/libfftw3-3.dll COPYONLY)
 configure_file(${fftw3f_shared} ${CMAKE_CURRENT_BINARY_DIR}/fftw/libfftw3f-3.dll COPYONLY)
 configure_file(${fftw3l_shared} ${CMAKE_CURRENT_BINARY_DIR}/fftw/libfftw3l-3.dll COPYONLY)
-
+  
 # Use the Widgets module from Qt 5.
 target_link_libraries(${PROGRAM_NAME}
     ${QWT_LIBRARY}
