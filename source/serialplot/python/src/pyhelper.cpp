@@ -7,10 +7,6 @@ PyHelper::PyHelper(const char* moduleName, const char* className, float sampling
     , mColumnName(columnName)
     , mSampling(sampling)
 {
-    // PyRun_SimpleString("import sys");
-    // PyRun_SimpleString("import os");
-    // PyRun_SimpleString("sys.path.append(os.getcwd())");
-
     // Load the module object
     pModule = PyImport_ImportModule(mModuleName);
     if (pModule == nullptr) {

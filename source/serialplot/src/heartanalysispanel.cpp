@@ -61,6 +61,12 @@ HeartAnalysisPanel::HeartAnalysisPanel(
 
     PyObject *module = PyImport_ImportModule("python_modules.biosignal_analysis");
     Py_DECREF(module);
+
+    // set background color LCD
+    ui->lcdBpmB->setPalette(Qt::green);
+    ui->lcdIbiB->setPalette(Qt::red);
+    ui->lcdBreathB->setPalette(Qt::gray);
+
 }
 
 HeartAnalysisPanel::~HeartAnalysisPanel()

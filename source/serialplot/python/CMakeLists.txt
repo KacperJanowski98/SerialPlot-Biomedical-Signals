@@ -35,7 +35,7 @@ target_link_libraries(${PROJECT_NAME}
         ${Python3_LIBRARIES}
         )
 
-        add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD
+add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy
         ${Python3_RUNTIME_LIBRARY_DIRS}/python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}.dll ${CMAKE_BINARY_DIR}
         )
