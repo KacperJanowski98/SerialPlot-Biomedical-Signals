@@ -61,12 +61,6 @@ HeartAnalysisPanel::HeartAnalysisPanel(
 
     PyObject *module = PyImport_ImportModule("python_modules.biosignal_analysis");
     Py_DECREF(module);
-
-    // set background color LCD
-    ui->lcdBpmB->setPalette(Qt::green);
-    ui->lcdIbiB->setPalette(Qt::red);
-    ui->lcdBreathB->setPalette(Qt::gray);
-
 }
 
 HeartAnalysisPanel::~HeartAnalysisPanel()
@@ -153,6 +147,20 @@ void HeartAnalysisPanel::makeAnalysis()
     }
     // Get result
     double bpmBasic = PyFloat_AsDouble(calcB);
+    // -----> Get err_status
+    methodB = PyObject_GetAttrString(objectB, "get_err_status");
+    if (methodB == nullptr) {
+        PyErr_Print();
+    }
+    // Execute method
+    calcB = PyObject_CallObject(methodB, NULL);
+    if (calcB == nullptr) {
+        PyErr_Print();
+    }
+    if (PyLong_AsLong(calcB) == 0)
+        ui->lcdBpmB->setPalette(Qt::green);
+    else
+        ui->lcdBpmB->setPalette(Qt::red);
     // ----------------- Get Basic IBI -------------------
     // Get class method
     methodB = PyObject_GetAttrString(objectB, "get_ibi");
@@ -166,6 +174,20 @@ void HeartAnalysisPanel::makeAnalysis()
     }
     // Get result
     double ibiBasic = PyFloat_AsDouble(calcB);
+    // -----> Get err_status
+    methodB = PyObject_GetAttrString(objectB, "get_err_status");
+    if (methodB == nullptr) {
+        PyErr_Print();
+    }
+    // Execute method
+    calcB = PyObject_CallObject(methodB, NULL);
+    if (calcB == nullptr) {
+        PyErr_Print();
+    }
+    if (PyLong_AsLong(calcB) == 0)
+        ui->lcdIbiB->setPalette(Qt::green);
+    else
+        ui->lcdIbiB->setPalette(Qt::red);
     // ----------------- Get Basic SDNN -------------------
     // Get class method
     methodB = PyObject_GetAttrString(objectB, "get_sdnn");
@@ -179,6 +201,20 @@ void HeartAnalysisPanel::makeAnalysis()
     }
     // Get result
     double sdnnBasic = PyFloat_AsDouble(calcB);
+    // -----> Get err_status
+    methodB = PyObject_GetAttrString(objectB, "get_err_status");
+    if (methodB == nullptr) {
+        PyErr_Print();
+    }
+    // Execute method
+    calcB = PyObject_CallObject(methodB, NULL);
+    if (calcB == nullptr) {
+        PyErr_Print();
+    }
+    if (PyLong_AsLong(calcB) == 0)
+        ui->lcdSdnnB->setPalette(Qt::green);
+    else
+        ui->lcdSdnnB->setPalette(Qt::red);
     // ----------------- Get Basic SDSD -------------------
     // Get class method
     methodB = PyObject_GetAttrString(objectB, "get_sdsd");
@@ -192,6 +228,20 @@ void HeartAnalysisPanel::makeAnalysis()
     }
     // Get result
     double sdsdBasic = PyFloat_AsDouble(calcB);
+    // -----> Get err_status
+    methodB = PyObject_GetAttrString(objectB, "get_err_status");
+    if (methodB == nullptr) {
+        PyErr_Print();
+    }
+    // Execute method
+    calcB = PyObject_CallObject(methodB, NULL);
+    if (calcB == nullptr) {
+        PyErr_Print();
+    }
+    if (PyLong_AsLong(calcB) == 0)
+        ui->lcdSdsdB->setPalette(Qt::green);
+    else
+        ui->lcdSdsdB->setPalette(Qt::red);
     // ----------------- Get Basic RMSSD -------------------
     // Get class method
     methodB = PyObject_GetAttrString(objectB, "get_rmssd");
@@ -205,6 +255,20 @@ void HeartAnalysisPanel::makeAnalysis()
     }
     // Get result
     double rmssdBasic = PyFloat_AsDouble(calcB);
+    // -----> Get err_status
+    methodB = PyObject_GetAttrString(objectB, "get_err_status");
+    if (methodB == nullptr) {
+        PyErr_Print();
+    }
+    // Execute method
+    calcB = PyObject_CallObject(methodB, NULL);
+    if (calcB == nullptr) {
+        PyErr_Print();
+    }
+    if (PyLong_AsLong(calcB) == 0)
+        ui->lcdRmssdB->setPalette(Qt::green);
+    else
+        ui->lcdRmssdB->setPalette(Qt::red);
     // ----------------- Get Basic HR_MAD -------------------
     // Get class method
     methodB = PyObject_GetAttrString(objectB, "get_hr_mad");
@@ -218,6 +282,20 @@ void HeartAnalysisPanel::makeAnalysis()
     }
     // Get result
     double hrMadBasic = PyFloat_AsDouble(calcB);
+    // -----> Get err_status
+    methodB = PyObject_GetAttrString(objectB, "get_err_status");
+    if (methodB == nullptr) {
+        PyErr_Print();
+    }
+    // Execute method
+    calcB = PyObject_CallObject(methodB, NULL);
+    if (calcB == nullptr) {
+        PyErr_Print();
+    }
+    if (PyLong_AsLong(calcB) == 0)
+        ui->lcdHrMadB->setPalette(Qt::green);
+    else
+        ui->lcdHrMadB->setPalette(Qt::red);
     // ----------------- Get Basic Breathingrate -------------------
     // Get class method
     methodB = PyObject_GetAttrString(objectB, "get_breathingrate");
@@ -231,7 +309,20 @@ void HeartAnalysisPanel::makeAnalysis()
     }
     // Get result
     double breathingrateBasic = PyFloat_AsDouble(calcB);
-
+    // -----> Get err_status
+    methodB = PyObject_GetAttrString(objectB, "get_err_status");
+    if (methodB == nullptr) {
+        PyErr_Print();
+    }
+    // Execute method
+    calcB = PyObject_CallObject(methodB, NULL);
+    if (calcB == nullptr) {
+        PyErr_Print();
+    }
+    if (PyLong_AsLong(calcB) == 0)
+        ui->lcdBreathB->setPalette(Qt::green);
+    else
+        ui->lcdBreathB->setPalette(Qt::red);
     // ----------------- Get Filtered BPM -------------------
     // Get class method
     methodF = PyObject_GetAttrString(objectF, "get_bpm");
@@ -245,6 +336,20 @@ void HeartAnalysisPanel::makeAnalysis()
     }
     // Get result
     double bpmFiltered = PyFloat_AsDouble(calcF);
+    // -----> Get err_status
+    methodF = PyObject_GetAttrString(objectF, "get_err_status");
+    if (methodF == nullptr) {
+        PyErr_Print();
+    }
+    // Execute method
+    calcF = PyObject_CallObject(methodF, NULL);
+    if (calcF == nullptr) {
+        PyErr_Print();
+    }
+    if (PyLong_AsLong(calcF) == 0)
+        ui->lcdBpmF->setPalette(Qt::green);
+    else
+        ui->lcdBpmF->setPalette(Qt::red);
     // ----------------- Get Filtered IBI -------------------
     // Get class method
     methodF = PyObject_GetAttrString(objectF, "get_ibi");
@@ -258,6 +363,20 @@ void HeartAnalysisPanel::makeAnalysis()
     }
     // Get result
     double ibiFiltered = PyFloat_AsDouble(calcF);
+    // -----> Get err_status
+    methodF = PyObject_GetAttrString(objectF, "get_err_status");
+    if (methodF == nullptr) {
+        PyErr_Print();
+    }
+    // Execute method
+    calcF = PyObject_CallObject(methodF, NULL);
+    if (calcF == nullptr) {
+        PyErr_Print();
+    }
+    if (PyLong_AsLong(calcF) == 0)
+        ui->lcdIbiF->setPalette(Qt::green);
+    else
+        ui->lcdIbiF->setPalette(Qt::red);
     // ----------------- Get Filtered SDNN -------------------
     // Get class method
     methodF = PyObject_GetAttrString(objectF, "get_sdnn");
@@ -271,6 +390,20 @@ void HeartAnalysisPanel::makeAnalysis()
     }
     // Get result
     double sdnnFiltered = PyFloat_AsDouble(calcF);
+    // -----> Get err_status
+    methodF = PyObject_GetAttrString(objectF, "get_err_status");
+    if (methodF == nullptr) {
+        PyErr_Print();
+    }
+    // Execute method
+    calcF = PyObject_CallObject(methodF, NULL);
+    if (calcF == nullptr) {
+        PyErr_Print();
+    }
+    if (PyLong_AsLong(calcF) == 0)
+        ui->lcdSdnnF->setPalette(Qt::green);
+    else
+        ui->lcdSdnnF->setPalette(Qt::red);
     // ----------------- Get Filtered SDSD -------------------
     // Get class method
     methodF = PyObject_GetAttrString(objectF, "get_sdsd");
@@ -284,6 +417,20 @@ void HeartAnalysisPanel::makeAnalysis()
     }
     // Get result
     double sdsdFiltered = PyFloat_AsDouble(calcF);
+    // -----> Get err_status
+    methodF = PyObject_GetAttrString(objectF, "get_err_status");
+    if (methodF == nullptr) {
+        PyErr_Print();
+    }
+    // Execute method
+    calcF = PyObject_CallObject(methodF, NULL);
+    if (calcF == nullptr) {
+        PyErr_Print();
+    }
+    if (PyLong_AsLong(calcF) == 0)
+        ui->lcdSdsdF->setPalette(Qt::green);
+    else
+        ui->lcdSdsdF->setPalette(Qt::red);
     // ----------------- Get Filtered RMSSD -------------------
     // Get class method
     methodF = PyObject_GetAttrString(objectF, "get_rmssd");
@@ -297,6 +444,20 @@ void HeartAnalysisPanel::makeAnalysis()
     }
     // Get result
     double rmssdFiltered = PyFloat_AsDouble(calcF);
+    // -----> Get err_status
+    methodF = PyObject_GetAttrString(objectF, "get_err_status");
+    if (methodF == nullptr) {
+        PyErr_Print();
+    }
+    // Execute method
+    calcF = PyObject_CallObject(methodF, NULL);
+    if (calcF == nullptr) {
+        PyErr_Print();
+    }
+    if (PyLong_AsLong(calcF) == 0)
+        ui->lcdRmssdF->setPalette(Qt::green);
+    else
+        ui->lcdRmssdF->setPalette(Qt::red);
     // ----------------- Get Filtered HR_MAD -------------------
     // Get class method
     methodF = PyObject_GetAttrString(objectF, "get_hr_mad");
@@ -310,6 +471,20 @@ void HeartAnalysisPanel::makeAnalysis()
     }
     // Get result
     double hrMadFiltered = PyFloat_AsDouble(calcF);
+    // -----> Get err_status
+    methodF = PyObject_GetAttrString(objectF, "get_err_status");
+    if (methodF == nullptr) {
+        PyErr_Print();
+    }
+    // Execute method
+    calcF = PyObject_CallObject(methodF, NULL);
+    if (calcF == nullptr) {
+        PyErr_Print();
+    }
+    if (PyLong_AsLong(calcF) == 0)
+        ui->lcdHrMadF->setPalette(Qt::green);
+    else
+        ui->lcdHrMadF->setPalette(Qt::red);
     // ----------------- Get Filtered Breathingrate -------------------
     // Get class method
     methodF = PyObject_GetAttrString(objectF, "get_breathingrate");
@@ -323,6 +498,20 @@ void HeartAnalysisPanel::makeAnalysis()
     }
     // Get result
     double breathingrateFiltered = PyFloat_AsDouble(calcF);
+    // -----> Get err_status
+    methodF = PyObject_GetAttrString(objectF, "get_err_status");
+    if (methodF == nullptr) {
+        PyErr_Print();
+    }
+    // Execute method
+    calcF = PyObject_CallObject(methodF, NULL);
+    if (calcF == nullptr) {
+        PyErr_Print();
+    }
+    if (PyLong_AsLong(calcF) == 0)
+        ui->lcdBreathF->setPalette(Qt::green);
+    else
+        ui->lcdBreathF->setPalette(Qt::red);
 
     if (_visableBasic)
     {
@@ -448,23 +637,37 @@ void HeartAnalysisPanel::bufferSampleFull(double* buffer, unsigned size)
 void HeartAnalysisPanel::clearBasic()
 {
     ui->lcdBpmB->display(QString::number(0));
+    ui->lcdBpmB->setPalette(Qt::gray);
     ui->lcdIbiB->display(QString::number(0));
+    ui->lcdIbiB->setPalette(Qt::gray);
     ui->lcdSdnnB->display(QString::number(0));
+    ui->lcdSdnnB->setPalette(Qt::gray);
     ui->lcdSdsdB->display(QString::number(0));
+    ui->lcdSdsdB->setPalette(Qt::gray);
     ui->lcdRmssdB->display(QString::number(0));
+    ui->lcdRmssdB->setPalette(Qt::gray);
     ui->lcdHrMadB->display(QString::number(0));
+    ui->lcdHrMadB->setPalette(Qt::gray);
     ui->lcdBreathB->display(QString::number(0));
+    ui->lcdBreathB->setPalette(Qt::gray);
 }
 
 void HeartAnalysisPanel::clearFiltered()
 {
     ui->lcdBpmF->display(QString::number(0));
+    ui->lcdBpmF->setPalette(Qt::gray);
     ui->lcdIbiF->display(QString::number(0));
+    ui->lcdIbiF->setPalette(Qt::gray);
     ui->lcdSdnnF->display(QString::number(0));
+    ui->lcdSdnnF->setPalette(Qt::gray);
     ui->lcdSdsdF->display(QString::number(0));
+    ui->lcdSdsdF->setPalette(Qt::gray);
     ui->lcdRmssdF->display(QString::number(0));
+    ui->lcdRmssdF->setPalette(Qt::gray);
     ui->lcdHrMadF->display(QString::number(0));
+    ui->lcdHrMadF->setPalette(Qt::gray);
     ui->lcdBreathF->display(QString::number(0));
+    ui->lcdBreathF->setPalette(Qt::gray);
 }
 
 void HeartAnalysisPanel::onButtonClose(bool state)
