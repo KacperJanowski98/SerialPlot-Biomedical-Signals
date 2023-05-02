@@ -85,6 +85,12 @@ void HeartAnalysisPanel::signalTypeUpdate(bool state)
             ui->rbPPG->setChecked(true);
         else if (signalType == static_cast<int>(SignalType::ECG))
             ui->rbECG->setChecked(true);
+
+        ui->cbAnalysis->setCheckState(Qt::Unchecked);
+        ui->gbSignalType->setDisabled(true);
+        _analysisState = false;
+        clearFiltered();
+        clearBasic();
     }
     else
     {
