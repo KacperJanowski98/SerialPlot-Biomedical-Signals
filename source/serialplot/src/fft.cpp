@@ -96,8 +96,10 @@ void Fft::calculateFft()
     for (unsigned i = 0; i < mOffset/2; i++)
     {
 //        dataOut[i] = abs(mFftOut[i]);
-        mFftBufferOUT[i] = abs(mFftOut[i]);
-//        qDebug() << "Value: " << abs(mFftOut[i]);
+//        mFftBufferOUT[i] = abs(mFftOut[i]);
+        mFftBufferOUT[i] = abs(mFftOut[i])/1000;
+//        qDebug() << "Index: " << i << " value: " << abs(mFftOut[i])/1000;
+//        qDebug() << "Value: " << abs(mFftOut[i])/1000;
     }
 
     fftw_free(mFftIn);
