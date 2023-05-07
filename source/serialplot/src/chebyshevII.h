@@ -35,10 +35,10 @@ private:
     double mCenterFreq;     // for BandPass, BandStop filter
     double mWidthFreq;      // for BandPass, BandStop filter
 
-    Iir::ChebyshevII::LowPass<12> mLowPass;
-    Iir::ChebyshevII::HighPass<12> mHighPass;
-    Iir::ChebyshevII::BandPass<12> mBandPass;
-    Iir::ChebyshevII::BandStop<12> mBandStop;
+    Iir::ChebyshevII::LowPass<22> mLowPass;
+    Iir::ChebyshevII::HighPass<22> mHighPass;
+    Iir::ChebyshevII::BandPass<22> mBandPass;
+    Iir::ChebyshevII::BandStop<22> mBandStop;
 };
 
 #endif // CHEBYSHEVIIFILTER_H

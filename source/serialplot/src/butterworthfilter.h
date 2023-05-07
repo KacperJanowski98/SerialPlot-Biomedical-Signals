@@ -32,10 +32,10 @@ private:
     double mCenterFreq;     // for BandPass, BandStop filter
     double mWidthFreq;      // for BandPass, BandStop filter
 
-    Iir::Butterworth::LowPass<12> mLowPass;
-    Iir::Butterworth::HighPass<12> mHighPass;
-    Iir::Butterworth::BandPass<12> mBandPass;
-    Iir::Butterworth::BandStop<12> mBandStop;
+    Iir::Butterworth::LowPass<22> mLowPass;
+    Iir::Butterworth::HighPass<22> mHighPass;
+    Iir::Butterworth::BandPass<22> mBandPass;
+    Iir::Butterworth::BandStop<22> mBandStop;
 };
 
 #endif // BUTTERWORTHFILTER_H
