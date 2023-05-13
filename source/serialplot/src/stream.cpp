@@ -22,7 +22,6 @@
 #include "indexbuffer.h"
 #include "linindexbuffer.h"
 
-
 #include <QDebug>
 
 Stream::Stream(unsigned nc, bool x, unsigned ns) :
@@ -272,7 +271,6 @@ void Stream::feedIn(const SamplePack& pack)
     {
         mFft->calculateFft();
         emit fftBufferFull(mFft->getFftBuffer(), mFft->getFftSize());
-//        emit fftBufferFull();
     }
     if (mFftFilter->getOffset() >= mFftFilter->getSize())
     {
@@ -307,31 +305,11 @@ void Stream::setNumSamples(unsigned value)
     }
 }
 
-//double* Stream::getFftBuffer()
-//{
-//    return mFft->getFftBuffer();
-//}
-
-//unsigned Stream::getFftSize()
-//{
-//    return mFft->getFftSize();
-//}
-
 void Stream::clearFft()
 {
     mFft->clearFft();
     mFftFilter->clearFft();
 }
-
-//double* Stream::getFftFilterBuffer()
-//{
-//    return mFftFilter->getFftBuffer();
-//}
-
-//unsigned Stream::getFftFilterSize()
-//{
-//    return mFftFilter->getFftSize();
-//}
 
 void Stream::setupFilter()
 {
@@ -341,13 +319,6 @@ void Stream::setupFilter()
 void Stream::setFilterVersion(int version)
 {
     mFilter->setFilterVersion(version);
-
-//    mFilter->setFilterVersion((int)FilterVersion::ChebyshevI);
-//    mFilter->setFilterType((int)FilterType::LowPass);
-//    mFilter->setFilterOrderChI((int)FilterOrder::Order5);
-//    mFilter->setSamplingFreqChI(300);
-//    mFilter->setCutoffFreqChI(10);
-//    mFilter->setRippleChI(5);
 }
 
 void Stream::setFilterType(int type)
