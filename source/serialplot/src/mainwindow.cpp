@@ -406,24 +406,28 @@ void MainWindow::fftPlot(double* buffer, unsigned size)
     qDebug() << "Number of sample fftPlot: " << numSamples;
 
     QVector<double> vecY(buffer, buffer + numSamples);
+    QVector<double> vecX = linspace(0.0,
+                                    static_cast<double>((sampleFreq/2 - 1)),
+                                    numSamples);
+    ui->fftPlot->graph(0)->setData(vecX, vecY);
 //    QVector<double> vecY;
-    if ((sampleFreq/2 - 1) == endRange)
-    {
-        QVector<double> vecX = linspace(0.0,
-                                        static_cast<double>((sampleFreq/2 - 1)),
-                                        numSamples);
-        ui->fftPlot->graph(0)->setData(vecX, vecY);
-    } else
-    {
-        double newEnd = (numSamples * endRange)/(sampleFreq/2 - 1);
-        QVector<double> vecX = linspace(static_cast<int>(startRange),
-                                        static_cast<double>((sampleFreq/2 - 1)),
-                                        (numSamples - static_cast<int>(newEnd)));
-        QVector<double>::iterator first = vecY.begin() + startRange;
-        QVector<double>::iterator last = vecY.end() - (static_cast<int>(newEnd));
-        QVector<double> newVecY(first, last);
-        ui->fftPlot->graph(0)->setData(vecX, newVecY);
-    }
+//    if ((sampleFreq/2 - 1) == endRange)
+//    {
+//        QVector<double> vecX = linspace(0.0,
+//                                        static_cast<double>((sampleFreq/2 - 1)),
+//                                        numSamples);
+//        ui->fftPlot->graph(0)->setData(vecX, vecY);
+//    } else
+//    {
+//        double newEnd = (numSamples * endRange)/(sampleFreq/2 - 1);
+//        QVector<double> vecX = linspace(static_cast<int>(startRange),
+//                                        static_cast<double>((sampleFreq/2 - 1)),
+//                                        (numSamples - static_cast<int>(newEnd)));
+//        QVector<double>::iterator first = vecY.begin() + startRange;
+//        QVector<double>::iterator last = vecY.end() - (static_cast<int>(newEnd));
+//        QVector<double> newVecY(first, last);
+//        ui->fftPlot->graph(0)->setData(vecX, newVecY);
+//    }
 
 //    double freqStep = (double)sampleFreq / (double)numSamples;
 //    double f = startRange;

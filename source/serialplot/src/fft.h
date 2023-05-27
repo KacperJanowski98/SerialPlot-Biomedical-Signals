@@ -23,8 +23,8 @@ private:
     fftw_plan mFftPlan;
     double *mFftIn;
 //    fftw_complex *mFftIn;
-    double *mFftOut;
-//    fftw_complex *mFftOut;
+//    double *mFftOut;
+    fftw_complex *mFftOut;
     double *mFftBufferiN;
     double *mFftBufferOUT;
     unsigned mOffset;

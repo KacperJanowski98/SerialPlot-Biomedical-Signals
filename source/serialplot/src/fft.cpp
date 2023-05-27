@@ -87,10 +87,10 @@ void Fft::calculateFft()
 {
     mFftIn  = fftw_alloc_real(mOffset);
 //    mFftIn = fftw_alloc_complex(mOffset);
-//    mFftOut = fftw_alloc_complex(mOffset);
-    mFftOut = fftw_alloc_real(mOffset);
-    mFftPlan = fftw_plan_r2r_1d(mOffset, mFftIn, mFftOut, FFTW_R2HC, FFTW_ESTIMATE);
-//    mFftPlan = fftw_plan_dft_r2c_1d(mOffset, mFftIn, mFftOut, FFTW_ESTIMATE);
+    mFftOut = fftw_alloc_complex(mOffset);
+//    mFftOut = fftw_alloc_real(mOffset);
+//    mFftPlan = fftw_plan_r2r_1d(mOffset, mFftIn, mFftOut, FFTW_R2HC, FFTW_ESTIMATE);
+    mFftPlan = fftw_plan_dft_r2c_1d(mOffset, mFftIn, mFftOut, FFTW_ESTIMATE);
 //    mFftPlan = fftw_plan_dft_1d(mOffset, mFftIn, mFftOut, FFTW_BACKWARD, FFTW_ESTIMATE);
 
     memcpy(mFftIn, mFftBufferiN, mOffset*sizeof(double));
@@ -105,8 +105,8 @@ void Fft::calculateFft()
 //        dataOut[i] = abs(mFftOut[i]);
 //        mFftBufferOUT[i] = abs(mFftOut[i]);
 //        mFftBufferOUT[i] = abs(mFftOut[i])/1000;
-        mFftBufferOUT[i] = 2.0/mOffset * abs(mFftOut[i]);
-//        qDebug() << "Index: " << i << " value: " << abs(mFftOut[i])/1000 << " -- " << 2.0/mOffset * abs(mFftOut[i]);
+        mFftBufferOUT[i] = 2.0/mOffset * abs(mFftOut[i][0]);
+        qDebug() << "Index: " << i << " value: " << 2.0/mOffset * abs(mFftOut[i][0]);
 //        qDebug() << "Value: " << abs(mFftOut[i])/1000;
     }
 

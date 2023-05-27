@@ -274,8 +274,8 @@ void Stream::feedIn(const SamplePack& pack)
     }
     if (mFftFilter->getOffset() >= mFftFilter->getSize())
     {
-//        mFftFilter->calculateFft();
-//        emit fftFilterBufferFull(mFftFilter->getFftBuffer(), mFftFilter->getFftSize());
+        mFftFilter->calculateFft();
+        emit fftFilterBufferFull(mFftFilter->getFftBuffer(), mFftFilter->getFftSize());
     }
     emit dataAdded();
 }
