@@ -402,34 +402,28 @@ QVector<double> MainWindow::linspace(double start_in, double end_in, int num_in)
 //void MainWindow::fftPlot()
 void MainWindow::fftPlot(double* buffer, unsigned size)
 {
-//    auto temp = stream.getFftBuffer();
-//    auto size = stream.getFftSize();
-
-//    unsigned start = 0;
-//    unsigned end = 12; //ppg to 12
     unsigned numSamples = size;
     qDebug() << "Number of sample fftPlot: " << numSamples;
-//    unsigned sampleFreq = 25; //ppg to 25
+
     QVector<double> vecY(buffer, buffer + numSamples);
 //    QVector<double> vecY;
     if ((sampleFreq/2 - 1) == endRange)
     {
-        QVector<double> vecX = linspace(0.0, static_cast<double>((sampleFreq/2 - 1)), numSamples);
+        QVector<double> vecX = linspace(0.0,
+                                        static_cast<double>((sampleFreq/2 - 1)),
+                                        numSamples);
         ui->fftPlot->graph(0)->setData(vecX, vecY);
     } else
     {
         double newEnd = (numSamples * endRange)/(sampleFreq/2 - 1);
-        QVector<double> vecX = linspace(0.0, static_cast<double>((sampleFreq/2 - 1)), (numSamples - newEnd));
-        QVector<double>::iterator first = vecY.begin();
-        QVector<double>::iterator last = vecY.end() - (static_cast<int>(newEnd) + 1);
+        QVector<double> vecX = linspace(static_cast<int>(startRange),
+                                        static_cast<double>((sampleFreq/2 - 1)),
+                                        (numSamples - static_cast<int>(newEnd)));
+        QVector<double>::iterator first = vecY.begin() + startRange;
+        QVector<double>::iterator last = vecY.end() - (static_cast<int>(newEnd));
         QVector<double> newVecY(first, last);
         ui->fftPlot->graph(0)->setData(vecX, newVecY);
     }
-
-//    for (double d : vecX)
-//    {
-//        qDebug() << d;
-//    }
 
 //    double freqStep = (double)sampleFreq / (double)numSamples;
 //    double f = startRange;
@@ -461,6 +455,7 @@ void MainWindow::fftPlot(double* buffer, unsigned size)
 //    ui->fftPlot->graph(0)->setData(vecX, vecY);
 //    ui->fftPlot->graph(0)->setData(vecX.mid(0, vecY.length()), vecY);
     ui->fftPlot->rescaleAxes();
+    ui->fftPlot->xAxis->setRange(startRange, endRange);
     ui->fftPlot->replot();
 }
 
@@ -501,6 +496,7 @@ void MainWindow::mousePressOnFftPlot(QMouseEvent *event)
     if(event->button() == Qt::RightButton)
     {
         ui->fftPlot->rescaleAxes();
+        ui->fftPlot->xAxis->setRange(startRange, endRange);
         ui->fftPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
         ui->fftPlot->replot();
     }
