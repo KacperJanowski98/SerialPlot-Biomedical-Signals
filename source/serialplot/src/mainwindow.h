@@ -136,6 +136,8 @@ private:
 
     void updateFilterParameter();
 
+    QVector<double> linspace(double start_in, double end_in, int num_in);
+
 public slots:
     // FFT
 //    void fftPlot();

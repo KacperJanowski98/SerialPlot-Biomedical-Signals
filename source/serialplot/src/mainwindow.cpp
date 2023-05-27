@@ -372,6 +372,33 @@ MainWindow::~MainWindow()
     ui = NULL; // we check if ui is deleted in messageHandler
 }
 
+QVector<double> MainWindow::linspace(double start_in, double end_in, int num_in)
+{
+
+    QVector<double> linspaced;
+
+    //        double start = static_cast<double>(start_in);
+    //        double end = static_cast<double>(end_in);
+    double num = static_cast<double>(num_in);
+
+    if (num == 0) { return linspaced; }
+    if (num == 1)
+    {
+        linspaced.push_back(start_in);
+        return linspaced;
+    }
+
+    double delta = (end_in - start_in) / (num - 1);
+
+    for(int i=0; i < num-1; ++i)
+    {
+        linspaced.push_back(start_in + delta * i);
+    }
+    linspaced.push_back(end_in); // I want to ensure that start and end
+        // are exactly the same as the input
+    return linspaced;
+}
+
 //void MainWindow::fftPlot()
 void MainWindow::fftPlot(double* buffer, unsigned size)
 {
@@ -381,27 +408,58 @@ void MainWindow::fftPlot(double* buffer, unsigned size)
 //    unsigned start = 0;
 //    unsigned end = 12; //ppg to 12
     unsigned numSamples = size;
+    qDebug() << "Number of sample fftPlot: " << numSamples;
 //    unsigned sampleFreq = 25; //ppg to 25
-
-    QVector<double> vecY;
-    QVector<double> vecX;
-
-    double freqStep = (double)sampleFreq / (double)numSamples;
-    double f = startRange;
-    while (f < endRange)
+    QVector<double> vecY(buffer, buffer + numSamples);
+//    QVector<double> vecY;
+    if ((sampleFreq/2 - 1) == endRange)
     {
-        vecX.append(f);
-        f += freqStep;
+        QVector<double> vecX = linspace(0.0, static_cast<double>((sampleFreq/2 - 1)), numSamples);
+        ui->fftPlot->graph(0)->setData(vecX, vecY);
+    } else
+    {
+        double newEnd = (numSamples * endRange)/(sampleFreq/2 - 1);
+        QVector<double> vecX = linspace(0.0, static_cast<double>((sampleFreq/2 - 1)), (numSamples - newEnd));
+        QVector<double>::iterator first = vecY.begin();
+        QVector<double>::iterator last = vecY.end() - (static_cast<int>(newEnd) + 1);
+        QVector<double> newVecY(first, last);
+        ui->fftPlot->graph(0)->setData(vecX, newVecY);
     }
 
-    for (unsigned i = (numSamples/sampleFreq)*startRange;
-         i < (numSamples/sampleFreq)*endRange;
-         i ++)
-    {
-        vecY.append(buffer[i]);
-    }
+//    for (double d : vecX)
+//    {
+//        qDebug() << d;
+//    }
 
-    ui->fftPlot->graph(0)->setData(vecX.mid(0, vecY.length()), vecY);
+//    double freqStep = (double)sampleFreq / (double)numSamples;
+//    double f = startRange;
+//    while (f < endRange)
+//    {
+//        vecX.append(f);
+//        f += freqStep;
+//    }
+
+//    for (unsigned i = (numSamples/sampleFreq)*startRange;
+//         i < (numSamples/sampleFreq)*endRange;
+//         i ++)
+
+//    QVector<double> vecY(buffer, buffer + numSamples);
+//    for (double d : vecY)
+//    {
+//        qDebug() << d;
+//    }
+
+//    for (unsigned i = 0; i < numSamples; i++)
+//    {
+//        qDebug() << "wartosc indexu: " << i;
+//        vecY.append(buffer[i]);
+//    }
+
+//    qDebug() << "Dlugosc vecX" << vecX.length();
+//    qDebug() << "Dlugosc vecY" << vecY.length();
+
+//    ui->fftPlot->graph(0)->setData(vecX, vecY);
+//    ui->fftPlot->graph(0)->setData(vecX.mid(0, vecY.length()), vecY);
     ui->fftPlot->rescaleAxes();
     ui->fftPlot->replot();
 }
