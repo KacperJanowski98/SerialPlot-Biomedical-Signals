@@ -403,7 +403,7 @@ QVector<double> MainWindow::linspace(double start_in, double end_in, int num_in)
 void MainWindow::fftPlot(double* buffer, unsigned size)
 {
     unsigned numSamples = size;
-    qDebug() << "Number of sample fftPlot: " << numSamples;
+//    qDebug() << "Number of sample fftPlot: " << numSamples;
 
     QVector<double> vecY(buffer, buffer + numSamples);
     QVector<double> vecX = linspace(0.0,
@@ -465,33 +465,34 @@ void MainWindow::fftPlot(double* buffer, unsigned size)
 
 void MainWindow::fftFilterPlot(double* buffer, unsigned size)
 {
-//    auto temp = stream.getFftFilterBuffer();
-//    auto size = stream.getFftFilterSize();
-
-//    unsigned start = 0;
-//    unsigned end = 12; //ppg to 12
     unsigned numSamples = size;
 //    unsigned sampleFreq = 25; //ppg to 25
+    QVector<double> vecY(buffer, buffer + numSamples);
+    QVector<double> vecX = linspace(0.0,
+                                    static_cast<double>((sampleFreq/2 - 1)),
+                                    numSamples);
+    ui->fftPlot->graph(1)->setData(vecX, vecY);
 
-    QVector<double> vecY;
-    QVector<double> vecX;
+//    QVector<double> vecY;
+//    QVector<double> vecX;
 
-    double freqStep = (double)sampleFreq / (double)numSamples;
-    double f = startRange;
-    while (f < endRange)
-    {
-        vecX.append(f);
-        f += freqStep;
-    }
+//    double freqStep = (double)sampleFreq / (double)numSamples;
+//    double f = startRange;
+//    while (f < endRange)
+//    {
+//        vecX.append(f);
+//        f += freqStep;
+//    }
 
-    for (unsigned i = (numSamples/sampleFreq)*startRange;
-         i < (numSamples/sampleFreq)*endRange;
-         i ++)
-    {
-        vecY.append(buffer[i]);
-    }
-    ui->fftPlot->graph(1)->setData(vecX.mid(0, vecY.length()), vecY);
+//    for (unsigned i = (numSamples/sampleFreq)*startRange;
+//         i < (numSamples/sampleFreq)*endRange;
+//         i ++)
+//    {
+//        vecY.append(buffer[i]);
+//    }
+//    ui->fftPlot->graph(1)->setData(vecX.mid(0, vecY.length()), vecY);
     ui->fftPlot->rescaleAxes();
+    ui->fftPlot->xAxis->setRange(startRange, endRange);
     ui->fftPlot->replot();
 }
 

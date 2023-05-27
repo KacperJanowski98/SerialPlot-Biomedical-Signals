@@ -106,7 +106,7 @@ void Fft::calculateFft()
 //        mFftBufferOUT[i] = abs(mFftOut[i]);
 //        mFftBufferOUT[i] = abs(mFftOut[i])/1000;
         mFftBufferOUT[i] = 2.0/mOffset * abs(mFftOut[i][0]);
-        qDebug() << "Index: " << i << " value: " << 2.0/mOffset * abs(mFftOut[i][0]);
+//        qDebug() << "Index: " << i << " value: " << 2.0/mOffset * abs(mFftOut[i][0]);
 //        qDebug() << "Value: " << abs(mFftOut[i])/1000;
     }
 
