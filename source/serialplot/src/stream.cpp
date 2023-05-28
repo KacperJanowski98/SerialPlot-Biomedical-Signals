@@ -23,6 +23,7 @@
 #include "linindexbuffer.h"
 
 #include <QDebug>
+#include <QElapsedTimer>
 
 Stream::Stream(unsigned nc, bool x, unsigned ns) :
     _infoModel(nc*2)
@@ -267,14 +268,18 @@ void Stream::feedIn(const SamplePack& pack)
     Sink::feedIn((mPack == nullptr) ? pack : *mPack);
 
     if (mPack != nullptr) delete mPack;
-    if (mFft->getOffset() >= mFft->getSize())
-    {
+    if (mFft->getOffset() >= mFft->getSize()){
+//        QElapsedTimer timer1;
+//        timer1.start();
         mFft->calculateFft();
+//        qDebug() << "Czas wykonywania FFT sygnalu podstawowefo: " << timer1.elapsed() << " ms";
         emit fftBufferFull(mFft->getFftBuffer(), mFft->getFftSize());
     }
-    if (mFftFilter->getOffset() >= mFftFilter->getSize())
-    {
+    if (mFftFilter->getOffset() >= mFftFilter->getSize()){
+//        QElapsedTimer timer2;
+//        timer2.start();
         mFftFilter->calculateFft();
+//        qDebug() << "Czas wykonywania FFT sygnalu filtrowanego: " << timer2.elapsed() << " ms";
         emit fftFilterBufferFull(mFftFilter->getFftBuffer(), mFftFilter->getFftSize());
     }
     emit dataAdded();

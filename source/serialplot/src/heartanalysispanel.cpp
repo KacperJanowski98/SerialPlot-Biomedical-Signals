@@ -623,22 +623,21 @@ void HeartAnalysisPanel::analysisVisableChange(int index, bool visable)
 
 void HeartAnalysisPanel::bufferSampleFull(double* buffer, unsigned size)
 {
+//    QElapsedTimer timer;
+//    timer.start();
     int tempSignalType = getSignalType();
     if (tempSignalType == static_cast<int>(SignalType::PPG) ||
-        tempSignalType == static_cast<int>(SignalType::ECG))
-    {
-        if (_analysisState)
-        {
+        tempSignalType == static_cast<int>(SignalType::ECG)){
+        if (_analysisState){
             emit buttonAnalyzePressed();
-
             makeAnalysis();
         }
     }
-    else if (tempSignalType == static_cast<int>(SignalType::EEG))
-    {
+    else if (tempSignalType == static_cast<int>(SignalType::EEG)){
         clearBasic();
         clearFocus();
     }
+//    qDebug() << "Wykonanie analizy trwalo: " << timer.elapsed() << " ms";
 }
 
 void HeartAnalysisPanel::clearBasic()
