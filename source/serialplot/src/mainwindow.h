@@ -105,7 +105,6 @@ private:
     FilterControl filterControl;
 
     FftControl fftControl;
-    unsigned startRange;
     unsigned endRange;
     unsigned sampleFreq;
 

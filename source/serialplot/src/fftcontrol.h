@@ -17,7 +17,6 @@ public:
     ~FftControl();
 
     unsigned getSamplingFreq();
-    unsigned getFreqRangeStart();
     unsigned getFreqRangeEnd();
 
     /// Stores plot settings into a `QSettings`
@@ -32,7 +31,6 @@ private:
     Ui::FftControl *ui;
 
     unsigned _samplingFreq;
-    unsigned _freqRangeStart;
     unsigned _freqRangeEnd;
 
 private slots:

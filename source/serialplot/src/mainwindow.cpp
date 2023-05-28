@@ -297,7 +297,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // FFT Control
     sampleFreq = fftControl.getSamplingFreq();
-    startRange = fftControl.getFreqRangeStart();
     endRange = fftControl.getFreqRangeEnd();
 
     // FFT plot
@@ -305,7 +304,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->fftPlot->legend->setVisible(false);
     ui->fftPlot->yAxis->setLabel("");
     ui->fftPlot->xAxis->setLabel("Frequency [Hz]");
-    ui->fftPlot->xAxis->setRange(startRange, endRange);
+    ui->fftPlot->xAxis->setRange(0.0, endRange);
     ui->fftPlot->clearGraphs();
     ui->fftPlot->addGraph();
     ui->fftPlot->addGraph();
@@ -409,7 +408,10 @@ void MainWindow::fftPlot(double* buffer, unsigned size)
     QVector<double> vecX = linspace(0.0,
                                     static_cast<double>((sampleFreq/2 - 1)),
                                     numSamples);
+    qDebug() << "First element before: " << vecY.front();
+//    vecY[0] = 0.0;
     ui->fftPlot->graph(0)->setData(vecX, vecY);
+    qDebug() << "First element after: " << vecY.front();
 //    QVector<double> vecY;
 //    if ((sampleFreq/2 - 1) == endRange)
 //    {
@@ -459,7 +461,7 @@ void MainWindow::fftPlot(double* buffer, unsigned size)
 //    ui->fftPlot->graph(0)->setData(vecX, vecY);
 //    ui->fftPlot->graph(0)->setData(vecX.mid(0, vecY.length()), vecY);
     ui->fftPlot->rescaleAxes();
-    ui->fftPlot->xAxis->setRange(startRange, endRange);
+    ui->fftPlot->xAxis->setRange(0.0, endRange);
     ui->fftPlot->replot();
 }
 
@@ -471,7 +473,10 @@ void MainWindow::fftFilterPlot(double* buffer, unsigned size)
     QVector<double> vecX = linspace(0.0,
                                     static_cast<double>((sampleFreq/2 - 1)),
                                     numSamples);
+    qDebug() << "First element before (filtered): " << vecY.front();
+//    vecY[0] = 0.0;
     ui->fftPlot->graph(1)->setData(vecX, vecY);
+    qDebug() << "First element after (filtered): " << vecY.front();
 
 //    QVector<double> vecY;
 //    QVector<double> vecX;
@@ -492,7 +497,7 @@ void MainWindow::fftFilterPlot(double* buffer, unsigned size)
 //    }
 //    ui->fftPlot->graph(1)->setData(vecX.mid(0, vecY.length()), vecY);
     ui->fftPlot->rescaleAxes();
-    ui->fftPlot->xAxis->setRange(startRange, endRange);
+    ui->fftPlot->xAxis->setRange(0.0, endRange);
     ui->fftPlot->replot();
 }
 
@@ -501,7 +506,7 @@ void MainWindow::mousePressOnFftPlot(QMouseEvent *event)
     if(event->button() == Qt::RightButton)
     {
         ui->fftPlot->rescaleAxes();
-        ui->fftPlot->xAxis->setRange(startRange, endRange);
+        ui->fftPlot->xAxis->setRange(0.0, endRange);
         ui->fftPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
         ui->fftPlot->replot();
     }
@@ -625,12 +630,10 @@ void MainWindow::onButtonApplyPressed(bool state)
 {
     sampleFreq = fftControl.getSamplingFreq();
     qDebug() << "onSamplingFrequencyChanged: " << sampleFreq;
-    startRange = fftControl.getFreqRangeStart();
-    qDebug() << "onFrequencyRangeStartChanged: " << startRange;
     endRange = fftControl.getFreqRangeEnd();
     qDebug() << "onFrequencyRangeEndChanged: " << endRange;
 
-    ui->fftPlot->xAxis->setRange(startRange, endRange);
+    ui->fftPlot->xAxis->setRange(0.0, endRange);
     ui->fftPlot->replot();
 }
 

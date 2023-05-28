@@ -15,7 +15,6 @@ FftControl::FftControl(QWidget *parent) :
             this, SLOT(onButtonApply(bool)));
 
     _samplingFreq = ui->spinBoxSampling->value();
-    _freqRangeStart = ui->spinBoxStart->value();
     _freqRangeEnd = ui->spinBoxEnd->value();
 }
 
@@ -27,11 +26,6 @@ FftControl::~FftControl()
 unsigned FftControl::getSamplingFreq()
 {
     return ui->spinBoxSampling->value();
-}
-
-unsigned FftControl::getFreqRangeStart()
-{
-    return ui->spinBoxStart->value();
 }
 
 unsigned FftControl::getFreqRangeEnd()
@@ -47,17 +41,14 @@ void FftControl::onButtonApply(bool state)
     {
         auto temp = (sampleingFreq / 2) - 1;
         ui->spinBoxSampling->setValue(getSamplingFreq());
-        ui->spinBoxStart->setValue(getFreqRangeStart());
         ui->spinBoxEnd->setValue(temp);
     } else
     {
         ui->spinBoxSampling->setValue(getSamplingFreq());
-        ui->spinBoxStart->setValue(getFreqRangeStart());
         ui->spinBoxEnd->setValue(getFreqRangeEnd());
     }
 
     _samplingFreq = getSamplingFreq();
-    _freqRangeStart = getFreqRangeStart();
     _freqRangeEnd = getFreqRangeEnd();
 
     emit buttonApplyPressd(state);
@@ -67,7 +58,6 @@ void FftControl::saveSettings(QSettings* settings)
 {
     settings->beginGroup(SettingGroup_FftControl);
     settings->setValue(SG_FftControl_samplingFreq, ui->spinBoxSampling->value());
-    settings->setValue(SG_FftControl_freqRangeStart,  ui->spinBoxStart->value());
     settings->setValue(SG_FftControl_freqRangeEnd, ui->spinBoxEnd->value());
     settings->endGroup();
 }
@@ -77,8 +67,6 @@ void FftControl::loadSettings(QSettings* settings)
     settings->beginGroup(SettingGroup_FftControl);
     ui->spinBoxSampling->setValue(
                 settings->value(SG_FftControl_samplingFreq, ui->spinBoxSampling->value()).toInt());
-    ui->spinBoxStart->setValue(
-                settings->value(SG_FftControl_freqRangeStart, ui->spinBoxStart->value()).toInt());
     ui->spinBoxEnd->setValue(
                 settings->value(SG_FftControl_freqRangeEnd, ui->spinBoxEnd->value()).toInt());
     settings->endGroup();
