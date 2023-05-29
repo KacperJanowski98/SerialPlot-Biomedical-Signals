@@ -408,10 +408,7 @@ void MainWindow::fftPlot(double* buffer, unsigned size)
     QVector<double> vecX = linspace(0.0,
                                     static_cast<double>((sampleFreq/2 - 1)),
                                     numSamples);
-    qDebug() << "First element before: " << vecY.front();
-//    vecY[0] = 0.0;
     ui->fftPlot->graph(0)->setData(vecX, vecY);
-    qDebug() << "First element after: " << vecY.front();
 //    QVector<double> vecY;
 //    if ((sampleFreq/2 - 1) == endRange)
 //    {
@@ -460,7 +457,17 @@ void MainWindow::fftPlot(double* buffer, unsigned size)
 
 //    ui->fftPlot->graph(0)->setData(vecX, vecY);
 //    ui->fftPlot->graph(0)->setData(vecX.mid(0, vecY.length()), vecY);
-    ui->fftPlot->rescaleAxes();
+    if (rescaleBasic == rescaleSampled)
+    {
+        ui->fftPlot->rescaleAxes();
+    }
+    else
+    {
+        if (rescaleBasic)
+            ui->fftPlot->graph(0)->rescaleValueAxis();
+        else if (rescaleSampled)
+            ui->fftPlot->graph(1)->rescaleValueAxis();
+    }
     ui->fftPlot->xAxis->setRange(0.0, endRange);
     ui->fftPlot->replot();
 }
@@ -473,10 +480,11 @@ void MainWindow::fftFilterPlot(double* buffer, unsigned size)
     QVector<double> vecX = linspace(0.0,
                                     static_cast<double>((sampleFreq/2 - 1)),
                                     numSamples);
-    qDebug() << "First element before (filtered): " << vecY.front();
-//    vecY[0] = 0.0;
+//    qDebug() << "First element before (filtered): " << vecX.front() << " " << vecY.front();
+    vecX.erase(vecX.begin());
+    vecY.erase(vecY.begin());
     ui->fftPlot->graph(1)->setData(vecX, vecY);
-    qDebug() << "First element after (filtered): " << vecY.front();
+//    qDebug() << "First element after (filtered): " << vecX.front() << " " << vecY.front();
 
 //    QVector<double> vecY;
 //    QVector<double> vecX;
@@ -496,7 +504,17 @@ void MainWindow::fftFilterPlot(double* buffer, unsigned size)
 //        vecY.append(buffer[i]);
 //    }
 //    ui->fftPlot->graph(1)->setData(vecX.mid(0, vecY.length()), vecY);
-    ui->fftPlot->rescaleAxes();
+    if (rescaleBasic == rescaleSampled)
+    {
+        ui->fftPlot->rescaleAxes();
+    }
+    else
+    {
+        if (rescaleBasic)
+            ui->fftPlot->graph(0)->rescaleValueAxis();
+        else if (rescaleSampled)
+            ui->fftPlot->graph(1)->rescaleValueAxis();
+    }
     ui->fftPlot->xAxis->setRange(0.0, endRange);
     ui->fftPlot->replot();
 }
@@ -505,7 +523,19 @@ void MainWindow::mousePressOnFftPlot(QMouseEvent *event)
 {
     if(event->button() == Qt::RightButton)
     {
-        ui->fftPlot->rescaleAxes();
+//        ui->fftPlot->rescaleAxes();
+        if (rescaleBasic == rescaleSampled)
+        {
+            ui->fftPlot->rescaleAxes();
+        }
+        else
+        {
+            if (rescaleBasic)
+                ui->fftPlot->graph(0)->rescaleValueAxis();
+            else if (rescaleSampled)
+                ui->fftPlot->graph(1)->rescaleValueAxis();
+        }
+
         ui->fftPlot->xAxis->setRange(0.0, endRange);
         ui->fftPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
         ui->fftPlot->replot();
@@ -516,22 +546,59 @@ void MainWindow::fftPlotVisableChange(int index, bool visable)
 {
     if (index % 2 == 0)
     {
+        rescaleBasic = visable;
         ui->fftPlot->graph(0)->setVisible(visable);
         if (visable)
+        {
             ui->fftPlot->graph(0)->setName("FFT basic signal");
+            if (rescaleBasic == rescaleSampled)
+                ui->fftPlot->rescaleAxes();
+            else if (rescaleBasic)
+                ui->fftPlot->graph(0)->rescaleValueAxis();
+            else if (rescaleSampled)
+                ui->fftPlot->graph(1)->rescaleValueAxis();
+        }
         else
+        {
             ui->fftPlot->graph(0)->setName("");
-        ui->fftPlot->replot();
+            if (rescaleBasic == rescaleSampled)
+                ui->fftPlot->rescaleAxes();
+            else if (rescaleBasic)
+                ui->fftPlot->graph(0)->rescaleValueAxis();
+            else if (rescaleSampled)
+                ui->fftPlot->graph(1)->rescaleValueAxis();
+        }
     }
     else
     {
+        rescaleSampled = visable;
         ui->fftPlot->graph(1)->setVisible(visable);
         if (visable)
+        {
             ui->fftPlot->graph(1)->setName("FFT filtered signal");
+            if (rescaleBasic == rescaleSampled)
+                ui->fftPlot->rescaleAxes();
+            else if (rescaleSampled)
+                ui->fftPlot->graph(1)->rescaleValueAxis();
+            else if (rescaleBasic)
+                ui->fftPlot->graph(0)->rescaleValueAxis();
+        }
         else
+        {
             ui->fftPlot->graph(1)->setName("");
-        ui->fftPlot->replot();
+            if (rescaleBasic == rescaleSampled)
+                ui->fftPlot->rescaleAxes();
+            else if (rescaleSampled)
+                ui->fftPlot->graph(1)->rescaleValueAxis();
+            else if (rescaleBasic)
+                ui->fftPlot->graph(0)->rescaleValueAxis();
+        }
+//        ui->fftPlot->replot();
     }
+
+//    ui->fftPlot->rescaleAxes();
+    ui->fftPlot->xAxis->setRange(0.0, endRange);
+    ui->fftPlot->replot();
 }
 
 void MainWindow::closeEvent(QCloseEvent * event)
@@ -993,6 +1060,7 @@ void MainWindow::loadVisabilityFft(QSettings* settings)
         {
             visable = settings->value(SG_Channels_Visible, visable).toBool();
             ui->fftPlot->graph(0)->setVisible(visable);
+            rescaleBasic = visable;
             if (visable)
                 ui->fftPlot->graph(0)->setName("FFT basic signal");
             else
@@ -1003,6 +1071,7 @@ void MainWindow::loadVisabilityFft(QSettings* settings)
         {
             visable = settings->value(SG_Channels_Visible, visable).toBool();
             ui->fftPlot->graph(1)->setVisible(visable);
+            rescaleSampled = visable;
             if (visable)
                 ui->fftPlot->graph(1)->setName("FFT filtered signal");
             else

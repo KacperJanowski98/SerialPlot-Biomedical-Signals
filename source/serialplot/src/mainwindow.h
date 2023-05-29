@@ -108,6 +108,9 @@ private:
     unsigned endRange;
     unsigned sampleFreq;
 
+    bool rescaleBasic;
+    bool rescaleSampled;
+
     HeartAnalysisPanel heartAnalysisPanel;
 
     void handleCommandLineOptions(const QCoreApplication &app);
