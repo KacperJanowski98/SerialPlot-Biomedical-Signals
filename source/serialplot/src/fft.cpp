@@ -87,24 +87,19 @@ void Fft::createFftBuffer(double *data, unsigned size, unsigned ns)
 void Fft::calculateFft()
 {
     mFftIn  = fftw_alloc_real(mOffset);
-//    mFftIn = fftw_alloc_complex(mOffset);
 //    mFftOut = fftw_alloc_complex(mOffset);
     mFftOut = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * (mOffset / 2 + 1));
 //    mFftOut = fftw_alloc_real(mOffset);
 //    mFftPlan = fftw_plan_r2r_1d(mOffset, mFftIn, mFftOut, FFTW_R2HC, FFTW_ESTIMATE);
     mFftPlan = fftw_plan_dft_r2c_1d(mOffset, mFftIn, mFftOut, FFTW_ESTIMATE);
-//    mFftPlan = fftw_plan_dft_1d(mOffset, mFftIn, mFftOut, FFTW_BACKWARD, FFTW_ESTIMATE);
 
     memcpy(mFftIn, mFftBufferiN, mOffset*sizeof(double));
-//    for(unsigned int i = 0; i < mOffset; i++)
-//        mFftIn[i][0] = mFftBufferiN[i];
 
     fftw_execute(mFftPlan);
 
     std::complex<double> *complexOut;
     complexOut = reinterpret_cast<std::complex<double> *>(mFftOut);
 
-//    for (unsigned i = 0; i < mOffset / 2; i++)
     for (unsigned i = 0; i < mOffset/2 + 1; i++)
     {
 //        dataOut[i] = abs(mFftOut[i]);
