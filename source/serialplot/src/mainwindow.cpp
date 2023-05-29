@@ -321,6 +321,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(plotMan, &PlotManager::visabilityPlotChange,
             &heartAnalysisPanel, &HeartAnalysisPanel::analysisVisableChange);
 
+    textItem = new QCPItemText(ui->fftPlot);
+    connect(ui->fftPlot, &QCustomPlot::mouseMove, this, &MainWindow::onMouseMove);
+
     // Filter Control
     // Update control panel after load setting
     filterControl.filterControlPanelUpdate();
@@ -823,6 +826,17 @@ void MainWindow::showBarPlot(bool show)
     {
         hideSecondary();
     }
+}
+
+void MainWindow::onMouseMove(QMouseEvent *event)
+{
+    QCustomPlot* customPlot = qobject_cast<QCustomPlot*>(sender());
+    double x = customPlot->xAxis->pixelToCoord(event->pos().x());
+    double y = customPlot->yAxis->pixelToCoord(event->pos().y());
+    textItem->setText(QString("(%1, %2)").arg(x).arg(y));
+    textItem->position->setCoords(QPointF(x, y));
+    textItem->setFont(QFont(font().family(), 10));
+    customPlot->replot();
 }
 
 bool MainWindow::selectLogFile()

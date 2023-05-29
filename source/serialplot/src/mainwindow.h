@@ -111,6 +111,8 @@ private:
     bool rescaleBasic;
     bool rescaleSampled;
 
+    QCPItemText *textItem;
+
     HeartAnalysisPanel heartAnalysisPanel;
 
     void handleCommandLineOptions(const QCoreApplication &app);
@@ -168,6 +170,8 @@ private slots:
     void onSpsChanged(float sps);
     void enableDemo(bool enabled);
     void showBarPlot(bool show);
+
+    void onMouseMove(QMouseEvent* event);
 
     // log record panel
     bool selectLogFile();
