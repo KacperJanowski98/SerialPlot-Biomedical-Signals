@@ -37,6 +37,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <string>
+#include <cmath>
 
 #include <plot.h>
 #include <barplot.h>
@@ -411,6 +412,10 @@ void MainWindow::fftPlot(double* buffer, unsigned size)
     QVector<double> vecX = linspace(0.0,
                                     static_cast<double>((sampleFreq/2 - 1)),
                                     numSamples);
+//    for (unsigned int i = 0; i < numSamples; i++)
+//    {
+//        qDebug() << "Czestotliwosc: " << std::ceil(vecX[i] * 100.0) / 100.0 << " wartosc: " << std::ceil(vecY[i] * 100.0) / 100.0;
+//    }
     ui->fftPlot->graph(0)->setData(vecX, vecY);
 //    QVector<double> vecY;
 //    if ((sampleFreq/2 - 1) == endRange)

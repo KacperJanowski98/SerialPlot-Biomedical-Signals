@@ -23,37 +23,10 @@
     </rect>
    </property>
    <layout class="QFormLayout" name="formLayout">
-    <item row="1" column="0">
-     <widget class="QLabel" name="label_sampling">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>200</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <bold>true</bold>
-       </font>
-      </property>
+    <item row="0" column="1">
+     <widget class="QLabel" name="labelConstComp">
       <property name="text">
-       <string>Sampling frequency</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QSpinBox" name="spinBoxSampling">
-      <property name="maximum">
-       <number>10000000</number>
-      </property>
-      <property name="value">
-       <number>0</number>
+       <string/>
       </property>
      </widget>
     </item>
@@ -104,17 +77,37 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="0">
-     <widget class="QCheckBox" name="cbConstComp">
-      <property name="text">
-       <string>Constant Component</string>
+    <item row="1" column="1">
+     <widget class="QSpinBox" name="spinBoxSampling">
+      <property name="maximum">
+       <number>10000000</number>
+      </property>
+      <property name="value">
+       <number>0</number>
       </property>
      </widget>
     </item>
-    <item row="0" column="1">
-     <widget class="QLabel" name="labelConstComp">
+    <item row="1" column="0">
+     <widget class="QLabel" name="label_sampling">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>200</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <bold>true</bold>
+       </font>
+      </property>
       <property name="text">
-       <string/>
+       <string>Sampling frequency</string>
       </property>
      </widget>
     </item>
