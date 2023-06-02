@@ -64,12 +64,7 @@ public:
     const ChannelInfoModel* infoModel() const;
     ChannelInfoModel* infoModel();
     // Fft
-//    double* getFftBuffer();
-//    unsigned getFftSize();
     void clearFft();
-    // Filtering
-//    double* getFftFilterBuffer();
-//    unsigned getFftFilterSize();
 
     void setupFilter();
     void setFilterVersion(int version);
@@ -108,9 +103,7 @@ signals:
     void channelAdded(const StreamChannel* chan);
     void channelNameChanged(unsigned channel, QString name); // TODO: does it stay?
     void dataAdded(); ///< emitted when data added to channel man.
-//    void fftBufferFull();
     void fftBufferFull(double* buffer, unsigned size);
-//    void fftFilterBufferFull();
     void fftFilterBufferFull(double* buffer, unsigned size);
 
 public slots:

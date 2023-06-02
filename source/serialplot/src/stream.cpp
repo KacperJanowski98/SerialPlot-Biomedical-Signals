@@ -59,9 +59,7 @@ Stream::Stream(unsigned nc, bool x, unsigned ns) :
     {
         auto c = new StreamChannel(i, xData, new RingBuffer(ns), &_infoModel);
         // Create channel for filtering data
-//        auto cF = new StreamChannel(i*10, xData, new RingBuffer(ns), &_infoModel);
         channels.append(c);
-//        channels.append(cF);
     } 
 }
 
@@ -237,7 +235,6 @@ void Stream::feedIn(const SamplePack& pack)
     {
         // TODO: implement XRingBuffer (binary search)
         Q_ASSERT(false);
-        // static_cast<RingBuffer*>(xData)->addSamples(pack.xData(), ns);
     }
 
     // modified pack that gain and offset is applied to
@@ -269,17 +266,11 @@ void Stream::feedIn(const SamplePack& pack)
 
     if (mPack != nullptr) delete mPack;
     if (mFft->getOffset() >= mFft->getSize()){
-//        QElapsedTimer timer1;
-//        timer1.start();
         mFft->calculateFft();
-//        qDebug() << "Czas wykonywania FFT sygnalu podstawowefo: " << timer1.elapsed() << " ms";
         emit fftBufferFull(mFft->getFftBuffer(), mFft->getFftSize());
     }
     if (mFftFilter->getOffset() >= mFftFilter->getSize()){
-//        QElapsedTimer timer2;
-//        timer2.start();
         mFftFilter->calculateFft();
-//        qDebug() << "Czas wykonywania FFT sygnalu filtrowanego: " << timer2.elapsed() << " ms";
         emit fftFilterBufferFull(mFftFilter->getFftBuffer(), mFftFilter->getFftSize());
     }
     emit dataAdded();

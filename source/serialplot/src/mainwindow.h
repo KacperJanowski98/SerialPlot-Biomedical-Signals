@@ -85,7 +85,6 @@ private:
     unsigned int numOfSamples;
 
     QList<QwtPlotCurve*> curves;
-    // ChannelManager channelMan;
     Stream stream;
     PlotManager* plotMan;
     QWidget* secondaryPlot;
@@ -144,9 +143,7 @@ private:
 
 public slots:
     // FFT
-//    void fftPlot();
     void fftPlot(double* buffer, unsigned size);
-//    void fftFilterPlot();
     void fftFilterPlot(double* buffer, unsigned size);
     void mousePressOnFftPlot(QMouseEvent *event);
     void fftPlotVisableChange(int index, bool visable);
@@ -157,12 +154,6 @@ private slots:
     void onNumOfSamplesChanged(int value);
 
     // FFT control
-//    void onSamplingFrequencyChanged();
-//    void onFrequencyRangeStartChanged();
-//    void onFrequencyRangeEndChanged();
-//    void onSamplingFrequencyChanged(int value);
-//    void onFrequencyRangeStartChanged(int value);
-//    void onFrequencyRangeEndChanged(int value);
     void onButtonApplyPressed(bool state);
     void onButtonApplyPressedFiltering(bool state);
 
@@ -177,7 +168,6 @@ private slots:
     bool selectLogFile();
 
     // Python data analysis
-//    void onExportCsvPython();
     void onButtonAnalyzePressed();
 
     void onExportCsv();

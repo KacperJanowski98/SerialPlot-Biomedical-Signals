@@ -402,69 +402,17 @@ QVector<double> MainWindow::linspace(double start_in, double end_in, int num_in)
     return linspaced;
 }
 
-//void MainWindow::fftPlot()
 void MainWindow::fftPlot(double* buffer, unsigned size)
 {
     unsigned numSamples = size;
-//    qDebug() << "Number of sample fftPlot: " << numSamples;
 
     QVector<double> vecY(buffer, buffer + numSamples);
     QVector<double> vecX = linspace(0.0,
                                     static_cast<double>((sampleFreq/2 - 1)),
                                     numSamples);
-//    for (unsigned int i = 0; i < numSamples; i++)
-//    {
-//        qDebug() << "Czestotliwosc: " << std::ceil(vecX[i] * 100.0) / 100.0 << " wartosc: " << std::ceil(vecY[i] * 100.0) / 100.0;
-//    }
+
     ui->fftPlot->graph(0)->setData(vecX, vecY);
-//    QVector<double> vecY;
-//    if ((sampleFreq/2 - 1) == endRange)
-//    {
-//        QVector<double> vecX = linspace(0.0,
-//                                        static_cast<double>((sampleFreq/2 - 1)),
-//                                        numSamples);
-//        ui->fftPlot->graph(0)->setData(vecX, vecY);
-//    } else
-//    {
-//        double newEnd = (numSamples * endRange)/(sampleFreq/2 - 1);
-//        QVector<double> vecX = linspace(static_cast<int>(startRange),
-//                                        static_cast<double>((sampleFreq/2 - 1)),
-//                                        (numSamples - static_cast<int>(newEnd)));
-//        QVector<double>::iterator first = vecY.begin() + startRange;
-//        QVector<double>::iterator last = vecY.end() - (static_cast<int>(newEnd));
-//        QVector<double> newVecY(first, last);
-//        ui->fftPlot->graph(0)->setData(vecX, newVecY);
-//    }
 
-//    double freqStep = (double)sampleFreq / (double)numSamples;
-//    double f = startRange;
-//    while (f < endRange)
-//    {
-//        vecX.append(f);
-//        f += freqStep;
-//    }
-
-//    for (unsigned i = (numSamples/sampleFreq)*startRange;
-//         i < (numSamples/sampleFreq)*endRange;
-//         i ++)
-
-//    QVector<double> vecY(buffer, buffer + numSamples);
-//    for (double d : vecY)
-//    {
-//        qDebug() << d;
-//    }
-
-//    for (unsigned i = 0; i < numSamples; i++)
-//    {
-//        qDebug() << "wartosc indexu: " << i;
-//        vecY.append(buffer[i]);
-//    }
-
-//    qDebug() << "Dlugosc vecX" << vecX.length();
-//    qDebug() << "Dlugosc vecY" << vecY.length();
-
-//    ui->fftPlot->graph(0)->setData(vecX, vecY);
-//    ui->fftPlot->graph(0)->setData(vecX.mid(0, vecY.length()), vecY);
     if (rescaleBasic == rescaleSampled)
     {
         ui->fftPlot->rescaleAxes();
@@ -483,35 +431,15 @@ void MainWindow::fftPlot(double* buffer, unsigned size)
 void MainWindow::fftFilterPlot(double* buffer, unsigned size)
 {
     unsigned numSamples = size;
-//    unsigned sampleFreq = 25; //ppg to 25
     QVector<double> vecY(buffer, buffer + numSamples);
     QVector<double> vecX = linspace(0.0,
                                     static_cast<double>((sampleFreq/2 - 1)),
                                     numSamples);
-//    qDebug() << "First element before (filtered): " << vecX.front() << " " << vecY.front();
+
     vecX.erase(vecX.begin());
     vecY.erase(vecY.begin());
     ui->fftPlot->graph(1)->setData(vecX, vecY);
-//    qDebug() << "First element after (filtered): " << vecX.front() << " " << vecY.front();
 
-//    QVector<double> vecY;
-//    QVector<double> vecX;
-
-//    double freqStep = (double)sampleFreq / (double)numSamples;
-//    double f = startRange;
-//    while (f < endRange)
-//    {
-//        vecX.append(f);
-//        f += freqStep;
-//    }
-
-//    for (unsigned i = (numSamples/sampleFreq)*startRange;
-//         i < (numSamples/sampleFreq)*endRange;
-//         i ++)
-//    {
-//        vecY.append(buffer[i]);
-//    }
-//    ui->fftPlot->graph(1)->setData(vecX.mid(0, vecY.length()), vecY);
     if (rescaleBasic == rescaleSampled)
     {
         ui->fftPlot->rescaleAxes();
@@ -531,7 +459,6 @@ void MainWindow::mousePressOnFftPlot(QMouseEvent *event)
 {
     if(event->button() == Qt::RightButton)
     {
-//        ui->fftPlot->rescaleAxes();
         if (rescaleBasic == rescaleSampled)
         {
             ui->fftPlot->rescaleAxes();
@@ -601,10 +528,8 @@ void MainWindow::fftPlotVisableChange(int index, bool visable)
             else if (rescaleBasic)
                 ui->fftPlot->graph(0)->rescaleValueAxis();
         }
-//        ui->fftPlot->replot();
     }
 
-//    ui->fftPlot->rescaleAxes();
     ui->fftPlot->xAxis->setRange(0.0, endRange);
     ui->fftPlot->replot();
 }

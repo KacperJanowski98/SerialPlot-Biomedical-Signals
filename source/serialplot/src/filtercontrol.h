@@ -43,9 +43,7 @@ public:
     double getRippleChebyshevI();
     double getStopBandChebyshevII();
 
-    /// Stores plot settings into a `QSettings`
     void saveSettings(QSettings* settings);
-    /// Loads plot settings from a `QSettings`.
     void loadSettings(QSettings* settings);
 
 signals:
@@ -55,26 +53,6 @@ private:
     Ui::FilterControl *ui;
 
     QButtonGroup filterVersionButtons;
-
-//    int _filterVersion;
-//    int _filterType;
-//    int _filterOrderB;
-//    int _filterOrderChI;
-//    int _filterOrderChII;
-//    double _samplingFreqB;
-//    double _samplingFreqChI;
-//    double _samplingFreqChII;
-//    double _cutoffFreqB;
-//    double _cutoffFreqChI;
-//    double _cutoffFreqChII;
-//    double _centerFreqB;
-//    double _centerFreqChI;
-//    double _centerFreqChII;
-//    double _widthFreqB;
-//    double _widthFreqChI;
-//    double _widthFreqChII;
-//    double _rippleChI;
-//    double _stopBandChII;
 
 private slots:
     void onButtonApply(bool state);

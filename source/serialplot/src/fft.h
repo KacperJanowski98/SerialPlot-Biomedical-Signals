@@ -10,7 +10,6 @@ public:
     ~Fft();
 
     void createFftBuffer(double *data, unsigned size, unsigned ns);
-    //    void calculateFft(double* dataIn, unsigned n);
     void calculateFft();
     void clearFft();
     double* getDataBuffer();
@@ -22,8 +21,6 @@ public:
 private:
     fftw_plan mFftPlan;
     double *mFftIn;
-//    fftw_complex *mFftIn;
-//    double *mFftOut;
     fftw_complex *mFftOut;
     double *mFftBufferiN;
     double *mFftBufferOUT;
