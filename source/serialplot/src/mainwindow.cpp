@@ -643,9 +643,11 @@ void MainWindow::onButtonApplyPressedFiltering(bool state)
     plotMan->replot();
     // FFT
     stream.clearFft();
+    
     ui->fftPlot->graph(0)->data()->clear();
     ui->fftPlot->graph(1)->data()->clear();
     ui->fftPlot->replot();
+
     updateFilterParameter();
 }
 
