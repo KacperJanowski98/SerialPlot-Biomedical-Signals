@@ -2,9 +2,20 @@
 
 The modification of the software is aimed at adding the functionality of analyzing biomedical signals.
 
+The application has been enriched with another graph that allows visualization of the FFT, IIR type filtration configuration tab and the ability to analyze the heart rhythm for the ECG and PPG signal. The application is designed to analyze and visualize ECG, PPG and EEG signals and was made as part of my master's thesis.
+
+![FFT](source/serialplot/misc/fft.png)
+
+![IIR](source/serialplot/misc/iir.png)
+
+![HEART](source/serialplot/misc/heart.png)
+
 ## Features
 
 * Replacing deprecated functions against Qt5.15.2
+* Added Discrete Fourier Transform
+* Added IIR type filtration
+* Added heart rate analysis
 
 ## Installation for Windows
 ### Qt5.15.2 installation with MinGW 8.1.0
@@ -23,6 +34,16 @@ Include the following in the system path:
 - ```installation\path\to\qwt-6.2.0\lib```
 
 In the configuration, set ```BUILD_QWT``` to ```false```.
+
+### FFTW
+
+The application uses the FFTW library to perform the Discrete Fourier Transform. The library can be downloaded from the website https://www.fftw.org/download.html. Remember to add the libraries folder to the system path.
+
+### Python
+
+Heart rate analysis using the Python HeartPy package has been implemented in the application https://python-heart-rate-analysis-toolkit.readthedocs.io/en/latest/#.
+
+To run the python script in the application, it was required to integrate the Python interpreter, therefore, to run the application, the Python interpreter version 3.10 must be installed. Be sure to include it in the system path.
 
 # SerialPlot - original
 
